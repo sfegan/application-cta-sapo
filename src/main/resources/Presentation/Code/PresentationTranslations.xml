@@ -1,0 +1,199 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="Presentation.Code.PresentationTranslations" locale="">
+  <web>Presentation.Code</web>
+  <name>PresentationTranslations</name>
+  <language/>
+  <defaultLanguage>en</defaultLanguage>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>PresentationClass</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>plain/1.0</syntaxId>
+  <hidden>true</hidden>
+  <content># Class fields
+Presentation.Code.PresentationClass_title=Title
+Presentation.Code.PresentationClass_abstract=Abstract
+Presentation.Code.PresentationClass_description=Discussion
+Presentation.Code.PresentationClass_slides=Slides (Upload file with button, or enter external URL)
+Presentation.Code.PresentationClass_poster=Poster (Upload file with button, or enter external URL)
+Presentation.Code.PresentationClass_presenters=Contact authors
+Presentation.Code.PresentationClass_reviewers=Reviewers
+Presentation.Code.PresentationClass_status=Status
+Presentation.Code.PresentationClass_status_draft=Draft
+Presentation.Code.PresentationClass_status_review=Review
+Presentation.Code.PresentationClass_status_submitted=Submitted
+Presentation.Code.PresentationClass_status_accepted=Accepted
+Presentation.Code.PresentationClass_status_refused=Refused
+Presentation.Code.PresentationClass_status_withdrawn=Withdrawn
+Presentation.Code.PresentationClass_event=Conference
+Presentation.Code.PresentationClass_type=Presentation type
+Presentation.Code.PresentationClass_type_invited=Invited talk
+Presentation.Code.PresentationClass_type_talk=Contributed talk
+Presentation.Code.PresentationClass_type_poster=Poster
+Presentation.Code.PresentationClass_approvalBy=Approvals required
+Presentation.Code.PresentationClass_approvalBy_both=WG &amp; SAPO
+Presentation.Code.PresentationClass_approvalBy_sapo=SAPO
+Presentation.Code.PresentationClass_approvalBy_swg=WG
+Presentation.Code.PresentationClass_hasProceedings=Has proceedings
+Presentation.Code.PresentationClass_proceedingsArxiv=arXiv
+Presentation.Code.PresentationClass_proceedingsDOI=DOI
+Presentation.Code.PresentationClass_proceedings=Proceedings (Upload file with button, or enter external URL)
+
+Presentation.Code.PresentationClass_workingGroup=Working group
+Presentation.Code.PresentationClass_workingGroup_aswg=ASWG
+Presentation.Code.PresentationClass_workingGroup_galactic=Galactic
+Presentation.Code.PresentationClass_workingGroup_cosmicRay=Cosmic Ray
+Presentation.Code.PresentationClass_workingGroup_extragalactic=Extragalactic
+Presentation.Code.PresentationClass_workingGroup_transient=Transient
+Presentation.Code.PresentationClass_workingGroup_dmep=Dark Matter &amp; Exotic Physics
+Presentation.Code.PresentationClass_workingGroup_interferometry=Intensity interferometry
+Presentation.Code.PresentationClass_workingGroup_lst=LST
+Presentation.Code.PresentationClass_workingGroup_mst=MST
+Presentation.Code.PresentationClass_workingGroup_nectarCAM=NectarCAM
+Presentation.Code.PresentationClass_workingGroup_flashCam=FlashCam
+Presentation.Code.PresentationClass_workingGroup_sct=SCT
+Presentation.Code.PresentationClass_workingGroup_sst=SST
+
+Presentation.Code.PresentationClass_absApproval=Abstract approval
+Presentation.Code.PresentationClass_absApprovalSWG=By WG
+Presentation.Code.PresentationClass_absApprovalSWG_pending=Pending
+Presentation.Code.PresentationClass_absApprovalSWG_approved=Approved
+Presentation.Code.PresentationClass_absApprovalSWG_rejected=Rejected
+Presentation.Code.PresentationClass_absApprovalSAPO=By SAPO
+Presentation.Code.PresentationClass_absApprovalSAPO_pending=Pending
+Presentation.Code.PresentationClass_absApprovalSAPO_approved=Approved
+Presentation.Code.PresentationClass_absApprovalSAPO_rejected=Rejected
+
+Presentation.Code.PresentationClass_talkApproval=Slides approval
+Presentation.Code.PresentationClass_posterApproval=Poster approval
+Presentation.Code.PresentationClass_talkApprovalSWG=By WG
+Presentation.Code.PresentationClass_talkApprovalSWG_pending=Pending
+Presentation.Code.PresentationClass_talkApprovalSWG_approved=Approved
+Presentation.Code.PresentationClass_talkApprovalSWG_rejected=Rejected
+Presentation.Code.PresentationClass_talkApprovalSAPO=By SAPO
+Presentation.Code.PresentationClass_talkApprovalSAPO_pending=Pending
+Presentation.Code.PresentationClass_talkApprovalSAPO_approved=Approved
+Presentation.Code.PresentationClass_talkApprovalSAPO_rejected=Rejected
+
+Presentation.Code.PresentationClass_procApproval=Proceedings approval
+Presentation.Code.PresentationClass_procApprovalSWG=By WG
+Presentation.Code.PresentationClass_procApprovalSWG_pending=Pending
+Presentation.Code.PresentationClass_procApprovalSWG_approved=Approved
+Presentation.Code.PresentationClass_procApprovalSWG_rejected=Rejected
+Presentation.Code.PresentationClass_procApprovalSAPO=By SAPO
+Presentation.Code.PresentationClass_procApprovalSAPO_pending=Pending
+Presentation.Code.PresentationClass_procApprovalSAPO_approved=Approved
+Presentation.Code.PresentationClass_procApprovalSAPO_rejected=Rejected
+
+# Sheet keys
+presentation.sheet.sapo_header=SAPO &amp; WG Reviewing
+presentation.sheet.words=Word count
+presentation.sheet.chars=character count
+presentation.sheet.description=This page controls how Presentation pages are displayed in both view and edit modes.
+presentation.sheet.noObject=The current page doesn't have the expected Presentation object.
+presentation.sheet.noFields=The Presentation application doesn't have any fields to display.
+
+presentation.sheet.slides.pdfViewerMissing=To preview the PDF, install the PDF Viewer macro.
+presentation.sheet.status.notifyReviewers=Notify reviewers
+
+# Live table generic keys
+presentation.livetable.doc.title=Page Title
+presentation.livetable.doc.name=Page Name
+presentation.livetable.doc.space=Space
+presentation.livetable.doc.fullname=Page full name
+presentation.livetable.doc.location=Location
+presentation.livetable.doc.author=Last Author
+presentation.livetable.doc.creator=Creator
+presentation.livetable.doc.date=Date
+presentation.livetable.doc.creationDate=Creation Date
+presentation.livetable._avatar=Avatar
+presentation.livetable._images=Images
+presentation.livetable._attachments=Attachments
+presentation.livetable._actions=Actions
+presentation.livetable._actions.edit=Edit
+presentation.livetable._actions.delete=Delete
+presentation.livetable.emptyvalue=-
+
+# Live table specific keys
+presentation.livetable.title=Title
+presentation.livetable.abstract=Abstract
+presentation.livetable.description=Description
+presentation.livetable.slides=Slides
+presentation.livetable.presenters=Presenters
+presentation.livetable.reviewers=Reviewers
+presentation.livetable.status=Status
+presentation.livetable.event=Event
+
+# Keys for Macros
+presentation.macros.description=This page contains macros used in this application.
+
+# Other keys
+presentation.entry.name=Presentation
+
+# Deprecated keys
+presentation.dataSpace.title=Data
+</content>
+  <object>
+    <name>Presentation.Code.PresentationTranslations</name>
+    <number>0</number>
+    <className>XWiki.TranslationDocumentClass</className>
+    <guid>29fe31f4-dd05-47a4-aad9-5928c7838b80</guid>
+    <class>
+      <name>XWiki.TranslationDocumentClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <scope>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>scope</name>
+        <number>1</number>
+        <prettyName>Scope</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>GLOBAL|WIKI|USER|ON_DEMAND</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </scope>
+    </class>
+    <property>
+      <scope>WIKI</scope>
+    </property>
+  </object>
+</xwikidoc>

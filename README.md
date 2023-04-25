@@ -1,2 +1,5 @@
 # application-cta-sapo
- CTA SAPO application for conferences
+CTA SAPO XWiki application for conferences and papers
+
+Based on the XWiki "Events" application: https://github.com/xwiki-contrib/application-events
+

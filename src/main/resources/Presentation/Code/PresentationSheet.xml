@@ -1,0 +1,273 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="Presentation.Code.PresentationSheet" locale="">
+  <web>Presentation.Code</web>
+  <name>PresentationSheet</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>PresentationClass</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{include reference="Presentation.Code.Macros"/}}
+
+{{velocity}}
+#set ($object = $doc.getObject('Presentation.Code.PresentationClass'))
+#if (!$object)
+  #set ($messageKey = 'presentation.sheet.description')
+  #set ($messageType = 'info')
+  #if ($doc.documentReference.name != 'PresentationSheet')
+    #set ($messageKey = 'presentation.sheet.noObject')
+    #set ($messageType = 'warning')
+  #end
+  {{$messageType}}
+  $services.localization.render($messageKey)
+  {{/$messageType}}
+  #stop
+#end
+#set ($discard = $xwiki.jsfx.use('uicomponents/edit/editableProperty.js', {
+  'forceSkinAction': true,
+  'language': $xcontext.locale}))
+#set ($discard = $doc.use($object))
+#set ($editing = $xcontext.action == 'edit')
+#macro( renderApproval $property $approval $userCanEdit )
+  #set( $iconName = {"pending" : "clock", "approved" : "check", "rejected" : "remove"} )
+  #set( $iconSetName = {"pending" : "Font Awesome", "approved" : "Silk", "rejected" : "Silk"} )
+  #set( $label = "Presentation.Code.PresentationClass_$property" )
+  #if( $property == "talkApproval" &amp;&amp; $object.getValue("type") == "poster" )
+    #set( $label = "Presentation.Code.PresentationClass_posterApproval" )
+  #end
+  #if($approval == "swg")
+    #set ($propertyGroup = "${property}SWG")
+    #set ($value = ${object.getValue($propertyGroup)|"pending"})
+      &lt;dt #if (!$editing &amp;&amp; $userCanEdit)
+          class="editableProperty"
+          data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference($propertyGroup)))"
+          data-property-type="object"#end&gt;
+        &lt;label#if ($editing) for="Event.Code.EventClass_0_$propertyGroup"#end&gt;
+           $services.icon.render(${iconName[$value]|"question"}, ${iconSetName[$value]|"Font Awesome"}) $escapetool.xml($services.localization.render($label))#* ($escapetool.xml($services.localization.render("Presentation.Code.PresentationClass_$propertyGroup")))*#
+        &lt;/label&gt;
+      &lt;/dt&gt;
+      &lt;dd&gt;$doc.display($propertyGroup)&lt;/dd&gt;
+  #elseif($approval == "sapo")
+    #set ($propertyGroup = "${property}SAPO")
+    #set ($value = ${object.getValue($propertyGroup)|"pending"})
+      &lt;dt #if (!$editing &amp;&amp; $userCanEdit)
+          class="editableProperty"
+          data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference($propertyGroup)))"
+          data-property-type="object"#end&gt;
+        &lt;label#if ($editing) for="Event.Code.EventClass_0_$propertyGroup"#end&gt;
+          $services.icon.render(${iconName[$value]|"question"}, ${iconSetName[$value]|"Font Awesome"}) $escapetool.xml($services.localization.render($label))#* ($escapetool.xml($services.localization.render("Presentation.Code.PresentationClass_$propertyGroup")))*#
+        &lt;/label&gt;
+      &lt;/dt&gt;
+      &lt;dd&gt;$doc.display($propertyGroup)&lt;/dd&gt;
+  #else
+    #set ($propertyGroup = "${property}SWG")
+    #set ($value = ${object.getValue($propertyGroup)|"pending"})
+    #if($value == "approved" || ( $value == "pending" &amp;&amp; $object.getValue("${property}SAPO") == "rejected"))
+      #set($value = ${object.getValue("${property}SAPO")|"pending"})
+    #end
+  &lt;dt&gt;$services.icon.render(${iconName[$value]|"question"}, ${iconSetName[$value]|"Font Awesome"}) $escapetool.xml($services.localization.render($label))&lt;/dt&gt;
+  &lt;dd&gt;
+    &lt;table style="border: none; padding: 0; margin: 0; width:100%; text-align: left"&gt;
+      &lt;td style="border: none"&gt;
+        &lt;dl style="margin: 0; padding: 0"&gt;
+          &lt;dt #if (!$editing &amp;&amp; $userCanEdit)
+              class="editableProperty"
+              data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference($propertyGroup)))"
+              data-property-type="object"#end&gt;
+            &lt;label#if ($editing) for="Event.Code.EventClass_0_$propertyGroup"#end&gt;
+              $escapetool.xml($doc.displayPrettyName($propertyGroup, false, false))
+            &lt;/label&gt;
+          &lt;/dt&gt;
+          &lt;dd&gt;$doc.display($propertyGroup)&lt;/dd&gt;
+        &lt;/dl&gt;
+      &lt;/td&gt;
+      #set ($propertyGroup = "${property}SAPO")
+      &lt;td style="border: none"&gt;
+        &lt;dl style="margin: 0"&gt;
+          &lt;dt #if (!$editing &amp;&amp; $userCanEdit)
+              class="editableProperty"
+              data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference($propertyGroup)))"
+              data-property-type="object"#end&gt;
+            &lt;label#if ($editing) for="Event.Code.EventClass_0_$propertyGroup"#end&gt;
+              $escapetool.xml($doc.displayPrettyName($propertyGroup, false, false))
+            &lt;/label&gt;
+          &lt;/dt&gt;
+          &lt;dd&gt;$doc.display($propertyGroup)&lt;/dd&gt;
+        &lt;/dl&gt;
+      &lt;/td&gt;
+    &lt;/table&gt;
+  &lt;/dd&gt;
+  #end
+#end
+{{html wiki="true" clean="false"}}
+#set($eventDocRef = $object.getValue('event'))
+#if(!$eventDocRef)
+  #set($eventDocRef = $xwiki.getDocument($request.get('parent')))
+#end
+#if($eventDocRef)
+  #set($eventDoc = $xwiki.getDocument($eventDocRef))
+  #if($eventDoc)
+    #set($event = $eventDoc.getObject('Event.Code.EventClass'))
+    #if($!event.getValue('bannerMessage') != "")
+{{info}}
+$event.display('bannerMessage','view')
+{{/info}}
+
+    #end
+    #if (!$eventDoc.isNew() &amp;&amp; $doc.isNew() &amp;&amp; $editing)
+      $object.set('approvalBy', $event.getValue('approvalBy'))
+      $object.set('hasProceedings', $event.getValue('hasProceedings'))
+      $object.set('presenters', $xcontext.user)
+      #set( $defaultReviewerGroup = "XWiki.defaultReviewerGroup" )
+      $object.set('reviewers', "#getGroupMembersAsString($defaultReviewerGroup)")
+    #end
+  #end
+#end
+&lt;div class="xform"&gt;
+  &lt;div class="row"&gt;
+    &lt;div class="col-md-8"&gt;
+      &lt;div class="row"&gt;
+        &lt;div class="col-sm-11"&gt;
+          &lt;dl&gt;
+            #renderEditableProperty($object, 'title', 'font', $hasEdit, false)
+          &lt;/dl&gt;
+        &lt;/div&gt;
+        &lt;div class="col-sm-1"&gt;
+          &lt;a href="#" data-toggle="modal" data-target="#helpModal" style="font-size:36px"&gt;
+            $services.icon.renderHTML("question")
+          &lt;/a&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="row"&gt;
+        &lt;div class="col-sm-6"&gt;
+          &lt;dl&gt;
+            #renderEditableProperty($object, 'status', 'list', $hasEdit, false)
+          &lt;/dl&gt;
+        &lt;/div&gt;
+        &lt;div class="col-sm-6"&gt;
+          &lt;dl&gt;
+            #renderEditableProperty($object, 'presenters', 'comment', $hasEdit, false)
+          &lt;/dl&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="row"&gt;
+        &lt;div class="col-sm-6"&gt;
+          &lt;dl&gt;
+            #renderEditableProperty($object, 'type', 'eye', $hasEdit, false)
+          &lt;/dl&gt;
+        &lt;/div&gt;
+        &lt;div class="col-sm-6"&gt;
+          &lt;dl&gt;
+            #renderEditableProperty($object, 'workingGroup', 'group', $hasEdit, false)
+          &lt;/dl&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="row"&gt;
+        &lt;div class="col-sm-6"&gt;
+          &lt;dl&gt;
+            #renderEditableProperty($object, 'hasProceedings', 'book', $hasEdit, false)
+          &lt;/dl&gt;
+        &lt;/div&gt;
+        &lt;div class="col-sm-6"&gt;
+          &lt;dl&gt;
+            #renderEditableProperty($object, 'proceedingsArxiv', 'world', $hasEdit, false)
+          &lt;/dl&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;dl&gt;
+        #renderEditableProperty($object, 'abstract', 'align-justify', $hasEdit, false)
+        #renderEditableProperty($object, 'description', 'list', $hasEdit, false)
+        #set ($overrideLabel = false)
+        #if ($object.getValue('type') == "poster")
+          #set ($overrideLabel = $escapetool.xml($services.localization.render("Presentation.Code.PresentationClass_poster")))
+        #end
+        #renderEditableProperty($object, 'slides', 'image', $hasEdit, $overrideLabel)
+
+        #if( $object.getValue('hasProceedings')==1 )
+          #renderEditableProperty($object, 'proceedings', 'book', $hasEdit, $overrideLabel)
+        #end
+      &lt;/dl&gt;
+    &lt;/div&gt;
+    &lt;div class="col-md-4" style="padding-left: 0"&gt;
+    &lt;div style="background-color: cornsilk; border: 2px solid sienna; padding: 10px"&gt;
+      &lt;h5&gt;$escapetool.xml($services.localization.render("presentation.sheet.sapo_header"))&lt;/h5&gt;
+      &lt;dl style="margin-bottom: 2px"&gt;
+        #renderEditableProperty($object, 'reviewers', 'search', $hasEdit, false)
+        #set($parentDocument = $xwiki.getDocument($request.get('parent')))
+        #if (!$parentDocument.isNew() &amp;&amp; $parentDocument.getObject('Event.Code.EventClass') &amp;&amp; $doc.isNew() &amp;&amp; $editing)
+          ## Set-up the document to use the event passed in parent.
+          &lt;input type="hidden" name="Presentation.Code.PresentationClass_0_event" value="$!{escapetool.xml($request.get('parent'))}"/&gt;
+        #else
+          #renderEditableProperty($object, 'event', 'flag', $hasEdit, false)
+        #end
+        #renderEditableProperty($object, 'approvalBy', 'check', $hasEdit, false)
+        #renderApproval('absApproval' $object.getValue('approvalBy') $hasEdit)
+        #renderApproval('talkApproval' $object.getValue('approvalBy') $hasEdit)
+        #if( $editing || $object.getValue('hasProceedings')==1 )
+          #renderApproval('procApproval' $object.getValue('approvalBy') $hasEdit)
+        #end
+      &lt;/dl&gt;
+    &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="modal fade in" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel"&gt;
+  &lt;div class="modal-dialog modal-lg" role="document"&gt;
+    &lt;div class="modal-content"&gt;
+      &lt;div class="modal-header"&gt;
+        &lt;button type="button" class="close" data-dismiss="modal" aria-label="Close"&gt;
+          &lt;span aria-hidden="true"&gt;&amp;times;&lt;/span&gt;
+        &lt;/button&gt;
+        &lt;h5&gt;Advice for authors and reviewers&lt;/h5&gt;
+      &lt;/div&gt;
+      &lt;div class="modal-body"&gt;
+        {{include reference="Presentation.Code.Help"/}}
+
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+#if (!$eventDoc.isNew() &amp;&amp; $doc.isNew() &amp;&amp; $editing)
+  &lt;script&gt;
+    require(['jquery',"$services.webjars.url('jquery-ui', 'jquery-ui.js')"], function($) {
+      $(window).on('load', function() {
+        $('#helpModal').modal('show');
+      });
+    });
+  &lt;/script&gt;
+#end
+
+{{/html}}
+{{/velocity}}</content>
+</xwikidoc>

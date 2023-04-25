@@ -1,0 +1,102 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="Presentation.Code.AbstractDisplayer" locale="">
+  <web>Presentation.Code</web>
+  <name>AbstractDisplayer</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title>AbstractDisplayer</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{velocity}}
+#if ($doc.FullName == 'Presentation.Code.AbstractDisplayer')
+  {{info}}
+    Custom display for abstracts. In view mode, render the abstract and then give count of words and characters.
+  {{/info}}
+  #stop
+#end
+## See link below for inspiration
+## https://snippets.xwiki.org/xwiki/bin/view/Extension/User%20Property%20Custom%20Display
+#set ($propertyClass = $object.getxWikiClass().get($name))
+
+#if ($type == 'edit')
+  {{html clean=false}}
+    $doc.displayEdit($propertyClass, $prefix, $object)
+    #set( $word_split = $value.trim().split('\W+') )
+    #set( $word_count = 0 )
+    #foreach ( $w in $word_split )
+      #if ( "$w" != "" )
+        #set( $word_count = $word_count + 1 )
+      #end
+    #end
+    #set( $char_count = $value.trim().length() )
+    &lt;p&gt;&lt;i id="abstractWordCount"&gt;$escapetool.xml($services.localization.render('presentation.sheet.words')): $numbertool.number($word_count), $escapetool.xml($services.localization.render('presentation.sheet.chars')): $numbertool.number($char_count).&lt;/i&gt;&lt;/p&gt;
+    &lt;script&gt;
+      self.document.getElementById("Presentation.Code.PresentationClass_0_abstract").
+          addEventListener("input", function() {
+        var inputText = document.getElementById("Presentation.Code.PresentationClass_0_abstract").value.trim();
+        var wordSplit = inputText.split(/\W+/)
+        var wordCount = 0;
+        for (var i = 0; i &lt; wordSplit.length; i++) {
+          if (wordSplit[i] != "") {
+            wordCount++;
+          }
+        }
+        var charCount = inputText.length;
+        var formattedWordCount = wordCount.toLocaleString();
+        var formattedCharCount = charCount.toLocaleString();
+        document.getElementById("abstractWordCount").innerHTML =
+          "$escapetool.xml($services.localization.render('presentation.sheet.words')): " +
+          formattedWordCount +
+          ", $escapetool.xml($services.localization.render('presentation.sheet.chars')): " +
+          formattedCharCount;
+      });
+    &lt;/script&gt;
+  {{/html}}
+#else
+  {{html clean=false}}
+    $doc.displayView($propertyClass, $prefix, $object)
+    #if("$!value.trim()" != "")
+      #set( $word_split = $value.trim().split('\W+') )
+      #set( $word_count = 0 )
+      #foreach ( $w in $word_split )
+        #if ( "$w" != "" )
+          #set( $word_count = $word_count + 1 )
+        #end
+      #end
+      #set( $char_count = $value.trim().length() )
+      &lt;p&gt;&lt;i&gt;$escapetool.xml($services.localization.render('presentation.sheet.words')): $numbertool.number($word_count), $escapetool.xml($services.localization.render('presentation.sheet.chars')): $numbertool.number($char_count).&lt;/i&gt;&lt;/p&gt;
+    #end
+  {{/html}}
+#end
+{{/velocity}}
+</content>
+</xwikidoc>

@@ -1,0 +1,168 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="Presentation.Code.PresentationCreationMailTemplate" locale="">
+  <web>Presentation.Code</web>
+  <name>PresentationCreationMailTemplate</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title>PresentationCreationMailTemplate</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content/>
+  <object>
+    <name>Presentation.Code.PresentationCreationMailTemplate</name>
+    <number>0</number>
+    <className>XWiki.Mail</className>
+    <guid>c518cc32-e83f-4854-abdb-31b56cc88288</guid>
+    <class>
+      <name>XWiki.Mail</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <html>
+        <contenttype>PureText</contenttype>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>html</name>
+        <number>4</number>
+        <prettyName>HTML</prettyName>
+        <rows>15</rows>
+        <size>80</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </html>
+      <language>
+        <disabled>0</disabled>
+        <name>language</name>
+        <number>2</number>
+        <prettyName>Language</prettyName>
+        <size>5</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </language>
+      <subject>
+        <disabled>0</disabled>
+        <name>subject</name>
+        <number>1</number>
+        <prettyName>Subject</prettyName>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </subject>
+      <text>
+        <contenttype>PureText</contenttype>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>text</name>
+        <number>3</number>
+        <prettyName>Text</prettyName>
+        <rows>15</rows>
+        <size>80</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </text>
+    </class>
+    <property>
+      <html>&lt;p&gt;
+This is an automated email triggered by the creation of a $pageType in the CTA conference system.
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;b&gt;Title:&lt;/b&gt; &lt;a href="$url"&gt;$title&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;b&gt;URL:&lt;/b&gt; &lt;a href="$url"&gt;$url&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;b&gt;Creator:&lt;/b&gt; ${creatorName|"Unknown"}&lt;/li&gt;
+#if( $services.localization.get("Presentation.Code.PresentationClass_type_${type}") )
+  &lt;li&gt;&lt;b&gt;Type:&lt;/b&gt; $services.localization.render("Presentation.Code.PresentationClass_type_${type}")&lt;/li&gt;
+#else
+  &lt;li&gt;&lt;b&gt;Type:&lt;/b&gt; unspecified&lt;/li&gt;
+#end
+#if( $services.localization.get("Presentation.Code.PresentationClass_workingGroup_${workingGroup}") )
+  &lt;li&gt;&lt;b&gt;WG:&lt;/b&gt; ${services.localization.render("Presentation.Code.PresentationClass_workingGroup_${workingGroup}")|"none"}&lt;/li&gt;
+#else
+  &lt;li&gt;&lt;b&gt;WG:&lt;/b&gt; none&lt;/li&gt;
+#end
+  &lt;li&gt;&lt;b&gt;Presenters:&lt;/b&gt; ${stringtool.join($presenterNames, ", ")|"unspecified"}&lt;/li&gt;
+#if( "$!eventTitle" != "")
+  &lt;li&gt;&lt;b&gt;Conference:&lt;/b&gt; &lt;a href="$eventURL"&gt;$eventTitle&lt;/a&gt;&lt;/li&gt;
+#end
+&lt;/ul&gt;
+
+&lt;/p&gt;
+
+#if( "$abstract" != "")
+&lt;h4&gt;Abstract:&lt;/h4&gt;
+
+#set( $abstractDOM = $services.rendering.parse($abstract, "xwiki/2.1") )
+$!services.rendering.render($abstractDOM, "xhtml/1.0")
+#end
+</html>
+    </property>
+    <property>
+      <language>en</language>
+    </property>
+    <property>
+      <subject>XWiki - Creation of $pageType : "$title"</subject>
+    </property>
+    <property>
+      <text>This is an automated email triggered by the creation of a $pageType in the CTA conference system.
+
+- Title: $title
+- URL: $!url
+- Creator: ${creatorName|"Unknown"}
+#if( $services.localization.get("Presentation.Code.PresentationClass_type_${type}") )
+- Type: $services.localization.render("Presentation.Code.PresentationClass_type_${type}")
+#else
+- Type: unspecified
+#end
+#if( $services.localization.get("Presentation.Code.PresentationClass_workingGroup_${workingGroup}") )
+- WG: $services.localization.render("Presentation.Code.PresentationClass_workingGroup_${workingGroup}")
+#else
+- WG: none
+#end
+- Presenters: ${stringtool.join($presenterNames, ", ")|"unspecified"}
+#if( "$!eventTitle" != "")
+- Conference: $eventTitle
+#end
+
+#if( "$abstract" != "")
+Abstract:
+
+#set( $abstractDOM = $services.rendering.parse($abstract, "xwiki/2.1") )
+$!services.rendering.render($abstractDOM, "plain/1.0")
+#end</text>
+    </property>
+  </object>
+</xwikidoc>

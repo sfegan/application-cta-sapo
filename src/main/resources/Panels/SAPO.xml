@@ -1,0 +1,719 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="Panels.SAPO" locale="">
+  <web>Panels</web>
+  <name>SAPO</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title>SAPO</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{velocity}}
+#set( $panelTitle = "SAPO space" )
+#set( $panelEntries = [
+  { "target": "Main.WebHome", "icon": "icon:home", "label": "SAPO Home" },
+  { "target": "Event.WebHome", "icon": "icon:comments", "label": "Conferences" },
+  { "target": "Consortium Publication Projects.WebHome", "icon": "icon:page_white_text", "label": "Papers" },
+  { "url": "https://indico.cta-observatory.org/event/1075/", "icon": "icon:zoom", "label": "Paper reviewing" },
+  { "target": "CTA-ATels.WebHome", "icon": "icon:transmit", "label": "ATels" },
+  { "target": "Main.AllDocs", "targetQueryString": "view=tree", "icon": "icon:folder", "label": "Other pages" } ] )
+{{/velocity}}
+</content>
+  <object>
+    <name>Panels.SAPO</name>
+    <number>0</number>
+    <className>Panels.PanelClass</className>
+    <guid>43668ea2-1d18-4576-b36c-be5ed762a3dc</guid>
+    <class>
+      <name>Panels.PanelClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <async_cached>
+        <defaultValue>0</defaultValue>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType/>
+        <name>async_cached</name>
+        <number>7</number>
+        <prettyName>Cached</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </async_cached>
+      <async_context>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>1</multiSelect>
+        <name>async_context</name>
+        <number>8</number>
+        <prettyName>Context elements</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator>, </separator>
+        <separators>|, </separators>
+        <size>5</size>
+        <unmodifiable>0</unmodifiable>
+        <values>action=Action|doc.reference=Document|icon.theme=Icon theme|locale=Language|rendering.defaultsyntax=Default syntax|rendering.restricted=Restricted|rendering.targetsyntax=Target syntax|request.base=Request base URL|request.cookies|request.parameters=Request parameters|request.url=Request URL|request.wiki=Request wiki|user=User|wiki=Wiki</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </async_context>
+      <async_enabled>
+        <defaultValue>0</defaultValue>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType/>
+        <name>async_enabled</name>
+        <number>6</number>
+        <prettyName>Asynchronous rendering</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </async_enabled>
+      <category>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>category</name>
+        <number>1</number>
+        <prettyName>Category</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>Information|Navigation|Tools|Administration|Other</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </category>
+      <content>
+        <disabled>0</disabled>
+        <editor>Text</editor>
+        <name>content</name>
+        <number>5</number>
+        <prettyName>Executed Content</prettyName>
+        <rows>25</rows>
+        <size>120</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </content>
+      <description>
+        <disabled>0</disabled>
+        <editor>Text</editor>
+        <name>description</name>
+        <number>2</number>
+        <prettyName>Description</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </description>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>3</number>
+        <prettyName>Name</prettyName>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <type>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>type</name>
+        <number>4</number>
+        <prettyName>Panel type</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>view|edit</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </type>
+    </class>
+    <property>
+      <async_cached>1</async_cached>
+    </property>
+    <property>
+      <async_context>
+        <value>action</value>
+        <value>doc.reference</value>
+        <value>icon.theme</value>
+        <value>locale</value>
+        <value>rendering.defaultsyntax</value>
+        <value>rendering.restricted</value>
+        <value>rendering.targetsyntax</value>
+        <value>request.base</value>
+        <value>request.cookies</value>
+        <value>request.parameters</value>
+        <value>request.url</value>
+        <value>request.wiki</value>
+        <value>user</value>
+        <value>wiki</value>
+      </async_context>
+    </property>
+    <property>
+      <async_enabled>1</async_enabled>
+    </property>
+    <property>
+      <category>Information</category>
+    </property>
+    <property>
+      <content>{{include reference="Panels.SAPO"/}}
+
+{{velocity output="false"}}
+#macro (displaySAPOPanelEntry $params)
+  #if ($params.icon.startsWith('icon:'))
+    #set ($icon = $services.icon.renderHTML($params.icon.substring(5)))
+  #else
+    #set ($icon = $services.rendering.render($services.rendering.parse("image:${params.icon}", 'xwiki/2.1'),
+      'xhtml/1.0'))
+  #end
+  &lt;li&gt;
+    #if($params.url)
+      &lt;a href="$params.url" title="$escapetool.xml($params.label)"&gt;
+    #else
+      &lt;a href="$xwiki.getURL($params.target, 'view', "$!params.targetQueryString")" title="$escapetool.xml($params.label)"&gt;
+    #end
+      &lt;span class="sapo-img"&gt;$icon&lt;/span&gt;
+      &lt;span class="sapo-label"&gt;$escapetool.xml($params.label)&lt;/span&gt;
+    &lt;/a&gt;
+  &lt;/li&gt;
+#end
+{{/velocity}}
+
+{{velocity}}
+#set ($discard = $xwiki.ssx.use('Panels.SAPO'))
+#set ($discard = $xwiki.jsx.use('Panels.SAPO'))
+
+#panelheader($panelTitle)
+
+{{html}}
+&lt;ul class="sapoPanel nav nav-pills nav-stacked"&gt;
+  #foreach( $entry in $panelEntries )
+    #displaySAPOPanelEntry($entry)
+  #end
+&lt;/ul&gt;
+{{/html}}
+
+#panelfooter()
+{{/velocity}}
+</content>
+    </property>
+    <property>
+      <description>SAPO left-side panel</description>
+    </property>
+    <property>
+      <name>SAPO space</name>
+    </property>
+    <property>
+      <type>view</type>
+    </property>
+  </object>
+  <object>
+    <name>Panels.SAPO</name>
+    <number>0</number>
+    <className>XWiki.JavaScriptExtension</className>
+    <guid>485bb1c3-4d23-40f7-8927-04ba7a079885</guid>
+    <class>
+      <name>XWiki.JavaScriptExtension</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <cache>
+        <cache>0</cache>
+        <defaultValue>long</defaultValue>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>cache</name>
+        <number>5</number>
+        <prettyName>Caching policy</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>long|short|default|forbid</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </cache>
+      <code>
+        <contenttype>PureText</contenttype>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>code</name>
+        <number>2</number>
+        <prettyName>Code</prettyName>
+        <rows>20</rows>
+        <size>50</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </code>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <parse>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>parse</name>
+        <number>4</number>
+        <prettyName>Parse content</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </parse>
+      <use>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>use</name>
+        <number>3</number>
+        <prettyName>Use this extension</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>currentPage|onDemand|always</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </use>
+    </class>
+    <property>
+      <cache>long</cache>
+    </property>
+    <property>
+      <code>var XWiki = (function(XWiki) {
+
+var panels = XWiki.panels = XWiki.panels || {};
+
+panels.MoreSAPOButtonListener = Class.create({
+  initialize: function(button) {
+    this.button = button;
+    this.container = button.up('.sapoPanelMoreList').down('.sapoPanelMoreContainer');
+
+    var moreAppsCount = this.container.select('.sapo-label').length;
+    if (moreAppsCount &gt; 0) {
+      this.container.id = 'sapoPanelMoreContainer' + Math.floor(Math.random()*101);
+      this.isToggling = false;
+      this.button.observe('click', function(e) {
+        e.stop();
+        if (!this.isToggling) {
+          this.toggle();
+        }
+      }.bindAsEventListener(this));
+    } else {
+      button.up('.sapoPanelMoreList').hide();
+    }
+
+    return this;
+  },
+
+  toggle: function() {
+    this.isToggling = true;
+    if (this.container.hasClassName('hidden')) {
+      this.container.style.display = "none";
+      this.container.removeClassName('hidden');
+      Effect.BlindDown(this.container.id, {
+        duration: 0.1,
+        afterFinish: function() {
+          this.isToggling = false;
+        }.bind(this)
+      });
+    } else {
+      Effect.BlindUp(this.container.id, {
+        duration: 0.1,
+        // We do this to be able to get our hidden element back, we don't rely on
+        // display:none since we don't allow nested style in HTML elements.
+        afterFinish: function() {
+          this.container.addClassName('hidden');
+          this.isToggling = false;
+        }.bind(this)
+      });
+    }
+  }
+});
+
+return XWiki;
+}(XWiki || {}));
+
+require(['scriptaculous/effects'], function() {
+  // Activate all buttons already in the DOM.
+  document.querySelectorAll('.sapoPanelMoreButton').forEach(function(button) {
+    new XWiki.panels.MoreSAPOButtonListener(button);
+  });
+});</code>
+    </property>
+    <property>
+      <name>SAPO Panel</name>
+    </property>
+    <property>
+      <parse>0</parse>
+    </property>
+    <property>
+      <use>onDemand</use>
+    </property>
+  </object>
+  <object>
+    <name>Panels.SAPO</name>
+    <number>0</number>
+    <className>XWiki.StyleSheetExtension</className>
+    <guid>84635df9-3db2-4ead-a5fa-b330c1d067f4</guid>
+    <class>
+      <name>XWiki.StyleSheetExtension</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <cache>
+        <cache>0</cache>
+        <defaultValue>long</defaultValue>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>cache</name>
+        <number>5</number>
+        <prettyName>Caching policy</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>long|short|default|forbid</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </cache>
+      <code>
+        <contenttype>PureText</contenttype>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>code</name>
+        <number>2</number>
+        <prettyName>Code</prettyName>
+        <rows>20</rows>
+        <size>50</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </code>
+      <contentType>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>contentType</name>
+        <number>6</number>
+        <prettyName>Content Type</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>CSS|LESS</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </contentType>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <parse>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>parse</name>
+        <number>4</number>
+        <prettyName>Parse content</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </parse>
+      <use>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>use</name>
+        <number>3</number>
+        <prettyName>Use this extension</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>currentPage|onDemand|always</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </use>
+    </class>
+    <property>
+      <cache>long</cache>
+    </property>
+    <property>
+      <code>#template('colorThemeInit.vm')
+
+.sapoPanelMoreList {
+  margin-top: 1em;
+}
+
+.sapoPanel li img {
+  float: left;
+  width: 16px;
+  height: 16px;
+}
+
+.panel-width-Medium .sapoPanel li .sapo-img, 
+.panel-width-Large .sapoPanel li .sapo-img {
+  display: block;
+  float: left;
+  width: 20px;
+}
+
+.sapoPanel li .sapo-label {
+  margin-left: 0.1em;
+}
+
+.sapoPanelMoreContainer ul {
+  margin-left: 5px;
+}
+
+.sapoPanelMoreContainer li a {
+  font-size: 90%;
+  line-height: 16px;
+}
+
+.panel-width-Small .panel.SAPO {
+  background-color: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.panel-width-Small .sapoPanel li {
+  list-style-type: none;
+  padding: 0;
+  text-align: center;
+}
+
+.panel-width-Small .sapoPanel li a {
+  padding: 0.7em 0;
+}
+
+.panel-width-Small .sapoPanel .sapo-label {
+  display: inline-block; /* Needed by IE for ellipsis */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%; /* Needed by IE for ellipsis */
+}
+
+.panel-width-Small .sapoPanel li img {
+  float: none;
+}
+
+.panel-width-Small .sapoPanel li .sapo-img {
+  display: block;
+}
+
+.panel-width-Small .sapoPanel li .sapo-label {
+  margin-left: 0;
+}
+
+.panel-width-Small .panel.SAPO .xwikipaneltitle {
+  display: none;
+}
+
+.panel-width-Small .panel.SAPO .xwikipanelcontents {
+  border: 0;
+  background-color: transparent;
+  padding: 0;
+}
+
+.panel-width-Small .sapoPanelMoreContainer ul {
+  padding: 0;
+  margin: 0;
+  background-color: $theme.pageContentBackgroundColor;
+}
+
+.panel-width-Small .sapoPanelMoreContainer ul li:hover {
+  background-color: $theme.highlightColor;
+}
+
+.panel-width-Small .sapoPanelMoreContainer ul li:hover a {
+  color: $theme.textPrimaryColor;
+}
+
+.panel-width-Small .sapo-img {
+  font-size: 24px;
+}
+
+.panel-width-Small .sapo-img img {
+  width: 24px;
+  height: 24px;
+}
+
+.panel-width-Medium .sapoPanel &gt; li &gt; a,
+.panel-width-Medium .sapoPanelMoreList &gt; li &gt; a,
+.panel-width-Medium .sapoPanelMoreContainer ul&gt; li &gt; a,
+.panel-width-Large .sapoPanel &gt; li &gt; a,
+.panel-width-Large .sapoPanelMoreList &gt; li &gt; a,
+.panel-width-Large .sapoPanelMoreContainer ul &gt; li &gt; a {
+  padding: 0;
+}
+
+.panel-width-Medium .sapoPanel &gt; li &gt; a:hover,
+.panel-width-Medium .sapoPanel &gt; li &gt; a:focus,
+.panel-width-Medium .sapoPanelMoreList &gt; li &gt; a:hover,
+.panel-width-Medium .sapoPanelMoreList &gt; li &gt; a:focus,
+.panel-width-Medium .sapoPanelMoreContainer ul&gt; li &gt; a:hover,
+.panel-width-Medium .sapoPanelMoreContainer ul&gt; li &gt; a:focus,
+.panel-width-Large .sapoPanel &gt; li &gt; a:hover,
+.panel-width-Large .sapoPanel &gt; li &gt; a:focus,
+.panel-width-Large .sapoPanelMoreList &gt; li &gt; a:hover,
+.panel-width-Large .sapoPanelMoreList &gt; li &gt; a:focus,
+.panel-width-Large .sapoPanelMoreContainer ul &gt; li &gt; a:hover 
+.panel-width-Large .sapoPanelMoreContainer ul &gt; li &gt; a:focus {
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+/* Phone case */
+@media (max-width: 768px) {
+  .panel-width-Small .sapoPanel li {
+    float: left;
+    width: 33%;
+  }
+
+  /* no responsive design for colibri */
+  .skin-colibri .panel-width-Small .sapoPanel li {
+    float: none;
+    width: inherit;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 992px) {
+  .panel-width-Small .sapoPanel li{
+    float: left;
+    width: 20%;
+  }
+
+  /* no responsive design for colibri */
+  .skin-colibri .panel-width-Small .sapoPanel li {
+    float: none;
+    width: inherit;
+  }
+}
+
+/* for colibri */
+
+.skin-colibri .sapoPanelMoreContainer ul {
+  margin-left: 0;
+}
+
+.skin-colibri .panel-width-Medium .sapoPanelMoreContainer ul,
+.skin-colibri .panel-width-Large .sapoPanelMoreContainer ul {
+  margin-left: 20px;
+}
+
+.skin-colibri .panel-width-Small .sapoPanel {
+  margin: 0;
+}
+
+.skin-colibri .panel-width-Small .sapoPanel li {
+  padding: 15px 0;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  margin: 1px 0;
+}
+
+.skin-colibri .panel-width-Small .sapoPanel li.active {
+  background-color: $theme.buttonPrimaryBackgroundColor;  
+}
+
+.skin-colibri .panel-width-Small .sapoPanel li.active a {
+  color: $theme.buttonPrimaryTextColor
+}
+
+.skin-colibri .panel-width-Small .sapoPanel li:hover {
+  background-color: $theme.highlightColor;
+}
+
+.skin-colibri .panel-width-Small .sapoPanel li:hover a {
+  color: $theme.textPrimaryColor; 
+}
+</code>
+    </property>
+    <property>
+      <contentType/>
+    </property>
+    <property>
+      <name>SAPO Panel</name>
+    </property>
+    <property>
+      <parse>1</parse>
+    </property>
+    <property>
+      <use>onDemand</use>
+    </property>
+  </object>
+</xwikidoc>

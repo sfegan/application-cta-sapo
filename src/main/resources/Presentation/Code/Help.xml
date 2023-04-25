@@ -1,0 +1,100 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="Presentation.Code.Help" locale="">
+  <web>Presentation.Code</web>
+  <name>Help</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>Presentation.Code.WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title>Help</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{velocity}}
+  {{html}}
+  #if( $doc.isNew() &amp;&amp; $xcontext.action == 'edit' )
+    &lt;p&gt;&lt;b&gt;Thank you for registering your contribution!&lt;b&gt;&lt;/p&gt;
+  #end
+  &lt;p&gt;In order to complete the review of your contribution, please follow this procedure:
+    &lt;ol&gt;
+      &lt;li&gt;Complete this form with at least the following details:
+        contact author(s), contribution type, abstract, and relevant working group,&lt;/li&gt;
+      &lt;li&gt;Contact SAPO to arrange for a reviewer to be assigned and for the category of the review to be selected&lt;/li&gt;
+      &lt;li&gt;If you wish, configure your
+        &lt;a href="$xwiki.getURL($xcontext.user,'view')?category=notifications" target="_"&gt;
+          XWiki notifications&lt;/a&gt;
+        to be alerted to changes to this page,&lt;/li&gt;
+      &lt;li&gt;Use the XWiki comments to interact with your reviewer,&lt;/li&gt;
+      &lt;li&gt;Update the status when the presentation is submitted to the conference, accepted, etc.,&lt;/li&gt;
+      &lt;li&gt;Upload your slides (and proceedings if relevant) using the dedicated upload buttons
+        on this page.&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/p&gt;
+
+  #if( "$!services.user.properties.email" == "" )
+    &lt;p&gt;&lt;b&gt;
+      &lt;span style="color: red"&gt;$services.icon.renderHTML('warning')&lt;/span&gt;
+      Your email address is not set in XWiki,
+      &lt;a href="$xwiki.getURL($xcontext.user,'view')" target="_"&gt;please take a moment to set it.&lt;/a&gt;
+      &lt;span style="color: red"&gt;$services.icon.renderHTML('warning')&lt;/span&gt;
+    &lt;/b&gt;&lt;/p&gt;
+  #end
+
+  &lt;h6&gt;Information for specific fields&lt;/h6&gt;
+  &lt;dl&gt;
+    &lt;dt&gt;$escapetool.xml($services.localization.render("Presentation.Code.PresentationClass_presenters"))&lt;/dt&gt;
+    &lt;dd&gt;
+      The person (or short list of people) that should be contacted during the reviewing
+      process. There is no need to list all of the authors that have contributed to the
+      work being presented. The list of contributing authors submitted to conference
+      can be longer.
+    &lt;/dd&gt;
+    &lt;dt style="margin-top: 1ex"&gt;$escapetool.xml($services.localization.render("Presentation.Code.PresentationClass_abstract"))&lt;/dt&gt;
+    &lt;dd&gt;
+      Please post your abstract as text (or as wiki markup), in English, even if this does
+      not correspond exactly to what you plan to submit (for example, even if perhaps
+      some equations are misformatted). This helps reviewers easily access the abstract text.
+      In addition, you can &lt;b&gt;optionally&lt;/b&gt; attach the abstract as a PDF, or other type of 
+      file, and link to it from the abstract using the wiki format: "attach:abstract.pdf".
+    &lt;/dd&gt;
+    &lt;dt style="margin-top: 1ex"&gt;Slides/Poster and Proceedings&lt;/dt&gt;
+    &lt;dd&gt;
+      Please upload your materials in PDF or office format using the "Choose an attachment"
+      button in the relevant section, or enter a URL to an external site where the materials
+      are hosted.
+    &lt;/dd&gt;
+    &lt;dt style="margin-top: 1ex"&gt;$escapetool.xml($services.localization.render("Presentation.Code.PresentationClass_description"))&lt;/dt&gt;
+    &lt;dd&gt;
+      This space can be used for documenting the presentation and or the approval of the 
+      slides and/or proceedings.
+    &lt;/dd&gt;
+  &lt;/dl&gt;
+  {{/html}}
+{{/velocity}}</content>
+</xwikidoc>

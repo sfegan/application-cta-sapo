@@ -1,0 +1,331 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="Presentation.Code.SendCreationNotificationScriptComponent" locale="">
+  <web>Presentation.Code</web>
+  <name>SendCreationNotificationScriptComponent</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title>SendCreationNotificationScriptComponent</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{info}}
+  This page contains ScriptComponentClass object to send notifications when new PresentationClass objects are created.
+{{/info}}</content>
+  <object>
+    <name>Presentation.Code.SendCreationNotificationScriptComponent</name>
+    <number>0</number>
+    <className>XWiki.ScriptComponentClass</className>
+    <guid>b963adf8-fce8-42dc-b4b1-9fb014e17c11</guid>
+    <class>
+      <name>XWiki.ScriptComponentClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <scope>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>scope</name>
+        <number>2</number>
+        <prettyName>Scope</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>|wiki|global|user</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </scope>
+      <script_content>
+        <disabled>0</disabled>
+        <editor>Text</editor>
+        <name>script_content</name>
+        <number>3</number>
+        <prettyName>Script</prettyName>
+        <rows>20</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </script_content>
+      <script_language>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>script_language</name>
+        <number>1</number>
+        <prettyName>Language</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>groovy|python</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </script_language>
+    </class>
+    <property>
+      <scope>wiki</scope>
+    </property>
+    <property>
+      <script_content>import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
+
+import org.slf4j.Logger;
+import org.xwiki.bridge.event.DocumentCreatedEvent;
+import org.xwiki.component.annotation.Component;
+import org.xwiki.observation.AbstractEventListener;
+import org.xwiki.observation.event.Event;
+import org.xwiki.model.reference.DocumentReference;
+import org.xwiki.model.reference.LocalDocumentReference;
+import org.xwiki.model.reference.DocumentReferenceResolver;
+import org.xwiki.user.group.GroupManager;
+import org.xwiki.user.UserProperties;
+import org.xwiki.user.UserPropertiesResolver;
+import org.xwiki.user.UserReference;
+import org.xwiki.user.UserReferenceResolver;
+import org.xwiki.mail.SessionFactory;
+import org.xwiki.mail.MimeMessageFactory;
+import org.xwiki.mail.MailListener;
+import org.xwiki.mail.MailSender;
+import org.xwiki.component.manager.ComponentManager;
+
+import com.xpn.xwiki.XWiki;
+import com.xpn.xwiki.XWikiContext;
+import com.xpn.xwiki.doc.XWikiDocument;
+import com.xpn.xwiki.objects.BaseObject;
+
+@Component
+@Named(PresentationCreationNotificationScriptListener.LISTENER_NAME)
+@Singleton
+public class PresentationCreationNotificationScriptListener extends AbstractEventListener
+{
+  final static String LISTENER_NAME = "presentationCreationNotificationScript";
+
+  /**
+   * The space where the presentation code is located.
+   */
+  public static final List&lt;String&gt; PRESENTATION_CODE_SPACE = Arrays.asList("Presentation", "Code");
+
+  private static final LocalDocumentReference PRESENTATION_CLASS_REFERENCE =
+    new LocalDocumentReference(PRESENTATION_CODE_SPACE, "PresentationClass");
+
+  private static final LocalDocumentReference MAIL_TEMPLATE_REFERENCE =
+    new LocalDocumentReference(PRESENTATION_CODE_SPACE, "PresentationCreationMailTemplate");
+
+  /**
+   * The space where the groups are located.
+   */
+  public static final List&lt;String&gt; GROUP_SPACE = Arrays.asList("XWiki");
+
+  private static final LocalDocumentReference PCN_GROUP_REFERENCE =
+    new LocalDocumentReference(GROUP_SPACE, "PresentationCreationNotificationGroup");
+
+  @Inject
+  protected Logger logger;
+
+  @Inject
+  GroupManager groupManager;
+
+  @Inject
+  @Named("document")
+  private UserReferenceResolver&lt;DocumentReference&gt; userReferenceResolver;
+
+  @Inject
+  private UserReferenceResolver&lt;String&gt; userReferenceStringResolver;
+
+  @Inject
+  private UserPropertiesResolver userPropertiesResolver;
+
+  @Inject
+  private DocumentReferenceResolver&lt;String&gt; documentReferenceResolver;
+
+  @Inject
+  private SessionFactory sessionFactory;
+
+  @Inject
+  @Named("template")
+  private MimeMessageFactory&lt;MimeMessage&gt; templateMimeMessageFactory;
+
+  @Inject
+  private MailSender mailSender;
+
+  @Inject
+  private ComponentManager componentManager;
+
+  public PresentationCreationNotificationScriptListener()
+  {
+    super(LISTENER_NAME, new DocumentCreatedEvent());
+  }
+
+  @Override
+  public void onEvent(Event event, Object source, Object data)
+  {
+    XWikiDocument sourceDocument = (XWikiDocument) source;
+    XWikiContext xwikiContext = (XWikiContext) data;
+
+    BaseObject presentation = sourceDocument.getXObject(PRESENTATION_CLASS_REFERENCE);
+    if (presentation != null) {
+      logger.debug("Presentation title: {}", sourceDocument.getTitle());
+
+      List&lt;String&gt; emailAddressList = new LinkedList&lt;String&gt;();
+
+      // Make list of email addresses
+      DocumentReference pcnGroupReference = 
+        new DocumentReference(PCN_GROUP_REFERENCE, xwikiContext.getWikiReference());
+      Collection&lt;DocumentReference&gt; userDocRefList = 
+        groupManager.getMembers(pcnGroupReference, true);
+      for (DocumentReference userDocRef : userDocRefList) {
+        UserProperties userProperties = 
+          userPropertiesResolver.resolve(userReferenceResolver.resolve(userDocRef));
+        String email = userProperties.email;
+        emailAddressList.add(email);
+      }
+
+      if(emailAddressList.isEmpty()) {
+        return;
+      }
+
+      List&lt;String&gt; ccAddressList = new LinkedList&lt;String&gt;();
+
+      UserReference creatorReference = sourceDocument.getAuthors().getCreator();
+      UserProperties creatorProperties = userPropertiesResolver.resolve(creatorReference);
+      String creatorName = "Unknown";
+      if(creatorProperties != null) {
+        creatorName = makeName(creatorProperties.getFirstName(), creatorProperties.getLastName());
+        String email = creatorProperties.email;
+        if(email!=null &amp;&amp; !email.isEmpty()) {
+          ccAddressList.add(email);
+        }
+        logger.debug("Presentation creator: {}", creatorName);
+      }
+
+      // Gather author names and email addresses (for cc)
+      List&lt;String&gt; authorNameList = new LinkedList&lt;String&gt;();
+      if( !presentation.getStringValue("presenters").isEmpty() ) {
+        String[] presenterStringRefList = 
+          presentation.getStringValue("presenters").split(",");
+        for (String presenterStringRef : presenterStringRefList) {
+          UserReference presenterReference = 
+            userReferenceStringResolver.resolve(presenterStringRef);
+          UserProperties presenterProperties = 
+            userPropertiesResolver.resolve(presenterReference);
+          if(presenterProperties != null) {
+            String email = presenterProperties.email;
+            if(email!=null &amp;&amp; !email.isEmpty()) {
+              ccAddressList.add(email);
+            }
+            authorNameList.add(makeName(presenterProperties.getFirstName(), presenterProperties.getLastName()));
+          }
+        }
+      }
+
+      Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();
+      parameters.put("language", xwikiContext.getLocale().toLanguageTag());
+      parameters.put("to", String.join(',',emailAddressList));
+      if( !ccAddressList.isEmpty() ) {
+        parameters.put("cc", String.join(',',ccAddressList));
+      }
+
+      String eventTitle = null;
+      String eventURL = null;
+      if( !presentation.getStringValue("event").isEmpty() ) {
+        DocumentReference eventDocRef = 
+          documentReferenceResolver.resolve(presentation.getStringValue("event"), xwikiContext.getWikiReference());
+        XWikiDocument eventDoc = xwikiContext.getWiki().getDocument(eventDocRef, xwikiContext);
+        if( eventDoc != null ) {
+          eventTitle = eventDoc.getTitle();
+          eventURL = eventDoc.getExternalURL("view", xwikiContext);
+          logger.debug("Presentation event: {}", eventTitle);
+        }
+      }
+
+      Map&lt;String, Object&gt; velocityVariables = new HashMap&lt;&gt;();
+      velocityVariables.put("documentReference", sourceDocument.getDocumentReference());
+      velocityVariables.put("url", sourceDocument.getExternalURL("view", xwikiContext));
+      velocityVariables.put("pageType", "presentation");
+      velocityVariables.put("title", sourceDocument.getTitle());
+      velocityVariables.put("creatorName", creatorName);
+      velocityVariables.put("type", presentation.getStringValue("type"));
+      velocityVariables.put("workingGroup", presentation.getStringValue("workingGroup"));
+      velocityVariables.put("presenterReferences", presentation.getStringValue("presenters"));
+      velocityVariables.put("presenterNames", authorNameList);
+      velocityVariables.put("abstract", presentation.getStringValue("abstract"));
+      velocityVariables.put("eventTitle", eventTitle);
+      velocityVariables.put("eventURL", eventURL);
+      parameters.put("velocityVariables", velocityVariables);
+
+      Session session = sessionFactory.create(Collections.emptyMap());
+
+      DocumentReference mailTemplateReference =
+        new DocumentReference(MAIL_TEMPLATE_REFERENCE, xwikiContext.getWikiReference());
+
+      MimeMessage message =
+        templateMimeMessageFactory.createMessage(mailTemplateReference, parameters);
+
+      mailSender.sendAsynchronously(Collections.singleton(message), session,
+        componentManager.getInstance(MailListener.class, "memory"));
+    }
+  }
+
+  private String makeName(String firstName, String lastName) {
+    String name = "";
+    if(firstName &amp;&amp; !firstName.isEmpty()) {
+      if(lastName &amp;&amp; !lastName.isEmpty()) {
+        name = firstName + " " + lastName;
+      } else {
+        name = firstName;
+      }
+    } else if (lastName &amp;&amp; !lastName.isEmpty()) {
+      name = lastName;
+    }
+    return name;
+  }
+}
+</script_content>
+    </property>
+    <property>
+      <script_language>groovy</script_language>
+    </property>
+  </object>
+</xwikidoc>

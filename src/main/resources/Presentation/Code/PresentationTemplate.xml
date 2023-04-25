@@ -1,0 +1,555 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="Presentation.Code.PresentationTemplate" locale="">
+  <web>Presentation.Code</web>
+  <name>PresentationTemplate</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>PresentationClass</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content/>
+  <object>
+    <name>Presentation.Code.PresentationTemplate</name>
+    <number>0</number>
+    <className>Presentation.Code.PresentationClass</className>
+    <guid>02f8cf2b-0ada-4a9c-8239-d9458363d194</guid>
+    <class>
+      <name>Presentation.Code.PresentationClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <absApprovalSAPO>
+        <cache>0</cache>
+        <customDisplay/>
+        <defaultValue>pending</defaultValue>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText/>
+        <hint/>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>absApprovalSAPO</name>
+        <number>12</number>
+        <picker>1</picker>
+        <prettyName>Abstract approval by SAPO</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <sort/>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <values>pending=Pending|approved=Approved|rejected=Rejected</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </absApprovalSAPO>
+      <absApprovalSWG>
+        <cache>0</cache>
+        <customDisplay/>
+        <defaultValue>pending</defaultValue>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText/>
+        <hint/>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>absApprovalSWG</name>
+        <number>11</number>
+        <picker>1</picker>
+        <prettyName>Abstract approval by SWG</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <sort/>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <values>pending=Pending|approved=Approved|rejected=Rejected</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </absApprovalSWG>
+      <abstract>
+        <contenttype>---</contenttype>
+        <customDisplay>{{include reference="Presentation.Code.AbstractDisplayer"/}}</customDisplay>
+        <disabled>0</disabled>
+        <editor>---</editor>
+        <hint/>
+        <name>abstract</name>
+        <number>2</number>
+        <picker>0</picker>
+        <prettyName>Abstract</prettyName>
+        <rows>10</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </abstract>
+      <approvalBy>
+        <cache>0</cache>
+        <customDisplay/>
+        <defaultValue>both</defaultValue>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText/>
+        <hint/>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>approvalBy</name>
+        <number>10</number>
+        <picker>1</picker>
+        <prettyName>Approval by</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <sort/>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <values>both=SWG &amp; SAPO|swg=SWG|sapo=SAPO</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </approvalBy>
+      <description>
+        <customDisplay>{{include reference="AppWithinMinutes.Content"/}}</customDisplay>
+        <disabled>0</disabled>
+        <hint/>
+        <name>description</name>
+        <number>3</number>
+        <prettyName>Description</prettyName>
+        <script/>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.ComputedFieldClass</classType>
+      </description>
+      <event>
+        <cache>0</cache>
+        <classname>Event.Code.EventClass</classname>
+        <customDisplay/>
+        <defaultValue/>
+        <disabled>0</disabled>
+        <displayType>input</displayType>
+        <freeText/>
+        <hint/>
+        <idField>doc.fullName</idField>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>event</name>
+        <number>8</number>
+        <picker>1</picker>
+        <prettyName>Event</prettyName>
+        <relationalStorage>1</relationalStorage>
+        <separator> </separator>
+        <separators/>
+        <size>1</size>
+        <sort>none</sort>
+        <sql/>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <valueField>doc.title</valueField>
+        <classType>com.xpn.xwiki.objects.classes.DBListClass</classType>
+      </event>
+      <hasProceedings>
+        <customDisplay/>
+        <defaultValue>0</defaultValue>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType/>
+        <hint/>
+        <name>hasProceedings</name>
+        <number>17</number>
+        <prettyName>Has Proceedings</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </hasProceedings>
+      <presenters>
+        <cache>0</cache>
+        <customDisplay>{{include reference="Presentation.Code.UsersDisplayer"/}}</customDisplay>
+        <defaultValue/>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText/>
+        <hint/>
+        <largeStorage>0</largeStorage>
+        <multiSelect>1</multiSelect>
+        <name>presenters</name>
+        <number>5</number>
+        <picker>0</picker>
+        <prettyName>Presenters</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators/>
+        <size>6</size>
+        <sort>none</sort>
+        <unmodifiable>0</unmodifiable>
+        <usesList>1</usesList>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.UsersClass</classType>
+      </presenters>
+      <procApprovalSAPO>
+        <cache>0</cache>
+        <customDisplay/>
+        <defaultValue>pending</defaultValue>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText/>
+        <hint/>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>procApprovalSAPO</name>
+        <number>16</number>
+        <picker>1</picker>
+        <prettyName>Proceedings approval by SAPO</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <sort/>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <values>pending=Pending|approved=Approved|rejected=Rejected</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </procApprovalSAPO>
+      <procApprovalSWG>
+        <cache>0</cache>
+        <customDisplay/>
+        <defaultValue>pending</defaultValue>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText/>
+        <hint/>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>procApprovalSWG</name>
+        <number>15</number>
+        <picker>1</picker>
+        <prettyName>Proceedings approval by SWG</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <sort/>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <values>pending=Pending|approved=Approved|rejected=Rejected</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </procApprovalSWG>
+      <proceedings>
+        <customDisplay>{{include reference="Presentation.Code.SlidesDisplayer"/}}</customDisplay>
+        <disabled>0</disabled>
+        <hint/>
+        <name>proceedings</name>
+        <number>18</number>
+        <picker>0</picker>
+        <prettyName>Proceedings</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </proceedings>
+      <proceedingsArxiv>
+        <customDisplay/>
+        <disabled>0</disabled>
+        <hint>2303.98765</hint>
+        <name>proceedingsArxiv</name>
+        <number>19</number>
+        <picker>0</picker>
+        <prettyName>arXiv</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </proceedingsArxiv>
+      <proceedingsDOI>
+        <customDisplay/>
+        <disabled>1</disabled>
+        <hint/>
+        <name>proceedingsDOI</name>
+        <number>20</number>
+        <picker>1</picker>
+        <prettyName>DOI</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </proceedingsDOI>
+      <reviewers>
+        <cache>0</cache>
+        <customDisplay>{{include reference="Presentation.Code.UsersDisplayer"/}}</customDisplay>
+        <defaultValue/>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText/>
+        <hint/>
+        <largeStorage>0</largeStorage>
+        <multiSelect>1</multiSelect>
+        <name>reviewers</name>
+        <number>6</number>
+        <picker>0</picker>
+        <prettyName>Reviewers</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators/>
+        <size>6</size>
+        <sort>none</sort>
+        <unmodifiable>0</unmodifiable>
+        <usesList>1</usesList>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.UsersClass</classType>
+      </reviewers>
+      <slides>
+        <customDisplay>{{include reference="Presentation.Code.SlidesDisplayer"/}}</customDisplay>
+        <disabled>0</disabled>
+        <hint/>
+        <name>slides</name>
+        <number>4</number>
+        <picker>0</picker>
+        <prettyName>Slides</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </slides>
+      <status>
+        <cache>0</cache>
+        <customDisplay/>
+        <defaultValue/>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText/>
+        <hint/>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>status</name>
+        <number>7</number>
+        <picker>0</picker>
+        <prettyName>Status</prettyName>
+        <relationalStorage>1</relationalStorage>
+        <separator> </separator>
+        <separators> ,|</separators>
+        <size>1</size>
+        <sort>none</sort>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <values>draft=Draft|submitted=Submitted|accepted=Accepted|refused=Refused|withdrawn=Withdrawn</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </status>
+      <talkApprovalSAPO>
+        <cache>0</cache>
+        <customDisplay/>
+        <defaultValue>pending</defaultValue>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText/>
+        <hint/>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>talkApprovalSAPO</name>
+        <number>14</number>
+        <picker>1</picker>
+        <prettyName>Talk approval by SAPO</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <sort/>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <values>pending=Pending|approved=Approved|rejected=Rejected</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </talkApprovalSAPO>
+      <talkApprovalSWG>
+        <cache>0</cache>
+        <customDisplay/>
+        <defaultValue>pending</defaultValue>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText/>
+        <hint/>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>talkApprovalSWG</name>
+        <number>13</number>
+        <picker>1</picker>
+        <prettyName>Talk approval by SWG</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <sort/>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <values>pending=Pending|approved=Approved|rejected=Rejected</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </talkApprovalSWG>
+      <title>
+        <customDisplay>{{include reference="AppWithinMinutes.Title"/}}</customDisplay>
+        <disabled>0</disabled>
+        <hint/>
+        <name>title</name>
+        <number>1</number>
+        <prettyName>Title</prettyName>
+        <script/>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.ComputedFieldClass</classType>
+      </title>
+      <type>
+        <cache>0</cache>
+        <customDisplay/>
+        <defaultValue/>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText/>
+        <hint/>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>type</name>
+        <number>9</number>
+        <picker>1</picker>
+        <prettyName>Presentation type</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <sort/>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <values>invited=Invited talk|talk=Contributed talk|poster=Poster</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </type>
+      <workingGroup>
+        <cache>0</cache>
+        <customDisplay>{{include reference="Presentation.Code.WorkingGroupDisplayer"/}}</customDisplay>
+        <defaultValue/>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText/>
+        <hint/>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>workingGroup</name>
+        <number>21</number>
+        <picker>1</picker>
+        <prettyName>Working Group</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <sort/>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <values>aswg=ASWG|galactic=Galactic|cosmicRay=Cosmic Ray|extragalactic=Extragalactic|transient=Transient|dmep=DMEP|interferometry=Interferometry|lst=LST|mst=MST|nectarCAM=NectarCAM|flashCam=FlashCam|sct=SCT|sst=SST</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </workingGroup>
+    </class>
+    <property>
+      <absApprovalSAPO>pending</absApprovalSAPO>
+    </property>
+    <property>
+      <absApprovalSWG>pending</absApprovalSWG>
+    </property>
+    <property>
+      <abstract/>
+    </property>
+    <property>
+      <approvalBy>both</approvalBy>
+    </property>
+    <property>
+      <event/>
+    </property>
+    <property>
+      <hasProceedings/>
+    </property>
+    <property>
+      <presenters/>
+    </property>
+    <property>
+      <procApprovalSAPO>pending</procApprovalSAPO>
+    </property>
+    <property>
+      <procApprovalSWG>pending</procApprovalSWG>
+    </property>
+    <property>
+      <proceedings/>
+    </property>
+    <property>
+      <proceedingsArxiv/>
+    </property>
+    <property>
+      <proceedingsDOI/>
+    </property>
+    <property>
+      <reviewers/>
+    </property>
+    <property>
+      <slides/>
+    </property>
+    <property>
+      <status>draft</status>
+    </property>
+    <property>
+      <talkApprovalSAPO>pending</talkApprovalSAPO>
+    </property>
+    <property>
+      <talkApprovalSWG>pending</talkApprovalSWG>
+    </property>
+    <property>
+      <type/>
+    </property>
+    <property>
+      <workingGroup/>
+    </property>
+  </object>
+</xwikidoc>
