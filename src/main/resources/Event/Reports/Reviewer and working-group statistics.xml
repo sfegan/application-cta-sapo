@@ -1,0 +1,154 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="Event.Reports.Reviewer and working-group statistics" locale="">
+  <web>Event.Reports</web>
+  <name>Reviewer and working-group statistics</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>Event.Reports.WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title>Reviewer and working-group statistics</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{velocity output="false"}}
+  #set( $role = $xcontext.getRequest().getParameter('role') )
+  #if( "$!role" != 'presenter' )
+    #set ( $role = 'reviewer' )
+  #end
+
+#set( $query = "FROM doc.object(Event.Code.EventClass) AS evt WHERE evt.startDate&gt;=:sdate ORDER BY evt.startDate DESC" )
+  #set( $currentYear = $datetool.date.year + 1900 )
+  #set( $startYear = $currentYear - 5 )
+  #set( $startDate = $datetool.toDate('yyyy-MM-dd',"${startYear}-01-01") )
+  #set( $eventDocRefList = $services.query.xwql($query).bindValue('sdate',$startDate).execute() )
+  #set( $reviewerCount = {} )
+  #set( $swgCount = {} )
+
+  #set( $startYear = $currentYear + 1000 )
+  #set( $query = 'FROM doc.object(Presentation.Code.PresentationClass) as presentation WHERE presentation.event = :event' )
+  #foreach( $eventDocRef in $eventDocRefList )
+    #if( $eventDocRef != 'Event.Code.EventTemplate' )
+      #set( $eventDoc = $xwiki.getDocument($eventDocRef) )
+      #set( $event = $eventDoc.getObject("Event.Code.EventClass") )
+      #set( $eventYear = $event.getValue('startDate').year + 1900 )
+      #foreach( $presentationDocRef in $services.query.xwql($query).bindValue('event',$eventDoc.fullName).execute() )
+        #set( $presentationDoc = $xwiki.getDocument($presentationDocRef) )
+        #set( $presentation = $presentationDoc.getObject("Presentation.Code.PresentationClass"))
+        #set( $value = $presentation.getValue("${role}s") )
+        #if( "$!value" != "" )
+          #set( $startYear = $mathtool.min($startYear, $eventYear) )
+          #foreach( $r in $value.split(',') )
+            #set( $rcounts = $reviewerCount.getOrDefault($r, { }) )
+            #set( $discard = $rcounts.put($eventYear, $rcounts.getOrDefault($eventYear, 0) + 1) )
+            #set( $discard = $reviewerCount.put($r, $rcounts) )
+          #end
+        #end
+        #if( "$!presentation.getValue('workingGroup')" != "" )
+          #set( $wg = $presentation.getValue('workingGroup') )
+          #set( $wgcounts = $swgCount.getOrDefault($wg, { }) )
+          #set( $discard = $wgcounts.put($eventYear, $wgcounts.getOrDefault($eventYear, 0) + 1) )
+          #set( $discard = $swgCount.put($wg, $wgcounts) )
+        #end
+      #end
+    #end
+  #end
+
+  #set( $reviewerList = [] )
+  #foreach( $r in $reviewerCount.keySet() )
+    #set( $sortKeyString = "" )
+    #foreach($year in [$startYear..$currentYear])
+      #set( $n = 9999 - $reviewerCount.getOrDefault($r, { }).getOrDefault($year,0) )
+      #set( $sortKeyString = "$numbertool.integer($n)$sortKeyString" )
+    #end
+    #set( $discard = $reviewerList.add({ "ref": $r, "key": $sortKeyString }) )
+  #end
+
+  #set( $urlBase = $xwiki.getURL('Event.Reports.My presentations','view') )
+{{/velocity}}
+
+{{velocity}}
+  {{html}}
+    &lt;table class="table table-striped"&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;
+          &lt;th&gt;$role.substring(0,1).toUpperCase()$role.substring(1)&lt;/th&gt;
+          #foreach($year in [$startYear..$currentYear])
+            &lt;th&gt;$year&lt;/th&gt;
+          #end
+          &lt;th&gt;Total&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        #foreach( $rk in $collectiontool.sort($reviewerList,'key') )
+          #set( $r = $rk.ref )
+          &lt;tr&gt;
+            &lt;td&gt;#displayUser($r)&lt;/td&gt;
+            #set( $n_total = 0 )
+            #foreach($year in [$startYear..$currentYear])
+              #set( $n_total = $n_total + $reviewerCount.getOrDefault($r, { }).getOrDefault($year,0) )
+              #set( $n = $reviewerCount.getOrDefault($r, { }).getOrDefault($year,"") )
+              #if( "$n" != "" )
+                &lt;td&gt;&lt;a href="${urlBase}?user=${escapetool.url($r)}&amp;role=$role#$year"&gt;$n&lt;/a&gt;&lt;/td&gt;
+              #else
+                &lt;td/&gt;
+              #end
+            #end
+            &lt;td&gt;&lt;a href="${urlBase}?user=${escapetool.url($r)}&amp;role=$role"&gt;$n_total&lt;/a&gt;&lt;/td&gt;
+          &lt;/tr&gt;
+        #end
+      &lt;/tbody&gt;
+      #if( $role == 'reviewer' )
+        &lt;thead&gt;
+          &lt;tr"&gt;
+            &lt;th style="padding-top:32px&gt;Working group&lt;/th&gt;
+            #foreach($year in [$startYear..$currentYear])
+              &lt;th&gt;$year&lt;/th&gt;
+            #end
+            &lt;th&gt;Total&lt;/th&gt;
+          &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+          #foreach($wg in $swgCount.keySet())
+            &lt;tr&gt;
+              &lt;td&gt;$services.localization.render("Presentation.Code.PresentationClass_workingGroup_$wg")&lt;/td&gt;
+              #set( $n_total = 0 )
+              #foreach($year in [$startYear..$currentYear])
+                #set( $n_total = $n_total + $swgCount.getOrDefault($wg, { }).getOrDefault($year,0) )
+                &lt;td&gt;$swgCount.getOrDefault($wg, { }).getOrDefault($year,"")&lt;/td&gt;
+              #end
+              &lt;td&gt;$n_total&lt;/td&gt;
+            &lt;/tr&gt;
+          #end
+        &lt;/tbody&gt;
+      #end
+    &lt;/table&gt;
+
+  {{/html}}
+{{/velocity}}</content>
+</xwikidoc>
