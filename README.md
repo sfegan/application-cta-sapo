@@ -1,4 +1,4 @@
-# application-cta-sapo
+# application-ctac-sapo
 
 <img src="assets/img_presenter_0.png" width="200px" height="200px" alt="Logo: person presenting at a confgerence"/>
 

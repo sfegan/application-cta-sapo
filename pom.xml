@@ -26,7 +26,7 @@
     <version>14.10.8</version>
   </parent>
   <groupId>org.xwiki.contrib</groupId>
-  <artifactId>application-cta-sapo</artifactId>
+  <artifactId>application-ctac-sapo</artifactId>
   <version>1.1</version>
   <name>CTA SAPO conferences and papers application</name>
   <packaging>xar</packaging>
