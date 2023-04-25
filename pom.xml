@@ -47,6 +47,31 @@
       <name>Full Name of developer N as registered on xwiki.org, e.g. Vincent Massol</name>
     </developer>
   </developers>-->
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.xwiki.commons</groupId>
+        <artifactId>xwiki-commons-tool-xar-plugin</artifactId>
+        <configuration>
+          <entries>
+            <entry>
+              <document>Event.WebPreferences</document>
+              <type>configuration</type>
+            </entry>
+            <entry>
+              <document>Presentation.WebPreferences</document>
+              <type>configuration</type>
+            </entry>
+          </entries>
+          <visibleTechnicalPages>
+            <visibleTechnicalPage>.*/Event/WebHome\.xml</visibleTechnicalPage>
+            <visibleTechnicalPage>.*/Reports/*\.xml</visibleTechnicalPage>
+            <visibleTechnicalPage>.*/Presentation/WebHome\.xml</visibleTechnicalPage>
+          </visibleTechnicalPages>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>  
   <properties>
     <!-- Don't check for API backward-compatibility here since there's no Java code. -->
     <xwiki.revapi.skip>true</xwiki.revapi.skip>
