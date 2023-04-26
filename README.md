@@ -9,6 +9,6 @@ Based on the XWiki "Events" application: https://github.com/xwiki-contrib/applic
 Supports
   - Conferences with URL, dates, location abstract and proceedings deadlines
   - Presentations associated with conferences, with author(s), reviewer(s), status, type, abstract, slides, proceedings, approvals
-  - Notification of new presentation by email (requires [XWiki ScriptComponent extention](https://extensions.xwiki.org/xwiki/bin/view/Extension/Script%20Component/) be installed)
+  - Notification of new presentation by email (requires [XWiki ScriptComponent extension](https://extensions.xwiki.org/xwiki/bin/view/Extension/Script%20Component/) be installed)
   - Summary reports giving number of presentations per year, per reviewer, and many more
   - Also includes SAPO navigation panel based on XWiki "Applications" panel
