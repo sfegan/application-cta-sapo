@@ -6,3 +6,8 @@ CTAC SAPO XWiki application for conferences and papers
 
 Based on the XWiki "Events" application: https://github.com/xwiki-contrib/application-events
 
+Supports
+  - Conferences with URL, dates, location abstract and proceedings deadlines
+  - Presentations associated with conferences, with author(s), reviewer(s), status, type, abstract, slides, proceedings, approvals
+  - Summary reports giving number of presentations per year, per reviewer, and many more
+  - Also includes SAPO navigation panel based on XWiki "Applications" panel
