@@ -76,6 +76,11 @@
     <xwiki.extension.category>application</xwiki.extension.category>
   </properties>
   <dependencies>
+    <!--<dependency>
+      <groupId>org.xwiki.contrib</groupId>
+      <artifactId>scriptcomponent</artifactId>
+      <version>1.0</version>
+    </dependency>-->
     <dependency>
       <groupId>org.xwiki.contrib</groupId>
       <artifactId>xwiki-macro-map</artifactId>
