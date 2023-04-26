@@ -31,22 +31,17 @@
   <name>CTA SAPO conferences and papers application</name>
   <packaging>xar</packaging>
   <description>Application to manage CTA conferences, presentations, papers and authorship</description>
-<!--  <scm>
-    <connection>scm:git:git://github.com/xwiki-contrib/(your extension id).git</connection>
-    <developerConnection>scm:git:git@github.com:xwiki-contrib/(your extension id).git</developerConnection>
-    <url>https://github.com/xwiki-contrib/(your extension id)</url>
+  <scm>
+    <connection>scm:git:git://github.com/sfegan/application-ctac-sapo.git</connection>
+    <developerConnection>scm:git:git@github.com:sfegan/application-ctac-sapo.git</developerConnection>
+    <url>https://github.com/sfegan/application-ctac-sapo</url>
   </scm>
   <developers>
     <developer>
-      <id>scm id of developer 1</id>
-      <name>Full Name of developer 1 as registered on xwiki.org, e.g. Vincent Massol</name>
+      <id>sfegan</id>
+      <name>Stephen Fegan</name>
     </developer>
-    ...
-    <developer>
-      <id>scm id of developer N</id>
-      <name>Full Name of developer N as registered on xwiki.org, e.g. Vincent Massol</name>
-    </developer>
-  </developers>-->
+  </developers>
   <build>
     <plugins>
       <plugin>
