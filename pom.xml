@@ -57,11 +57,16 @@
               <document>Presentation.WebPreferences</document>
               <type>configuration</type>
             </entry>
+            <entry>
+              <document>AffiliationAddress.WebPreferences</document>
+              <type>configuration</type>
+            </entry>
           </entries>
           <visibleTechnicalPages>
             <visibleTechnicalPage>.*/Event/WebHome\.xml</visibleTechnicalPage>
-            <visibleTechnicalPage>.*/Reports/*\.xml</visibleTechnicalPage>
+            <visibleTechnicalPage>.*/Event/Reports/.*\.xml</visibleTechnicalPage>
             <visibleTechnicalPage>.*/Presentation/WebHome\.xml</visibleTechnicalPage>
+            <visibleTechnicalPage>.*/AffiliationAddress/WebHome\.xml</visibleTechnicalPage>
           </visibleTechnicalPages>
         </configuration>
       </plugin>
