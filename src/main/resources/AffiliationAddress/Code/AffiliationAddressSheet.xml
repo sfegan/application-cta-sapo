@@ -124,6 +124,7 @@
 
 === Affiliated users ===
 #set ($columnsProperties = {
+  'affiliationAddressRef': {"type": "hidden"},
   'userAccount': {"displayName":"User","html":"true"},
   'doc.location': {"displayName":"Location"},
   '_actions': {"displayName":"Actions","sortable":false,"filterable":false,"html":true,"actions":["edit","delete"]}
@@ -137,7 +138,7 @@
   'defaultOrder': 'asc',
   'extraParams': "&amp;location=$escapetool.url('UserAffiliation.')&amp;affiliationAddressRef=$escapetool.url(${doc.fullName})&amp;userAccount_class=UserAffiliation.Code.UserAffiliationClass"
 })
-#set ($columns = ['userAccount', 'doc.location', '_actions'])
+#set ($columns = ['affiliationAddressRef', 'userAccount', 'doc.location', '_actions'])
 #livetable('useraffiliations' $columns $columnsProperties $options)
 
 {{/velocity}}</content>
