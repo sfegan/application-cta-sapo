@@ -20,8 +20,8 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<xwikidoc version="1.5" reference="AffiliationAddress.WebHome" locale="">
-  <web>AffiliationAddress</web>
+<xwikidoc version="1.5" reference="UserAffiliation.WebHome" locale="">
+  <web>UserAffiliation</web>
   <name>WebHome</name>
   <language/>
   <defaultLanguage/>
@@ -31,37 +31,37 @@
   <author>xwiki:XWiki.Admin</author>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <version>1.1</version>
-  <title>AffiliationAddress</title>
+  <title>UserAffiliation</title>
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
-  <content>{{children/}}
-
-{{velocity}}
+  <content>{{velocity}}
 #set ($columnsProperties = {
-  'doc.title': {"displayName":"Short Name","link":"view"},
-  'country': {},
-  'publicationAddress': {},
-  '_actions': {"sortable":false,"filterable":false,"html":true,"actions":["edit","delete"]}
+  'userProfile': {"filterable":false,"html":true,"sortable":false,"displayName":"User profile"},
+  'lastName': {"html":true,"displayName":"Last Name"},
+  'firstName': {"html":true,"displayName":"First Name"},
+  'signature': {"html":true,"displayName":"Signature"},
+  'doc.name': {"html":true, "link":true},
+  '_actions': {"sortable":false,"filterable":false,"html":true,"actions":["edit"]}
 })
 #set ($options = {
-  'className': 'AffiliationAddress.Code.AffiliationAddressClass',
-  'translationPrefix': 'affiliationaddress.livetable.',
+  'className': 'UserAffiliation.Code.UserAffiliationClass',
+  'translationPrefix': 'useraffiliation.livetable.',
   'tagCloud': true,
   'rowCount': 15,
   'maxPages': 10,
-  'selectedColumn': 'doc.title',
+  'selectedColumn': 'userProfile',
   'defaultOrder': 'asc'
 })
-#set ($columns = ['doc.title', 'country', 'publicationAddress', '_actions'])
-#livetable('affiliationaddress' $columns $columnsProperties $options)
+#set ($columns = ['doc.name', 'userProfile', 'lastName','firstName','signature', '_actions'])
+#livetable('useraffiliation' $columns $columnsProperties $options)
 {{/velocity}}</content>
   <object>
-    <name>AffiliationAddress.WebHome</name>
+    <name>UserAffiliation.WebHome</name>
     <number>0</number>
     <className>AppWithinMinutes.LiveTableClass</className>
-    <guid>a155ddc9-d5ca-4ebb-9b21-1e38a07c7708</guid>
+    <guid>d383db41-ab94-4e83-9e60-be9bd365817f</guid>
     <class>
       <name>AppWithinMinutes.LiveTableClass</name>
       <customClass/>
@@ -127,10 +127,10 @@
       </description>
     </class>
     <property>
-      <class>AffiliationAddress.Code.AffiliationAddressClass</class>
+      <class>UserAffiliation.Code.UserAffiliationClass</class>
     </property>
     <property>
-      <columns>shortName country publicationAddress _actions</columns>
+      <columns>userProfile doc.location doc.date doc.author _actions</columns>
     </property>
     <property>
       <dataSpace/>
@@ -140,10 +140,10 @@
     </property>
   </object>
   <object>
-    <name>AffiliationAddress.WebHome</name>
+    <name>UserAffiliation.WebHome</name>
     <number>0</number>
     <className>XWiki.UIExtensionClass</className>
-    <guid>45fa915f-05f0-4f90-9a2a-ae5c11a35b11</guid>
+    <guid>a87542e8-b4d9-4d03-a4a6-05e39671a8e0</guid>
     <class>
       <name>XWiki.UIExtensionClass</name>
       <customClass/>
@@ -271,12 +271,12 @@
       <extensionPointId>org.xwiki.platform.panels.Applications</extensionPointId>
     </property>
     <property>
-      <name>platform.panels.AffiliationAddressApplication</name>
+      <name>platform.panels.UserAffiliationApplication</name>
     </property>
     <property>
-      <parameters>label=AffiliationAddress
-target=AffiliationAddress.WebHome
-icon=icon:building</parameters>
+      <parameters>label=UserAffiliation
+target=UserAffiliation.WebHome
+icon=icon:flag</parameters>
     </property>
     <property>
       <scope>wiki</scope>

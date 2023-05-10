@@ -61,12 +61,16 @@
               <document>AffiliationAddress.WebPreferences</document>
               <type>configuration</type>
             </entry>
+            <entry>
+              <document>UserAffiliation.WebPreferences</document>
+              <type>configuration</type>
+            </entry>
           </entries>
           <visibleTechnicalPages>
             <visibleTechnicalPage>.*/Event/WebHome\.xml</visibleTechnicalPage>
             <visibleTechnicalPage>.*/Event/Reports/.*\.xml</visibleTechnicalPage>
             <visibleTechnicalPage>.*/Presentation/WebHome\.xml</visibleTechnicalPage>
-            <visibleTechnicalPage>.*/AffiliationAddress/WebHome\.xml</visibleTechnicalPage>
+            <visibleTechnicalPage>.*/UserAffiliation/WebHome\.xml</visibleTechnicalPage>
           </visibleTechnicalPages>
         </configuration>
       </plugin>

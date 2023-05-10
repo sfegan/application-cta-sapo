@@ -1,0 +1,439 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="UserAffiliation.Code.UserAffiliationSheet" locale="">
+  <web>UserAffiliation.Code</web>
+  <name>UserAffiliationSheet</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>UserAffiliationClass</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{velocity}}
+#set ($object = $doc.getObject('UserAffiliation.Code.UserAffiliationClass'))
+#if (!$object)
+  #set ($messageKey = 'useraffiliation.sheet.description')
+  #set ($messageType = 'info')
+  #if ($doc.documentReference.name != 'UserAffiliationSheet')
+    #set ($messageKey = 'useraffiliation.sheet.noObject')
+    #set ($messageType = 'warning')
+  #end
+  {{$messageType}}
+  $services.localization.render($messageKey)
+  {{/$messageType}}
+  #stop
+#end
+#set ($discard = $xwiki.jsx.use('UserAffiliation.Code.UserAffiliationSheet'))
+#set ($discard = $xwiki.jsfx.use('uicomponents/edit/editableProperty.js', {
+  'forceSkinAction': true,
+  'language': $xcontext.locale
+}))
+#set ($discard = $doc.use($object))
+#set ($editing = $xcontext.action == 'edit')
+{{html wiki="true" clean="false"}}
+&lt;div class="xform"&gt;
+#set ($saObjectList = $doc.getObjects("UserAffiliation.Code.SingleAffiliationClass"))
+#set ($objPolicySet = 0)
+#if ($editing &amp;&amp; (($saObjectList.size() == 0) || ($xcontext.getRequest().getParameter('add_affiliation') &amp;&amp; ($hasAdmin || $saObjectList.size()&lt;2))))
+  #set ($discard=$saObjectList.add($doc.newObject("UserAffiliation.Code.SingleAffiliationClass")))
+  #set ($objPolicySet = 1)
+  &lt;input name="objectPolicy" type="hidden" value="updateOrCreate" /&gt;
+#elseif ( $editing &amp;&amp; $xcontext.getRequest().getParameter('del_affiliation') &amp;&amp; $saObjectList.size()&gt;1 &amp;&amp; $saObjectList[$saObjectList.size() - 1].number == $xcontext.getRequest().getParameter('del_affiliation'))
+  #set ($discard=$saObjectList.remove($saObjectList.size() - 1))
+  &lt;input name="deletedObjects" type="hidden" value="UserAffiliation.Code.SingleAffiliationClass_$xcontext.getRequest().getParameter('del_affiliation')" /&gt;
+#end
+#set ($nth_affiliation = $services.localization.render('useraffiliation.sheet.nth_affiliation').split(','))
+  &lt;div class="row"&gt;
+    &lt;div class="col-sm-6"&gt;
+      &lt;dl&gt;
+        &lt;dt&gt;
+          &lt;label&gt;
+            $services.icon.render('user') $escapetool.xml($services.localization.render('useraffiliation.sheet.userAccount'))
+          &lt;/label&gt;
+        &lt;/dt&gt;
+        &lt;dd&gt;
+          #displayUser( $doc.name, { "useInlineHTML": true} )
+        &lt;/dd&gt;
+      &lt;/dl&gt;
+    &lt;/div&gt;
+    &lt;div class="col-sm-6"&gt;
+      &lt;dl&gt;
+        &lt;dt #if (!$editing &amp;&amp; $hasEdit)
+            class="editableProperty"
+            data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('syncWithProfile')))"
+            data-property-type="object"#end&gt;
+          &lt;label#if ($editing) for="UserAffiliation.Code.UserAffiliation_0_syncWithProfile"#end&gt;
+            $services.icon.render('refresh') $doc.displayPrettyName('syncWithProfile')
+          &lt;/label&gt;
+        &lt;/dt&gt;
+        &lt;dd&gt;$doc.display('syncWithProfile',$object)&lt;/dd&gt;
+      &lt;/dl&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="row"&gt;
+    &lt;div class="col-sm-6"&gt;
+      &lt;dl&gt;
+        &lt;dt #if (!$editing &amp;&amp; $hasEdit)
+            class="editableProperty"
+            data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('firstName')))"
+            data-property-type="object"#end&gt;
+          &lt;label#if ($editing) for="UserAffiliation.Code.UserAffiliation_0_firstName"#end&gt;
+            $services.icon.render('vcard') $doc.displayPrettyName('firstName')
+          &lt;/label&gt;
+        &lt;/dt&gt;
+        &lt;dd&gt;$doc.display('firstName',$object)&lt;/dd&gt;
+      &lt;/dl&gt;
+    &lt;/div&gt;
+    &lt;div class="col-sm-6"&gt;
+      &lt;dl&gt;
+        &lt;dt #if (!$editing &amp;&amp; $hasEdit)
+            class="editableProperty"
+            data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('lastName')))"
+            data-property-type="object"#end&gt;
+          &lt;label#if ($editing) for="UserAffiliation.Code.UserAffiliation_0_lastName"#end&gt;
+            $services.icon.render('vcard') $doc.displayPrettyName('lastName')
+          &lt;/label&gt;
+        &lt;/dt&gt;
+        &lt;dd&gt;$doc.display('lastName',$object)&lt;/dd&gt;
+      &lt;/dl&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="row"&gt;
+    &lt;div class="col-sm-6"&gt;
+      &lt;dl&gt;
+        &lt;dt&gt;
+          &lt;label&gt;
+            $services.icon.render('font') $doc.displayPrettyName('signature')
+          &lt;/label&gt;
+        &lt;/dt&gt;
+        &lt;dd id="UserAffiliation.Code.UserAffiliationClass_0_signature"&gt;$doc.display('signature',$object)&lt;/dd&gt;
+      &lt;/dl&gt;
+    &lt;/div&gt;
+    &lt;div class="col-sm-6"&gt;
+      &lt;dl&gt;
+        &lt;dt #if (!$editing &amp;&amp; $hasEdit)
+            class="editableProperty"
+            data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('email')))"
+            data-property-type="object"#end&gt;
+          &lt;label#if ($editing) for="UserAffiliation.Code.UserAffiliation_0_email"#end&gt;
+            $services.icon.render('email') $doc.displayPrettyName('email')
+          &lt;/label&gt;
+        &lt;/dt&gt;
+        &lt;dd&gt;$doc.display('email',$object)&lt;/dd&gt;
+      &lt;/dl&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="row"&gt;
+    &lt;div class="col-sm-12"&gt;
+      &lt;dl&gt;
+        &lt;dt #if (!$editing &amp;&amp; $hasEdit)
+            class="editableProperty"
+            data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('orcidURL')))"
+            data-property-type="object"#end&gt;
+          &lt;label#if ($editing) for="UserAffiliation.Code.UserAffiliation_0_orcidURL"#end&gt;
+            &lt;img src="$xwiki.getAttachmentURL('UserAffiliation.Code.UserAffiliationSheet','ORCIDiD_icon16x16.png')"/&gt; $doc.displayPrettyName('orcidURL')
+          &lt;/label&gt;
+        &lt;/dt&gt;
+        &lt;dd&gt;$doc.display('orcidURL',$object)&lt;/dd&gt;
+    #set ($raObject = $doc.getObject('XWiki.XWikiRights'))
+    #if ($hasAdmin &amp;&amp; $raObject)
+        &lt;dt #if (!$editing &amp;&amp; $hasEdit)
+            class="editableProperty"
+            data-property="$escapetool.xml($services.model.serialize($raObject.getPropertyReference('users')))"
+            data-property-type="object"#end&gt;
+          &lt;label#if ($editing) for="XWiki.XWikiRights_${raObject.number}_users"#end&gt;
+            $escapetool.xml($services.localization.render('useraffiliation.sheet.manager'))
+          &lt;/label&gt;
+        &lt;/dt&gt;
+        &lt;dd&gt;$doc.display('users',$raObject)&lt;/dd&gt;
+    #elseif ($hasAdmin &amp;&amp; $editing &amp;&amp; $xcontext.getRequest().getParameter('add_manager'))
+      #set ($raObject=$doc.getObject('XWiki.XWikiRights', true))
+      #if ($objPolicySet == 0)
+        #set ($objPolicySet = 1)
+          &lt;input name="objectPolicy" type="hidden" value="updateOrCreate" /&gt;
+      #end
+        &lt;input name="XWiki.XWikiRights_${raObject.number}_groups" type="hidden" value="" /&gt;
+        &lt;input name="XWiki.XWikiRights_${raObject.number}_levels" type="hidden" value="edit" /&gt;
+        &lt;input name="XWiki.XWikiRights_${raObject.number}_allow" type="hidden" value="1" /&gt;
+        &lt;dt&gt;
+          &lt;label for="XWiki.XWikiRights_${raObject.number}_users"&gt;
+            $escapetool.xml($services.localization.render('useraffiliation.sheet.manager'))
+          &lt;/label&gt;
+        &lt;/dt&gt;
+        &lt;dd&gt;$doc.display('users',$raObject)&lt;/dd&gt;
+    #end
+      &lt;/dl&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+#if(!$saObjectList.isEmpty())
+  &lt;div class="row"&gt;
+    &lt;div class="col-sm-12"&gt;
+      &lt;dl&gt;
+  #foreach ( $saObject in $saObjectList )
+        &lt;dt #if (!$editing &amp;&amp; $hasEdit)
+            class="editableProperty"
+            data-property="$escapetool.xml($services.model.serialize($saObject.getPropertyReference('affiliationAddressRef')))"
+            data-property-type="object"#end&gt;
+          &lt;label#if ($editing) for="UserAffiliation.Code.SingleAffiliationClass_${saObject.number}_affiliationAddressRef"#end&gt;
+            $services.icon.render('flag')
+  #if( $foreach.index &lt; $nth_affiliation.size() )
+            $escapetool.xml($nth_affiliation[$foreach.index])
+  #else
+            $escapetool.xml($services.localization.render('useraffiliation.sheet.affiliation') + " " + $numbertool.number($foreach.count))
+  #end
+          &lt;/label&gt;
+        &lt;/dt&gt;
+        &lt;dd&gt;$doc.display('affiliationAddressRef',$saObject)&lt;/dd&gt;
+#end
+      &lt;/dl&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+#end
+&lt;/div&gt;
+#set( $n = $saObjectList.size() )
+#if (!$editing &amp;&amp; ($hasAdmin || ($n&lt;2 &amp;&amp; $hasEdit)))
+&lt;a href="$doc.getURL('edit', 'add_affiliation')" class="btn btn-primary"&gt;
+  #if( $n &lt; $nth_affiliation.size() )
+  $escapetool.xml($services.localization.render('useraffiliation.sheet.add') + " " + $nth_affiliation[$n].toLowerCase())
+  #else
+  $escapetool.xml($services.localization.render('useraffiliation.sheet.add') + " " + $services.localization.render('useraffiliation.sheet.affiliation').toLowerCase() + " " + $numbertool.number($n + 1))
+  #end
+&lt;/a&gt;
+#end
+#if (!$editing &amp;&amp; $n&gt;1 &amp;&amp; $hasEdit)
+  #set( $n = $n - 1 )
+&lt;a href="$doc.getURL('edit', "del_affiliation=${saObjectList[$n].number}")" class="btn btn btn-danger"&gt;
+  #if( $n &lt; $nth_affiliation.size() )
+  $escapetool.xml($services.localization.render('useraffiliation.sheet.delete') + " " + $nth_affiliation[$n].toLowerCase())
+  #else
+  $escapetool.xml($services.localization.render('useraffiliation.sheet.delete') + " " + $services.localization.render('useraffiliation.sheet.affiliation').toLowerCase() + " " + $numbertool.number($n + 1))
+  #end
+&lt;/a&gt;
+#end
+#if (!$raObject &amp;&amp; !$editing &amp;&amp; $hasEdit)
+&lt;a href="$doc.getURL('edit', 'add_manager')" class="btn btn-primary"&gt;$services.localization.render('useraffiliation.sheet.add_manager')&lt;/a&gt;
+#end
+&lt;script&gt;
+  var init = function(elements) {
+    self.document.dispatchEvent(new CustomEvent("UserAffiliation.Code.UserAffiliationClass_0_firstNameViewChanged", {
+          detail: { value: "$object.getValue('firstName')" } }));
+    self.document.dispatchEvent(new CustomEvent("UserAffiliation.Code.UserAffiliationClass_0_lastNameViewChanged", {
+          detail: { value: "$object.getValue('lastName')" } }));
+  }
+  document.observe("xwiki:dom:loaded", init);
+&lt;/script&gt;
+
+{{/html}}
+{{/velocity}}</content>
+  <attachment>
+    <filename>ORCIDiD_icon16x16.png</filename>
+    <mimetype>image/png</mimetype>
+    <charset>UTF-8</charset>
+    <author>xwiki:XWiki.Admin</author>
+    <version>1.1</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg==</content>
+    <filesize>1261</filesize>
+  </attachment>
+  <object>
+    <name>UserAffiliation.Code.UserAffiliationSheet</name>
+    <number>0</number>
+    <className>XWiki.JavaScriptExtension</className>
+    <guid>87c4cd79-fd28-46a2-ba8a-d8861ddf9e72</guid>
+    <class>
+      <name>XWiki.JavaScriptExtension</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <cache>
+        <cache>0</cache>
+        <defaultValue>long</defaultValue>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>cache</name>
+        <number>5</number>
+        <prettyName>Caching policy</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>long|short|default|forbid</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </cache>
+      <code>
+        <contenttype>PureText</contenttype>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>code</name>
+        <number>2</number>
+        <prettyName>Code</prettyName>
+        <restricted>0</restricted>
+        <rows>20</rows>
+        <size>50</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </code>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <parse>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>parse</name>
+        <number>4</number>
+        <prettyName>Parse content</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </parse>
+      <use>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>use</name>
+        <number>3</number>
+        <prettyName>Use this extension</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>currentPage|onDemand|always</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </use>
+    </class>
+    <property>
+      <cache>long</cache>
+    </property>
+    <property>
+      <code>var viewFirstName = "";
+var viewLastName = "";
+var firstName = "";
+var lastName = "";
+
+function updateLabel() {
+  var signature = [];
+
+  if (firstName.length &gt; 0) {
+    var fnWords = firstName.split(/\s+/);
+    for(const fn of fnWords) {
+      if(fn.length &gt; 0) {
+        var fnHyphenWords = fn.split(/-/);
+        var fnInitials = [];
+        for(const fnn of fnHyphenWords) {
+          if(fnn.length &gt; 0) {
+            fnInitials.push(fnn.substring(0,1).toUpperCase() + ".");
+          }
+        }
+        signature.push(fnInitials.join("-"));
+      }
+    }
+  }
+
+  if (lastName.length &gt; 0) {
+    for(const ln of lastName.split(/\s+/)) {
+      if(ln.length &gt; 0) {
+        signature.push(ln);
+      }
+    }
+  }
+
+  self.document.getElementById("UserAffiliation.Code.UserAffiliationClass_0_signature").innerHTML = "&lt;p&gt;"+signature.join(" ")+"&lt;/p&gt;";
+}
+
+self.document.addEventListener("UserAffiliation.Code.UserAffiliationClass_0_firstNameChanged", function (event) {
+  firstName = event.detail.value;
+  updateLabel();
+});
+
+self.document.addEventListener("UserAffiliation.Code.UserAffiliationClass_0_lastNameChanged", function (event) {
+  lastName = event.detail.value;
+  updateLabel();
+});
+
+self.document.addEventListener("UserAffiliation.Code.UserAffiliationClass_0_firstNameViewChanged", function (event) {
+  viewFirstName = event.detail.value;
+  firstName = event.detail.value;
+  updateLabel();
+});
+
+self.document.addEventListener("UserAffiliation.Code.UserAffiliationClass_0_lastNameViewChanged", function (event) {
+  viewLastName = event.detail.value;
+  lastName = event.detail.value;
+  updateLabel();
+});
+
+require(['jquery'], function($) {
+  $(document).on('click.cancelProperty', '.editableProperty-cancel', function(event) {
+    event.preventDefault();
+    var cancelIcon = $(this);
+    if (!cancelIcon.hasClass('disabled')) {
+      var editableProperty = cancelIcon.closest('.editableProperty');
+      var dataProperty = editableProperty.attr('data-property');
+      if(dataProperty == "UserAffiliation.Code.UserAffiliationClass[0].firstName") {
+        firstName = viewFirstName;
+        updateLabel();
+      } else if(dataProperty == "UserAffiliation.Code.UserAffiliationClass[0].lastName") {
+        lastName = viewLastName;
+        updateLabel();
+      }
+    }
+  });
+});
+</code>
+    </property>
+    <property>
+      <name>Update signature</name>
+    </property>
+    <property>
+      <parse>0</parse>
+    </property>
+    <property>
+      <use>onDemand</use>
+    </property>
+  </object>
+</xwikidoc>
