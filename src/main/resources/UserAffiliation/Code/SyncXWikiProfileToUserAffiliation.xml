@@ -1,0 +1,220 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="UserAffiliation.Code.SyncXWikiProfileToUserAffiliation" locale="">
+  <web>UserAffiliation.Code</web>
+  <name>SyncXWikiProfileToUserAffiliation</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>UserAffiliation.Code.WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title>SyncXWikiProfileToUserAffiliation</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{info}}
+This page contains ScriptComponentClass synchronise the user name and email to the XWiki profile
+{{/info}}</content>
+  <object>
+    <name>UserAffiliation.Code.SyncXWikiProfileToUserAffiliation</name>
+    <number>0</number>
+    <className>XWiki.ScriptComponentClass</className>
+    <guid>5eccf377-af8c-453e-aef6-fcedce5988f3</guid>
+    <class>
+      <name>XWiki.ScriptComponentClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <scope>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>scope</name>
+        <number>2</number>
+        <prettyName>Scope</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>|wiki|global|user</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </scope>
+      <script_content>
+        <disabled>0</disabled>
+        <editor>Text</editor>
+        <name>script_content</name>
+        <number>3</number>
+        <prettyName>Script</prettyName>
+        <restricted>0</restricted>
+        <rows>20</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </script_content>
+      <script_language>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>script_language</name>
+        <number>1</number>
+        <prettyName>Language</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>groovy|python</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </script_language>
+    </class>
+    <property>
+      <scope>global</scope>
+    </property>
+    <property>
+      <script_content>import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import javax.mail.internet.InternetAddress;
+
+import org.slf4j.Logger;
+import org.xwiki.bridge.event.DocumentCreatedEvent;
+import org.xwiki.bridge.event.DocumentUpdatedEvent;
+import org.xwiki.component.annotation.Component;
+import org.xwiki.observation.AbstractEventListener;
+import org.xwiki.observation.event.Event;
+import org.xwiki.model.reference.DocumentReference;
+import org.xwiki.model.reference.LocalDocumentReference;
+import org.xwiki.model.reference.DocumentReferenceResolver;
+import org.xwiki.user.group.GroupManager;
+import org.xwiki.user.GuestUserReference;
+import org.xwiki.user.UserProperties;
+import org.xwiki.user.UserPropertiesResolver;
+import org.xwiki.user.UserReference;
+import org.xwiki.user.UserReferenceResolver;
+import org.xwiki.user.UserManager;
+import org.xwiki.component.manager.ComponentManager;
+
+import com.xpn.xwiki.XWiki;
+import com.xpn.xwiki.XWikiContext;
+import com.xpn.xwiki.doc.XWikiDocument;
+import com.xpn.xwiki.objects.BaseObject;
+
+@Component
+@Named(SyncXWikiProfileToUserAffiliationListener.LISTENER_NAME)
+@Singleton
+public class SyncXWikiProfileToUserAffiliationListener extends AbstractEventListener
+{
+  final static String LISTENER_NAME = "SyncXWikiProfileToUserAffiliationListener";
+
+  /**
+   * The space where the XWiki.XWikiUsers code is located.
+   */
+  public static final List&lt;String&gt; XWIKI_SPACE = Arrays.asList("XWiki");
+
+  private static final DocumentReference XWIKIUSERS_CLASS_REFERENCE =
+    new DocumentReference("xwiki", XWIKI_SPACE, "XWikiUsers");
+
+  /**
+   * The space where the UserAffiliation code is located.
+   */
+  public static final USER_AFFILIATION_WIKI = "xwiki";
+
+  public static final List&lt;String&gt; USER_AFFILIATION_SPACE = [ "UserAffiliation" ];
+  public static final List&lt;String&gt; USER_AFFILIATION_CODE_SPACE = [ "UserAffiliation", "Code" ];
+
+  private static final LocalDocumentReference USER_AFFILIATION_CLASS_REFERENCE =
+    new LocalDocumentReference(USER_AFFILIATION_CODE_SPACE, "UserAffiliationClass");
+
+  @Inject
+  protected Logger logger;
+
+  @Inject
+  @Named("document")
+  private UserReferenceResolver&lt;DocumentReference&gt; userReferenceResolver;
+
+  @Inject
+  private UserReferenceResolver&lt;String&gt; userReferenceStringResolver;
+
+  @Inject
+  private UserPropertiesResolver userPropertiesResolver;
+
+  @Inject
+  private UserManager userManager;
+
+  @Inject
+  private DocumentReferenceResolver&lt;String&gt; documentReferenceResolver;
+
+  @Inject
+  private ComponentManager componentManager;
+
+  public SyncXWikiProfileToUserAffiliationListener()
+  {
+    super(LISTENER_NAME, new DocumentUpdatedEvent(), new DocumentCreatedEvent());
+  }
+
+  @Override
+  public void onEvent(Event event, Object source, Object data)
+  {
+    XWikiDocument sourceDocument = (XWikiDocument) source;
+    XWikiContext xwikiContext = (XWikiContext) data;
+
+    BaseObject userProfile = sourceDocument.getXObject(XWIKIUSERS_CLASS_REFERENCE);
+    if (userProfile != null) {
+      logger.debug("reference : {}", sourceDocument.getPrefixedFullName());
+      logger.debug("firstName : {}", userProfile.getStringValue('first_name'));
+      logger.debug("lastName  : {}", userProfile.getStringValue('last_name'));
+      logger.debug("email     : {}", userProfile.getStringValue('email'));
+
+      DocumentReference userAffiliationDocRef = new DocumentReference(
+        USER_AFFILIATION_WIKI, USER_AFFILIATION_SPACE, sourceDocument.getPrefixedFullName());
+      XWikiDocument userAffiliationDoc = xwikiContext.getWiki().getDocument(userAffiliationDocRef, xwikiContext);
+      if( userAffiliationDoc != null ) {
+        logger.debug("isNew: {}", userAffiliationDoc.isNew());
+        logger.debug("title: {}", userAffiliationDoc.title);
+      }
+
+    }
+  }
+}
+</script_content>
+    </property>
+    <property>
+      <script_language>groovy</script_language>
+    </property>
+  </object>
+</xwikidoc>

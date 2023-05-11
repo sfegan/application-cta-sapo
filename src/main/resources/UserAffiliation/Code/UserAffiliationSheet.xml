@@ -75,12 +75,9 @@
       &lt;dl&gt;
         &lt;dt&gt;
           &lt;label&gt;
-            $services.icon.render('user') $escapetool.xml($services.localization.render('useraffiliation.sheet.userAccount'))
+            $services.icon.render('user') $doc.displayPrettyName('userProfile')
           &lt;/label&gt;
-        &lt;/dt&gt;
-        &lt;dd&gt;
-          #displayUser( $doc.name, { "useInlineHTML": true} )
-        &lt;/dd&gt;
+        &lt;dd&gt;$doc.display('userProfile',$object)&lt;/dd&gt;
       &lt;/dl&gt;
     &lt;/div&gt;
     &lt;div class="col-sm-6"&gt;

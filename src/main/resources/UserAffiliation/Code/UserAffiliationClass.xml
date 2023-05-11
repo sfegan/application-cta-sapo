@@ -52,13 +52,13 @@
       <hint/>
       <name>email</name>
       <number>4</number>
-      <picker>0</picker>
+      <picker>1</picker>
       <prettyName>Contact author email address</prettyName>
       <size>30</size>
       <unmodifiable>0</unmodifiable>
       <validationMessage/>
-      <validationRegExp/>
-      <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      <validationRegExp>/^(([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[a-zA-Z]{2,}))?$/</validationRegExp>
+      <classType>com.xpn.xwiki.objects.classes.EmailClass</classType>
     </email>
     <firstName>
       <customDisplay>{{include reference="UserAffiliation.Code.FirstAndLastNameDisplayer"/}}</customDisplay>
@@ -152,7 +152,7 @@ $stringtool.join($source,' ')
     <userProfile>
       <customDisplay>{{velocity}}
 {{html clean="false"}}
-#displayUser( $doc.name, { "useInlineHTML": true} )
+#displayUser( $doc.documentReference.name, { "useInlineHTML": true} )
 {{/html}}
 {{/velocity}}
 </customDisplay>
@@ -162,7 +162,7 @@ $stringtool.join($source,' ')
       <number>7</number>
       <prettyName>User Profile</prettyName>
       <script>{{velocity}}
-$doc.name
+$doc.documentReference.name
 {{/velocity}}</script>
       <unmodifiable>0</unmodifiable>
       <validationMessage/>
