@@ -123,9 +123,12 @@
 {{/html}}
 
 === Affiliated users ===
+
 #set ($columnsProperties = {
   'affiliationAddressRef': {"type": "hidden"},
-  'userAccount': {"displayName":"User","html":"true"},
+  'userProfile': {"displayName":"User Profile","html":"true"},
+  'firstName': {"displayName":"First Name","html":"true"},
+  'lastName': {"displayName":"Last Name","html":"true"},
   'doc.location': {"displayName":"Location"},
   '_actions': {"displayName":"Actions","sortable":false,"filterable":false,"html":true,"actions":["edit","delete"]}
 })
@@ -136,10 +139,13 @@
   'maxPages': 10,
   'selectedColumn': 'doc.title',
   'defaultOrder': 'asc',
-  'extraParams': "&amp;location=$escapetool.url('UserAffiliation.')&amp;affiliationAddressRef=$escapetool.url(${doc.fullName})&amp;userAccount_class=UserAffiliation.Code.UserAffiliationClass"
+  'extraParams': "&amp;location=$escapetool.url('UserAffiliation.')&amp;affiliationAddressRef=$escapetool.url(${doc.fullName})&amp;userProfile_class=UserAffiliation.Code.UserAffiliationClass&amp;firstName_class=UserAffiliation.Code.UserAffiliationClass&amp;lastName_class=UserAffiliation.Code.UserAffiliationClass"
 })
-#set ($columns = ['affiliationAddressRef', 'userAccount', 'doc.location', '_actions'])
+#set ($columns = ['affiliationAddressRef', 'userProfile', 'firstName', 'lastName', 'doc.location', '_actions'])
+
+{{html wiki="true" clean="false"}}
 #livetable('useraffiliations' $columns $columnsProperties $options)
+{{/html}}
 
 {{/velocity}}</content>
 </xwikidoc>
