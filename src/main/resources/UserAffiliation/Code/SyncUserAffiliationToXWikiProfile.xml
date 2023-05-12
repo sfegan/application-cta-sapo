@@ -144,10 +144,10 @@ public class SyncUserAffiliationToXWikiProfileListener extends AbstractEventList
   /**
    * The space where the UserAffiliation code is located.
    */
-  public static final List&lt;String&gt; PRESENTATION_CODE_SPACE = Arrays.asList("UserAffiliation", "Code");
+  public static final List&lt;String&gt; USER_AFFILIATION_CODE_SPACE = Arrays.asList("UserAffiliation", "Code");
 
-  private static final LocalDocumentReference PRESENTATION_CLASS_REFERENCE =
-    new LocalDocumentReference(PRESENTATION_CODE_SPACE, "UserAffiliationClass");
+  private static final LocalDocumentReference USER_AFFILIATION_CLASS_REFERENCE =
+    new LocalDocumentReference(USER_AFFILIATION_CODE_SPACE, "UserAffiliationClass");
 
   @Inject
   protected Logger logger;
@@ -182,7 +182,7 @@ public class SyncUserAffiliationToXWikiProfileListener extends AbstractEventList
     XWikiDocument sourceDocument = (XWikiDocument) source;
     XWikiContext xwikiContext = (XWikiContext) data;
 
-    BaseObject userAffiliation = sourceDocument.getXObject(PRESENTATION_CLASS_REFERENCE);
+    BaseObject userAffiliation = sourceDocument.getXObject(USER_AFFILIATION_CLASS_REFERENCE);
     if (userAffiliation != null &amp;&amp; userAffiliation.getIntValue('syncWithProfile') == 1) {
       UserReference userReference = 
         userReferenceStringResolver.resolve(sourceDocument.getDocumentReference().getName());
@@ -195,7 +195,8 @@ public class SyncUserAffiliationToXWikiProfileListener extends AbstractEventList
         if(userProperties.firstName != firstName
             || userProperties.lastName != lastName
             || userProperties.email != email) {
-          logger.debug("Sync to XWiki : {}", sourceDocument.getDocumentReference().getName());
+          logger.debug("Sync from : {}", sourceDocument.getPrefixedFullName());
+          logger.debug("Sync to   : XWiki user profile");
           logger.debug("firstName : {}", firstName);
           logger.debug("lastName  : {}", lastName);
           logger.debug("email     : {}", email);

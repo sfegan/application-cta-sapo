@@ -152,13 +152,19 @@ public class SyncXWikiProfileToUserAffiliationListener extends AbstractEventList
   /**
    * The space where the UserAffiliation code is located.
    */
-  public static final USER_AFFILIATION_WIKI = "xwiki";
+  public static final USER_AFFILIATION_WIKI = "sapo";
 
   public static final List&lt;String&gt; USER_AFFILIATION_SPACE = [ "UserAffiliation" ];
   public static final List&lt;String&gt; USER_AFFILIATION_CODE_SPACE = [ "UserAffiliation", "Code" ];
 
-  private static final LocalDocumentReference USER_AFFILIATION_CLASS_REFERENCE =
-    new LocalDocumentReference(USER_AFFILIATION_CODE_SPACE, "UserAffiliationClass");
+  private static final DocumentReference USER_AFFILIATION_CLASS_REFERENCE =
+    new DocumentReference(USER_AFFILIATION_WIKI, USER_AFFILIATION_CODE_SPACE, "UserAffiliationClass");
+
+  private static final DocumentReference USER_AFFILIATION_TEMPLATE_REFERENCE =
+    new DocumentReference(USER_AFFILIATION_WIKI, USER_AFFILIATION_CODE_SPACE, "UserAffiliationTemplate");
+
+  private static final DocumentReference XWIKIRIGHTS_CLASS_REFERENCE =
+    new DocumentReference(USER_AFFILIATION_WIKI, XWIKI_SPACE, "XWikiRights");
 
   @Inject
   protected Logger logger;
@@ -195,19 +201,69 @@ public class SyncXWikiProfileToUserAffiliationListener extends AbstractEventList
 
     BaseObject userProfile = sourceDocument.getXObject(XWIKIUSERS_CLASS_REFERENCE);
     if (userProfile != null) {
-      logger.debug("reference : {}", sourceDocument.getPrefixedFullName());
-      logger.debug("firstName : {}", userProfile.getStringValue('first_name'));
-      logger.debug("lastName  : {}", userProfile.getStringValue('last_name'));
-      logger.debug("email     : {}", userProfile.getStringValue('email'));
-
       DocumentReference userAffiliationDocRef = new DocumentReference(
         USER_AFFILIATION_WIKI, USER_AFFILIATION_SPACE, sourceDocument.getPrefixedFullName());
       XWikiDocument userAffiliationDoc = xwikiContext.getWiki().getDocument(userAffiliationDocRef, xwikiContext);
       if( userAffiliationDoc != null ) {
-        logger.debug("isNew: {}", userAffiliationDoc.isNew());
-        logger.debug("title: {}", userAffiliationDoc.title);
+        if(userAffiliationDoc.isNew()) {
+          createNewDoc(userProfile, userAffiliationDoc, xwikiContext);
+        } else {
+          updateExistingDoc(userProfile, userAffiliationDoc, xwikiContext);
+        }
       }
+    }
+  }
 
+  private void createNewDoc(BaseObject userProfile, XWikiDocument userAffiliationDoc, XWikiContext xwikiContext) {
+    userAffiliationDoc.readFromTemplate(USER_AFFILIATION_TEMPLATE_REFERENCE, xwikiContext)
+    BaseObject userAffiliation = userAffiliationDoc.getXObject(USER_AFFILIATION_CLASS_REFERENCE);
+    if (userAffiliation != null) {
+      String firstName = userProfile.getStringValue('first_name');
+      String lastName = userProfile.getStringValue('last_name');
+      String email = userProfile.getStringValue('email');
+      logger.debug("Sync from : XWiki user profile");
+      logger.debug("Create    : {}", userAffiliationDoc.getPrefixedFullName());
+      logger.debug("firstName : {}", firstName);
+      logger.debug("lastName  : {}", lastName);
+      logger.debug("email     : {}", email);
+      userAffiliation.setIntValue('syncWithProfile', 1);
+      userAffiliation.setStringValue("firstName", firstName);
+      userAffiliation.setStringValue("lastName", lastName);
+      userAffiliation.setStringValue("email", email);
+      BaseObject rightsAccess = userAffiliationDoc.newXObject(XWIKIRIGHTS_CLASS_REFERENCE,xwikiContext);
+      if(rightsAccess != null) {
+        rightsAccess.setLargeStringValue("groups", "");
+        rightsAccess.setStringValue("levels", "edit");
+        rightsAccess.setIntValue("allow", 1);
+        rightsAccess.setLargeStringValue("users", userAffiliationDoc.getDocumentReference().getName());
+        logger.debug("manager   : {}", userAffiliationDoc.getDocumentReference().getName());
+      }
+      userAffiliationDoc.setTitle("SAPO profile of " + userAffiliationDoc.getDocumentReference().getName());
+      xwikiContext.getWiki().saveDocument(userAffiliationDoc, "Create user details from XWiki user profile", xwikiContext);
+    }
+  }
+
+  private String updateExistingDoc(BaseObject userProfile, XWikiDocument userAffiliationDoc, XWikiContext xwikiContext) {
+    BaseObject userAffiliation = userAffiliationDoc.getXObject(USER_AFFILIATION_CLASS_REFERENCE);
+    if (userAffiliation != null &amp;&amp; userAffiliation.getIntValue('syncWithProfile') == 1) {
+      String firstName = userProfile.getStringValue('first_name');
+      String lastName = userProfile.getStringValue('last_name');
+      String email = userProfile.getStringValue('email');
+      if(userAffiliation.getStringValue('firstName') != firstName
+          || userAffiliation.getStringValue('lastName') != lastName
+          || userAffiliation.getStringValue('email') != email) {        
+        logger.debug("Sync from : XWiki user profile");
+        logger.debug("Sync to   : {}", userAffiliationDoc.getPrefixedFullName());
+        logger.debug("firstName : {}", firstName);
+        logger.debug("lastName  : {}", lastName);
+        logger.debug("email     : {}", email);
+        userAffiliationDoc = userAffiliationDoc.clone()
+        userAffiliation = userAffiliationDoc.getXObject(USER_AFFILIATION_CLASS_REFERENCE);
+        userAffiliation.setStringValue('firstName', firstName);
+        userAffiliation.setStringValue('lastName', lastName);
+        userAffiliation.setStringValue('email', email);
+        xwikiContext.getWiki().saveDocument(userAffiliationDoc, "User details synched from XWiki user profile", xwikiContext);
+      }
     }
   }
 }

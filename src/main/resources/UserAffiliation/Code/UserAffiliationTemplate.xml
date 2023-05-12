@@ -157,17 +157,16 @@ $stringtool.join($source,' ')
       <userProfile>
         <customDisplay>{{velocity}}
 {{html clean="false"}}
-#displayUser( $doc.documentReference.name, { "useInlineHTML": true} )
+#displayUser( $object.documentReference.name, { "useInlineHTML": true} )
 {{/html}}
-{{/velocity}}
-</customDisplay>
+{{/velocity}}</customDisplay>
         <disabled>0</disabled>
         <hint/>
         <name>userProfile</name>
         <number>7</number>
         <prettyName>User Profile</prettyName>
         <script>{{velocity}}
-$doc.documentReference.name
+$object.documentReference.name
 {{/velocity}}</script>
         <unmodifiable>0</unmodifiable>
         <validationMessage/>
