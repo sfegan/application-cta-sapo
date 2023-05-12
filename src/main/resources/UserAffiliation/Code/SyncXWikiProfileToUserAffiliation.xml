@@ -215,7 +215,7 @@ public class SyncXWikiProfileToUserAffiliationListener extends AbstractEventList
   }
 
   private void createNewDoc(BaseObject userProfile, XWikiDocument userAffiliationDoc, XWikiContext xwikiContext) {
-    userAffiliationDoc.readFromTemplate(USER_AFFILIATION_TEMPLATE_REFERENCE, xwikiContext)
+    userAffiliationDoc.readFromTemplate(USER_AFFILIATION_TEMPLATE_REFERENCE, xwikiContext);
     BaseObject userAffiliation = userAffiliationDoc.getXObject(USER_AFFILIATION_CLASS_REFERENCE);
     if (userAffiliation != null) {
       String firstName = userProfile.getStringValue('first_name');
@@ -257,7 +257,7 @@ public class SyncXWikiProfileToUserAffiliationListener extends AbstractEventList
         logger.debug("firstName : {}", firstName);
         logger.debug("lastName  : {}", lastName);
         logger.debug("email     : {}", email);
-        userAffiliationDoc = userAffiliationDoc.clone()
+        userAffiliationDoc = userAffiliationDoc.clone();
         userAffiliation = userAffiliationDoc.getXObject(USER_AFFILIATION_CLASS_REFERENCE);
         userAffiliation.setStringValue('firstName', firstName);
         userAffiliation.setStringValue('lastName', lastName);
