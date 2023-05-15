@@ -1,0 +1,292 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="UserAffiliation.Code.AffiliationAddressDisplayer" locale="">
+  <web>UserAffiliation.Code</web>
+  <name>AffiliationAddressDisplayer</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title>AffiliationAddressDisplayer</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{velocity}}
+#if ($doc.FullName == 'UserAffiliation.Code.AffiliationAddressDisplayer')
+  {{info}}
+    Custom displayer for user affiliations.
+  {{/info}}
+  #stop
+#end
+#set ($discard = $xwiki.jsx.use('UserAffiliation.Code.AffiliationAddressDisplayer'))
+#set ($propertyClass = $object.getxWikiClass().get($name))
+#if ($type == 'edit')
+  {{html clean=false}}
+    &lt;div class="row"&gt;
+      &lt;div class="col-xs-3"&gt;
+        &lt;select id="CountrySelect_${prefix}${name}" name="CountrySelect_${prefix}${name}"&gt;
+        &lt;/select&gt;
+      &lt;/div&gt;
+      &lt;div class="col-xs-9"&gt;
+        &lt;select id="${prefix}${name}" name="${prefix}${name}"&gt;
+        &lt;/select&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;p id="Address_${prefix}${name}"&gt;&lt;/p&gt;
+    &lt;script&gt;
+      document.observe("xwiki:dom:loaded", function() {
+        affiliationAddressesInit("${prefix}", "${name}", "${value}");
+      });
+      try {
+        affiliationAddressesInit("${prefix}", "${name}", "${value}");
+      } catch (e) { }
+    &lt;/script&gt;
+  {{/html}}
+#else
+  {{html clean=false}}
+    #if("$!value" != "")
+      #set ($affilDoc = $xwiki.getDocument($value))
+      #if ($affilDoc)
+        #set ($affilObject = $affilDoc.getObject('AffiliationAddress.Code.AffiliationAddressClass'))
+        #if ($affilObject)
+          &lt;p&gt;$escapetool.xml($affilObject.getValue('publicationAddress'))&lt;/p&gt;
+        #else
+          &lt;p&gt;No address found for reference: $escapetool.xml($value)&lt;/p&gt;
+        #end
+      #else
+        &lt;p&gt;No address found for reference: $escapetool.xml($value)&lt;/p&gt;
+      #end
+    #end
+  {{/html}}
+#end
+{{/velocity}}
+</content>
+  <object>
+    <name>UserAffiliation.Code.AffiliationAddressDisplayer</name>
+    <number>0</number>
+    <className>XWiki.JavaScriptExtension</className>
+    <guid>ba945e61-c024-4b0c-b4c6-e63fefb9a9ea</guid>
+    <class>
+      <name>XWiki.JavaScriptExtension</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <cache>
+        <cache>0</cache>
+        <defaultValue>long</defaultValue>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>cache</name>
+        <number>5</number>
+        <prettyName>Caching policy</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>long|short|default|forbid</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </cache>
+      <code>
+        <contenttype>PureText</contenttype>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>code</name>
+        <number>2</number>
+        <prettyName>Code</prettyName>
+        <restricted>0</restricted>
+        <rows>20</rows>
+        <size>50</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </code>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <parse>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>parse</name>
+        <number>4</number>
+        <prettyName>Parse content</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </parse>
+      <use>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>use</name>
+        <number>3</number>
+        <prettyName>Use this extension</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>currentPage|onDemand|always</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </use>
+    </class>
+    <property>
+      <cache>long</cache>
+    </property>
+    <property>
+      <code>#set($hql = "select doc.fullName, prop_country.value, doc.title, prop_address.value from XWikiDocument doc, BaseObject obj, StringProperty prop_country, StringProperty prop_address where doc.fullName=obj.name and obj.className='AffiliationAddress.Code.AffiliationAddressClass' and obj.name like 'AffiliationAddress%' and obj.name!='AffiliationAddress.Code.AffiliationAddressTemplate' and prop_country.id.id=obj.id and prop_country.name='country' and prop_address.id.id=obj.id and prop_address.name='publicationAddress'")
+#set($results = $xwiki.search($hql))
+#set($affilByCountry = {})
+var affiliationAddressesByRef = {
+#foreach($row in $results)
+  #if(!$affilByCountry.containsKey($row[1]))
+    #set($discard = $affilByCountry.put($row[1], []))
+  #end
+  #set($discard = $affilByCountry.get($row[1]).add({ "ref": $row[0], "name": $row[2] }))
+  "$escapetool.javascript($row[0])" : { ref: "$escapetool.javascript($row[0])", name: "$escapetool.javascript($row[2])", country: "$escapetool.javascript($row[1])", address: "$escapetool.javascript($row[3])" }#if( $foreach.hasNext ),#end
+#end
+};
+
+var affiliationAddressesByCountry = {
+  #foreach($country in $collectiontool.sort($affilByCountry.keySet()))
+    "$escapetool.javascript($country)" : [
+      #foreach($affil in $collectiontool.sort($affilByCountry[$country],'name'))
+        "$escapetool.javascript($affil['ref'])"#if( $foreach.hasNext ),#end
+      #end
+    ]#if( $foreach.hasNext ),#end
+  #end
+}
+
+function affiliationAddressesLoadCountries(elementName, selectedCountry) {
+  const selectMenu = document.getElementById(elementName);
+
+  // Clear existing options
+  selectMenu.innerHTML = "";
+
+  // Extract list of countries
+  var countries = Object.keys(affiliationAddressesByCountry).sort()
+
+  // Add sorted options to the select menu
+  selectMenu.appendChild(document.createElement("option"));
+  for (let i = 0; i &lt; countries.length; i++) {
+    const option = document.createElement("option");
+    option.value = countries[i];
+    option.text = countries[i];
+    if(countries[i] == selectedCountry) {
+      option.selected = true;
+    }
+    selectMenu.appendChild(option);
+  }
+  return selectMenu.value;
+}
+
+function affiliationAddressesLoadAddressesForCountry(elementName, selectedCountry, selectedRef) {
+  const selectMenu = document.getElementById(elementName);
+
+  // Clear existing options
+  selectMenu.innerHTML = "";
+
+  // Extract list of countries
+  var countryAddressList = [];
+  if(selectedCountry in affiliationAddressesByCountry) {
+    countryAddressList = affiliationAddressesByCountry[selectedCountry];
+  }
+
+  // Add sorted options to the select menu
+  for (let i = 0; i &lt; countryAddressList.length; i++) {
+    var address = affiliationAddressesByRef[countryAddressList[i]];
+    const option = document.createElement("option");
+    option.value = address.ref;
+    option.text = address.name;
+    if(address.ref == selectedRef) {
+      option.selected = true;
+    }
+    selectMenu.appendChild(option);
+  }
+  if(countryAddressList.length == 0) {
+    selectMenu.appendChild(document.createElement("option"));
+  }
+  return selectMenu.value;
+}
+
+function affiliationAddressesSetAddress(elementName, selectedRef) {
+  const paragraph = document.getElementById(elementName);
+
+  // Clear existing address
+  if(selectedRef &amp;&amp; selectedRef in affiliationAddressesByRef) {
+    paragraph.innerHTML = affiliationAddressesByRef[selectedRef].address;
+  } else {
+    paragraph.innerHTML = "";
+  }
+}
+
+function affiliationAddressesInit(prefix, name, value) {
+  var selectedEntry = { name: "", ref:"", country:"", address:""};
+  if(value &amp;&amp; value in affiliationAddressesByRef) {
+    selectedEntry = affiliationAddressesByRef[value];
+  }
+  var selectedCountry = affiliationAddressesLoadCountries("CountrySelect_"+prefix+name, selectedEntry.country);
+  var selectedRef = affiliationAddressesLoadAddressesForCountry(prefix+name, selectedCountry, selectedEntry.ref);
+  affiliationAddressesSetAddress("Address_"+prefix+name, selectedRef);
+  document.getElementById("CountrySelect_"+prefix+name).
+    addEventListener("change", function() {
+      affiliationAddressesSetAddress("Address_"+prefix+name,
+        affiliationAddressesLoadAddressesForCountry(prefix+name, document.getElementById("CountrySelect_"+prefix+name).value,""));
+  });
+  document.getElementById(prefix+name).
+    addEventListener("change", function() {
+      affiliationAddressesSetAddress("Address_"+prefix+name, document.getElementById(prefix+name).value);
+  });
+}</code>
+    </property>
+    <property>
+      <name>Implement Main-Detail for country and institution</name>
+    </property>
+    <property>
+      <parse>1</parse>
+    </property>
+    <property>
+      <use>onDemand</use>
+    </property>
+  </object>
+</xwikidoc>

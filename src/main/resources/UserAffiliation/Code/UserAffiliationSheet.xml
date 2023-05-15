@@ -246,8 +246,8 @@
   }
   document.observe("xwiki:dom:loaded", init);
 &lt;/script&gt;
-
 {{/html}}
+
 {{/velocity}}</content>
   <attachment>
     <filename>ORCIDiD_icon16x16.png</filename>

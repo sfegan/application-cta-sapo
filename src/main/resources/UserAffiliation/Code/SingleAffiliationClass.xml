@@ -47,7 +47,7 @@
     <nameField/>
     <validationScript/>
     <affiliationAddressRef>
-      <customDisplay/>
+      <customDisplay>{{include reference="UserAffiliation.Code.AffiliationAddressDisplayer"/}}</customDisplay>
       <disabled>0</disabled>
       <hint/>
       <name>affiliationAddressRef</name>

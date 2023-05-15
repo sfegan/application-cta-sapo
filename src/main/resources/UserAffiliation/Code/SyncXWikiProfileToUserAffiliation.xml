@@ -238,7 +238,7 @@ public class SyncXWikiProfileToUserAffiliationListener extends AbstractEventList
         rightsAccess.setLargeStringValue("users", userAffiliationDoc.getDocumentReference().getName());
         logger.debug("manager   : {}", userAffiliationDoc.getDocumentReference().getName());
       }
-      userAffiliationDoc.setTitle("SAPO profile of " + userAffiliationDoc.getDocumentReference().getName());
+      userAffiliationDoc.setTitle("SAPO profile of " + userProfile.getDocumentReference().getName());
       xwikiContext.getWiki().saveDocument(userAffiliationDoc, "Create user details from XWiki user profile", xwikiContext);
     }
   }
