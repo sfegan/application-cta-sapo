@@ -41,7 +41,7 @@
   #set( $num_conf_per_year = {} )
   #set( $conf_seen = {} )
   #set($hql = "select obj_pres.name, obj_event.name, prop_date.value from BaseObject obj_pres, StringProperty prop_event, BaseObject obj_event, DateProperty prop_date where obj_pres.className='Presentation.Code.PresentationClass' and prop_event.id.id=obj_pres.id and prop_event.name='event' and obj_event.name=prop_event.value and prop_date.id.id=obj_event.id and prop_date.name='startDate' ")
-  #foreach ( $row in $xwiki.search($hql) )
+  #foreach ( $row in $services.query.hql($hql).execute() )
     #set( $presDocRef = $row[0] )
     #set( $eventDocRef = $row[1] )
     #set( $eventStartDate = $row[2] )
