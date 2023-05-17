@@ -27,7 +27,7 @@
   <defaultLanguage/>
   <translation>0</translation>
   <creator>xwiki:XWiki.Admin</creator>
-  <parent>Event.Reports.WebHome</parent>
+  <parent>WebHome</parent>
   <author>xwiki:XWiki.Admin</author>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <version>1.1</version>
@@ -42,39 +42,39 @@
     #set ( $role = 'reviewer' )
   #end
 
-#set( $query = "FROM doc.object(Event.Code.EventClass) AS evt WHERE evt.startDate&gt;=:sdate ORDER BY evt.startDate DESC" )
   #set( $currentYear = $datetool.date.year + 1900 )
   #set( $startYear = $currentYear - 5 )
   #set( $startDate = $datetool.toDate('yyyy-MM-dd',"${startYear}-01-01") )
-  #set( $eventDocRefList = $services.query.xwql($query).bindValue('sdate',$startDate).execute() )
+
+  #set($hql = "select obj_pres.name, obj_event.name, prop_date.value, prop_role.value, prop_wg.value from BaseObject obj_pres, StringProperty prop_event, BaseObject obj_event, DateProperty prop_date, LargeStringProperty prop_role, StringProperty prop_wg where obj_pres.className='Presentation.Code.PresentationClass' and prop_event.id.id=obj_pres.id and prop_event.name='event' and obj_event.name=prop_event.value and prop_date.id.id=obj_event.id and prop_date.name='startDate' and prop_date.value&gt;=:sdate and prop_role.id.id=obj_pres.id and prop_role.name=:role and prop_wg.id.id=obj_pres.id and prop_wg.name='workingGroup' ORDER BY prop_date.value DESC")
+
+  #set ($queryResults = $services.query.hql($hql).bindValues({"sdate":$startDate, "role":"${role}s"}).execute())
+  
   #set( $reviewerCount = {} )
   #set( $swgCount = {} )
 
   #set( $startYear = $currentYear + 1000 )
-  #set( $query = 'FROM doc.object(Presentation.Code.PresentationClass) as presentation WHERE presentation.event = :event' )
-  #foreach( $eventDocRef in $eventDocRefList )
-    #if( $eventDocRef != 'Event.Code.EventTemplate' )
-      #set( $eventDoc = $xwiki.getDocument($eventDocRef) )
-      #set( $event = $eventDoc.getObject("Event.Code.EventClass") )
-      #set( $eventYear = $event.getValue('startDate').year + 1900 )
-      #foreach( $presentationDocRef in $services.query.xwql($query).bindValue('event',$eventDoc.fullName).execute() )
-        #set( $presentationDoc = $xwiki.getDocument($presentationDocRef) )
-        #set( $presentation = $presentationDoc.getObject("Presentation.Code.PresentationClass"))
-        #set( $value = $presentation.getValue("${role}s") )
-        #if( "$!value" != "" )
-          #set( $startYear = $mathtool.min($startYear, $eventYear) )
-          #foreach( $r in $value.split(',') )
-            #set( $rcounts = $reviewerCount.getOrDefault($r, { }) )
-            #set( $discard = $rcounts.put($eventYear, $rcounts.getOrDefault($eventYear, 0) + 1) )
-            #set( $discard = $reviewerCount.put($r, $rcounts) )
-          #end
+  #foreach( $row in $queryResults )
+    #set ( $presDocRef = $row[0] )
+    #set ( $eventDocRef = $row[1] )
+    #set ( $eventYear = $row[2].year + 1900 )
+    #set ( $role_value = $row[3] )
+    #set ( $wg_value = $row[4] )
+
+    #if( $eventDocRef != 'Event.Code.EventTemplate' &amp;&amp; $presDocRef != 'Presentation.Code.PresentationTemplate' )
+      #set( $value = $presentation.getValue("${role}s") )
+      #if( "$!role_value" != "" )
+        #set( $startYear = $mathtool.min($startYear, $eventYear) )
+        #foreach( $r in $role_value.split(',') )
+          #set( $rcounts = $reviewerCount.getOrDefault($r, { }) )
+          #set( $discard = $rcounts.put($eventYear, $rcounts.getOrDefault($eventYear, 0) + 1) )
+          #set( $discard = $reviewerCount.put($r, $rcounts) )
         #end
-        #if( "$!presentation.getValue('workingGroup')" != "" )
-          #set( $wg = $presentation.getValue('workingGroup') )
-          #set( $wgcounts = $swgCount.getOrDefault($wg, { }) )
-          #set( $discard = $wgcounts.put($eventYear, $wgcounts.getOrDefault($eventYear, 0) + 1) )
-          #set( $discard = $swgCount.put($wg, $wgcounts) )
-        #end
+      #end
+      #if( "$!wg_value" != "" )
+        #set( $wgcounts = $swgCount.getOrDefault($wg_value, { }) )
+        #set( $discard = $wgcounts.put($eventYear, $wgcounts.getOrDefault($eventYear, 0) + 1) )
+        #set( $discard = $swgCount.put($wg_value, $wgcounts) )
       #end
     #end
   #end
