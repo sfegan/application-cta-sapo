@@ -35,21 +35,23 @@
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.1</syntaxId>
-  <hidden>true</hidden>
+  <hidden>false</hidden>
   <content>{{velocity}}
   #set( $num_pres_per_year = {} )
   #set( $num_conf_per_year = {} )
-  #foreach( $eventdocref in $services.query.xwql("FROM doc.object(Event.Code.EventClass) AS evt").execute() )
-    #if ( $eventdocref != 'Event.Code.EventTemplate' )
-      #set( $eventdoc = $xwiki.getDocument($eventdocref) )
-      #set( $event = $eventdoc.getObject("Event.Code.EventClass") )
-      #set( $npres = $services.query.xwql('FROM doc.object(Presentation.Code.PresentationClass) as presentation WHERE presentation.event = :event').bindValue('event',$eventdocref).count() )
-      #set( $eventYear = $event.getValue('startDate').year + 1900 )
-      #if( $npres&gt;0 )
+  #set( $conf_seen = {} )
+  #set($hql = "select obj_pres.name, obj_event.name, prop_date.value from BaseObject obj_pres, StringProperty prop_event, BaseObject obj_event, DateProperty prop_date where obj_pres.className='Presentation.Code.PresentationClass' and prop_event.id.id=obj_pres.id and prop_event.name='event' and obj_event.name=prop_event.value and prop_date.id.id=obj_event.id and prop_date.name='startDate' ")
+  #foreach ( $row in $xwiki.search($hql) )
+    #set( $presDocRef = $row[0] )
+    #set( $eventDocRef = $row[1] )
+    #set( $eventStartDate = $row[2] )
+    #if ( $eventDocRef != 'Event.Code.EventTemplate' &amp;&amp; $eventDocRef != 'Presentation.Code.PresentationTemplate' )
+      #set( $eventYear = $eventStartDate.year + 1900 )
+      #if ( !$conf_seen.containsKey($eventDocRef) )
+        #set( $discard = $conf_seen.put($eventDocRef, 1) )
         #set( $discard = $num_conf_per_year.put($eventYear,  $num_conf_per_year.getOrDefault($eventYear, 0) + 1) )
       #end
-      #set( $npres = $num_pres_per_year.getOrDefault($eventYear, 0) + $npres )
-      #set( $discard = $num_pres_per_year.put($eventYear,  $npres) )
+      #set( $discard = $num_pres_per_year.put($eventYear,  $num_pres_per_year.getOrDefault($eventYear, 0) + 1) )
     #end
   #end
   {{html}}
