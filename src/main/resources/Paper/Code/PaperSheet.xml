@@ -1,0 +1,178 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="Paper.Code.PaperSheet" locale="">
+  <web>Paper.Code</web>
+  <name>PaperSheet</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>PaperClass</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{include reference="UserAffiliation.Code.Macros"/}}
+
+{{velocity}}
+#set ($object = $doc.getObject('Paper.Code.PaperClass'))
+#if (!$object)
+  #set ($messageKey = 'paper.sheet.description')
+  #set ($messageType = 'info')
+  #if ($doc.documentReference.name != 'PaperSheet')
+    #set ($messageKey = 'paper.sheet.noObject')
+    #set ($messageType = 'warning')
+  #end
+  {{$messageType}}
+  $services.localization.render($messageKey)
+  {{/$messageType}}
+  #stop
+#end
+#set ($discard = $xwiki.jsfx.use('uicomponents/edit/editableProperty.js', {
+  'forceSkinAction': true,
+  'language': $xcontext.locale
+}))
+#set ($discard = $doc.use($object))
+#set ($editing = $xcontext.action == 'edit')
+{{include reference="Paper.Code.RenderPaperSheetSignupBar"/}}
+
+{{html wiki="true" clean="false"}}
+&lt;div class="xform"&gt;
+  &lt;dl&gt;
+    &lt;dt #if (!$editing &amp;&amp; $hasEdit)
+        class="editableProperty"
+        data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('title')))"
+        data-property-type="object"#end&gt;
+      &lt;label#if ($editing) for="Paper.Code.PaperClass_0_title"#end&gt;
+        $escapetool.xml($doc.displayPrettyName('title', false, false))
+      &lt;/label&gt;
+    &lt;/dt&gt;
+    &lt;dd&gt;$doc.display('title')&lt;/dd&gt;
+    &lt;dt #if (!$editing &amp;&amp; $hasEdit)
+        class="editableProperty"
+        data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('authors')))"
+        data-property-type="object"#end&gt;
+      &lt;label#if ($editing) for="Paper.Code.PaperClass_0_authors"#end&gt;
+        $escapetool.xml($doc.displayPrettyName('authors', false, false))
+      &lt;/label&gt;
+    &lt;/dt&gt;
+    &lt;dd&gt;$doc.display('authors')&lt;/dd&gt;
+    &lt;dt #if (!$editing &amp;&amp; $hasEdit)
+        class="editableProperty"
+        data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('otherAuthors')))"
+        data-property-type="object"#end&gt;
+      &lt;label#if ($editing) for="Paper.Code.PaperClass_0_otherAuthors"#end&gt;
+        $escapetool.xml($doc.displayPrettyName('otherAuthors', false, false))
+      &lt;/label&gt;
+    &lt;/dt&gt;
+    &lt;dd&gt;$doc.display('otherAuthors')&lt;/dd&gt;
+    &lt;dt #if (!$editing &amp;&amp; $hasEdit)
+        class="editableProperty"
+        data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('journal')))"
+        data-property-type="object"#end&gt;
+      &lt;label#if ($editing) for="Paper.Code.PaperClass_0_journal"#end&gt;
+        $escapetool.xml($doc.displayPrettyName('journal', false, false))
+      &lt;/label&gt;
+    &lt;/dt&gt;
+    &lt;dd&gt;$doc.display('journal')&lt;/dd&gt;
+    &lt;dt #if (!$editing &amp;&amp; $hasEdit)
+        class="editableProperty"
+        data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('status')))"
+        data-property-type="object"#end&gt;
+      &lt;label#if ($editing) for="Paper.Code.PaperClass_0_status"#end&gt;
+        $escapetool.xml($doc.displayPrettyName('status', false, false))
+      &lt;/label&gt;
+    &lt;/dt&gt;
+    &lt;dd&gt;$doc.display('status')&lt;/dd&gt;
+    #if ($editing)
+      &lt;dt&gt;
+        &lt;label for="Paper.Code.PaperClass_0_signupOpen"&gt;
+          $doc.display('signupOpen')
+          $escapetool.xml($doc.displayPrettyName('signupOpen', false, false))
+        &lt;/label&gt;
+      &lt;/dt&gt;
+    #else
+      &lt;dt #if (!$editing &amp;&amp; $hasEdit)
+          class="editableProperty"
+          data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('signupOpen')))"
+          data-property-type="object"#end&gt;
+        &lt;label#if ($editing) for="Paper.Code.PaperClass_0_signupOpen"#end&gt;
+          $escapetool.xml($doc.displayPrettyName('signupOpen', false, false))
+        &lt;/label&gt;
+      &lt;/dt&gt;
+      &lt;dd&gt;$doc.display('signupOpen')&lt;/dd&gt;
+    #end
+    &lt;dt #if (!$editing &amp;&amp; $hasEdit)
+        class="editableProperty"
+        data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('arxiv')))"
+        data-property-type="object"#end&gt;
+      &lt;label#if ($editing) for="Paper.Code.PaperClass_0_arxiv"#end&gt;
+        $escapetool.xml($doc.displayPrettyName('arxiv', false, false))
+      &lt;/label&gt;
+    &lt;/dt&gt;
+    &lt;dd&gt;$doc.display('arxiv')&lt;/dd&gt;
+    &lt;dt #if (!$editing &amp;&amp; $hasEdit)
+        class="editableProperty"
+        data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('doi')))"
+        data-property-type="object"#end&gt;
+      &lt;label#if ($editing) for="Paper.Code.PaperClass_0_doi"#end&gt;
+        $escapetool.xml($doc.displayPrettyName('doi', false, false))
+      &lt;/label&gt;
+    &lt;/dt&gt;
+    &lt;dd&gt;$doc.display('doi')&lt;/dd&gt;
+    &lt;dt #if (!$editing &amp;&amp; $hasEdit)
+        class="editableProperty"
+        data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('reviewers')))"
+        data-property-type="object"#end&gt;
+      &lt;label#if ($editing) for="Paper.Code.PaperClass_0_reviewers"#end&gt;
+        $escapetool.xml($doc.displayPrettyName('reviewers', false, false))
+      &lt;/label&gt;
+    &lt;/dt&gt;
+    &lt;dd&gt;$doc.display('reviewers')&lt;/dd&gt;
+    &lt;dt #if (!$editing &amp;&amp; $hasEdit)
+        class="editableProperty"
+        data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('description')))"
+        data-property-type="object"#end&gt;
+      &lt;label#if ($editing) for="Paper.Code.PaperClass_0_description"#end&gt;
+        $escapetool.xml($doc.displayPrettyName('description', false, false))
+      &lt;/label&gt;
+    &lt;/dt&gt;
+    &lt;dd&gt;$doc.display('description')&lt;/dd&gt;
+    &lt;dt #if (!$editing &amp;&amp; $hasEdit)
+        class="editableProperty"
+        data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('latestVersion')))"
+        data-property-type="object"#end&gt;
+      &lt;label#if ($editing) for="Paper.Code.PaperClass_0_latestVersion"#end&gt;
+        $escapetool.xml($doc.displayPrettyName('latestVersion', false, false))
+      &lt;/label&gt;
+    &lt;/dt&gt;
+    &lt;dd&gt;$doc.display('latestVersion')&lt;/dd&gt;
+  &lt;/dl&gt;
+&lt;/div&gt;
+{{/html}}
+{{/velocity}}</content>
+</xwikidoc>

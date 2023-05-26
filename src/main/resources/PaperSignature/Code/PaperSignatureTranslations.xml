@@ -1,0 +1,126 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="PaperSignature.Code.PaperSignatureTranslations" locale="">
+  <web>PaperSignature.Code</web>
+  <name>PaperSignatureTranslations</name>
+  <language/>
+  <defaultLanguage>en</defaultLanguage>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>PaperSignatureClass</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>plain/1.0</syntaxId>
+  <hidden>true</hidden>
+  <content># Class fields
+PaperSignature.Code.PaperSignatureClass_paper=Paper
+PaperSignature.Code.PaperSignatureClass_author=Author
+PaperSignature.Code.PaperSignatureClass_eligibility=Eligibility
+PaperSignature.Code.PaperSignatureClass_eligibility_member=Current CTAC member that has been a collaboration member for one year or more
+PaperSignature.Code.PaperSignatureClass_eligibility_exMember=Former CTAC member that left the collaboration less than 6 months ago
+PaperSignature.Code.PaperSignatureClass_eligibility_other=Non-CTAC member (please specify elibibility reason)
+PaperSignature.Code.PaperSignatureClass_eligibilityExplanation=Non-CTAC Eligibility Reason
+PaperSignature.Code.PaperSignatureClass_eligibilityValidated=Non-CTAC Eligibility Validated
+PaperSignature.Code.PaperSignatureClass_creationDate=Signature Date
+PaperSignature.Code.PaperSignatureClass_creator=Created By
+
+# Sheet keys
+papersignature.sheet.description=This page controls how PaperSignature pages are displayed in both view and edit modes.
+papersignature.sheet.noObject=The current page doesn't have the expected PaperSignature object.
+papersignature.sheet.noFields=The PaperSignature application doesn't have any fields to display.
+
+# Live table generic keys
+papersignature.livetable.doc.title=Page Title
+papersignature.livetable.doc.name=Page Name
+papersignature.livetable.doc.space=Space
+papersignature.livetable.doc.fullname=Page full name
+papersignature.livetable.doc.location=Location
+papersignature.livetable.doc.author=Last Author
+papersignature.livetable.doc.creator=Creator
+papersignature.livetable.doc.date=Date
+papersignature.livetable.doc.creationDate=Creation Date
+papersignature.livetable._avatar=Avatar
+papersignature.livetable._images=Images
+papersignature.livetable._attachments=Attachments
+papersignature.livetable._actions=Actions
+papersignature.livetable._actions.edit=Edit
+papersignature.livetable._actions.delete=Delete
+papersignature.livetable.emptyvalue=-
+
+# Live table specific keys
+papersignature.livetable.paper=Paper
+papersignature.livetable.author=Author
+papersignature.livetable.eligibility=Eligibility
+papersignature.livetable.eligibilityExplanation=Non-CTAC Eligibility Reason
+papersignature.livetable.eligibilityValidated=Non-CTAC Eligibility Validated
+papersignature.livetable.creationDate=Signature Date
+papersignature.livetable.creator=Created By
+
+# Other keys
+papersignature.entry.name=PaperSignature
+
+# Deprecated keys
+papersignature.dataSpace.title=Data
+</content>
+  <object>
+    <name>PaperSignature.Code.PaperSignatureTranslations</name>
+    <number>0</number>
+    <className>XWiki.TranslationDocumentClass</className>
+    <guid>6fa8141f-18a2-47b0-8797-0a824fa4e38f</guid>
+    <class>
+      <name>XWiki.TranslationDocumentClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <scope>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>scope</name>
+        <number>1</number>
+        <prettyName>Scope</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>GLOBAL|WIKI|USER|ON_DEMAND</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </scope>
+    </class>
+    <property>
+      <scope>WIKI</scope>
+    </property>
+  </object>
+</xwikidoc>

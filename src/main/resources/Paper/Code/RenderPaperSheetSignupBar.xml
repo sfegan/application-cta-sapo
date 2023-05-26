@@ -1,0 +1,139 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="Paper.Code.RenderPaperSheetSignupBar" locale="">
+  <web>Paper.Code</web>
+  <name>RenderPaperSheetSignupBar</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title>RenderPaperSheetSignupBar</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{velocity}}
+{{html}}
+#if(!$editing)
+  #set($sigDocRef = $services.model.createDocumentReference('', 'PaperSignature', $xcontext.user))
+  #set($sigDoc = $xwiki.getDocument($sigDocRef))
+  #set($sigObject = $sigDoc.getObject("PaperSignature.Code.PaperSignatureClass","paper",$doc.fullName))
+  #if($sigObject)
+    #if($object.getValue('signupOpen')==1)
+      #set($uaDocRef = $services.model.createDocumentReference('', 'UserAffiliation', $xcontext.user))
+      #set($uaDoc = $xwiki.getDocument($uaDocRef))
+      #set($uaObject = $uaDoc.getObject("UserAffiliation.Code.UserAffiliationClass"))
+      #set($saObjectList = $uaDoc.getObjects("UserAffiliation.Code.SingleAffiliationClass"))
+      #set($signature = "")
+      #set($addresses = [])
+      #if($uaObject &amp;&amp; $saObjectList.size()&gt;0)
+        #set($signature = "#signature($uaObject.getValue('firstName'),$uaObject.getValue('lastName'))")
+        #foreach($saObject in $saObjectList)
+          #set($affilDocRef = $saObject.getValue('affiliationAddressRef'))
+          #if("$!affilDocRef" != "")
+            #set($affilDoc = $xwiki.getDocument($affilDocRef))
+            #if($affilDoc)
+              #set($affilObject = $affilDoc.getObject('AffiliationAddress.Code.AffiliationAddressClass'))
+              #if($affilObject)
+                #set($discard = $addresses.add($affilObject.getValue('publicationAddress')))
+              #end
+            #end
+          #end
+        #end
+      #end
+      #if($signature != "" &amp;&amp; $addresses.size()&gt;0)
+        &lt;div class="box successmessage"&gt;
+          &lt;h5 style="margin-top:0"&gt;You have requested to sign this paper!&lt;/h5&gt;
+          &lt;p&gt;&lt;b&gt;&lt;/b&gt;Your name will appear on the author list if you meet the elibility
+            criteria, in which case your name and affiliations will be:&lt;/p&gt;
+          &lt;p style="margin-left:1em"&gt;
+            $escapetool.xml($signature)##
+            &lt;sup&gt;$stringtool.join([1..$addresses.size()],",")&lt;/sup&gt;
+            #foreach($address in $addresses)
+              &lt;br&gt;&lt;sup&gt;$foreach.count&lt;/sup&gt; $escapetool.xml($address)
+            #end
+          &lt;/p&gt;
+          &lt;p&gt;To change the name and affiliations that will appear on the author list for this paper,
+            &lt;a href="$uaDoc.getURL('view')" style="font-size:18px"&gt;&lt;b&gt;edit your SAPO profile page&lt;/b&gt;&lt;/a&gt;
+            at any time before the sign-up period closes.&lt;/p&gt;
+        &lt;/div&gt;
+      #else
+        &lt;div class="box errormessage"&gt;
+          &lt;h5 style="margin-top:0"&gt;You have requested to sign this paper, but there's a problem!&lt;/h5&gt;
+          &lt;p&gt;&lt;b&gt;&lt;/b&gt;Your name will appear on the author list
+            if you meet the elibility criteria and the problem is resolved.&lt;/p&gt;
+          &lt;p&gt;There's a problem with your signature or your affiliations. To fix this, please
+            &lt;a href="$uaDoc.getURL('view')" style="font-size:18px"&gt;&lt;b&gt;edit your SAPO profile page&lt;/b&gt;&lt;/a&gt;
+              at any time before the sign-up period closes.&lt;/p&gt;
+        &lt;/div&gt;
+      #end
+    #else
+      &lt;div class="box successmessage"&gt;
+        &lt;h5 style="margin-top:0"&gt;You have requested to sign this paper!&lt;/h5&gt;
+      &lt;/div&gt;
+    #end
+  #elseif($object.getValue('signupOpen')==1)
+    &lt;script&gt;
+      function enableButton() {
+        var selectElement = document.getElementById("eligibilitySelect");
+        var buttonElement = document.getElementById("signPaperButton");
+        if (selectElement.value != "") {
+          buttonElement.disabled = false;
+        } else {
+          buttonElement.disabled = true;
+        }
+      }
+    &lt;/script&gt;
+    &lt;div class="box warningmessage"&gt;
+      &lt;h5 style="margin-top:0"&gt;This paper is open for author sign-up.&lt;/h5&gt;
+      &lt;p&gt;As a CTAC member you can request to sign this paper by declaring your eligibility here and clicking
+        on the "Sign paper" button.&lt;/p&gt;
+
+      &lt;form class="xform" action="$xwiki.getURL("Paper.Code.SignPaper","view")"user=$escapetool.url($xcontext.user)&amp;paper=" class="xform" method="get"&gt;
+        &lt;input type="hidden" name="paper" value="$escapetool.xml($doc.fullName)" /&gt;
+        &lt;input type="hidden" name="user" value="$escapetool.xml($xcontext.user)" /&gt;
+        &lt;input type="hidden" name="xredirect" value="$escapetool.xml($doc.URL)" /&gt;
+        &lt;dl&gt;
+          &lt;dt&gt;
+            &lt;label for="eligibilitySelect"&gt;I declare that I am eligible to sign this paper as a:&lt;/label&gt;
+          &lt;/dt&gt;
+          &lt;dd&gt;
+            &lt;select id="eligibilitySelect" onchange="enableButton()"&gt;
+              &lt;option value=""&gt;---&lt;/option&gt;
+              &lt;option value="member"&gt;$escapetool.xml($services.localization.render('PaperSignature.Code.PaperSignatureClass_eligibility_member'))&lt;/option&gt;
+              &lt;option value="exMember"&gt;$escapetool.xml($services.localization.render('PaperSignature.Code.PaperSignatureClass_eligibility_exMember'))&lt;/option&gt;
+            &lt;/select&gt;
+          &lt;/dd&gt;
+        &lt;/dl&gt;
+        &lt;input class="button" disabled="true" id="signPaperButton" type="submit" value="Sign paper"/&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  #end
+#end ## not editing
+{{/html}}
+{{/velocity}}</content>
+</xwikidoc>

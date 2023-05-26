@@ -114,25 +114,12 @@
         <name>signature</name>
         <number>6</number>
         <prettyName>Signature</prettyName>
-        <script>{{velocity}}
+        <script>{{include reference="UserAffiliation.Code.Macros"/}}
+
+{{velocity}}
 #set($fn = $object.getValue('firstName').strip())
 #set($ln = $object.getValue('lastName').strip())
-#set($source = [])
-#foreach($nn in $fn.split('\s+'))
-  #set($hn = [])
-  #foreach($n in $nn.split('-'))
-    #if("$n" != "")
-      #set($discard = $hn.add($n.substring(0, 1).toUpperCase() + "."))
-    #end
-  #end
-  #set($discard = $source.add($stringtool.join($hn,'-')))
-#end
-#foreach($n in $ln.split('\s+'))
-  #if("$n" != "")
-    #set($discard = $source.add($n))
-  #end
-#end
-$stringtool.join($source,' ')
+#signature($fn, $ln)
 {{/velocity}}</script>
         <unmodifiable>0</unmodifiable>
         <validationMessage/>

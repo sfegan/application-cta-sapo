@@ -1,0 +1,121 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="Paper.Code.SignPaper" locale="">
+  <web>Paper.Code</web>
+  <name>SignPaper</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>Paper.Code.WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title>SignPaper</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{velocity}}
+#set($paperRef = $xcontext.getRequest().getParameter('paper'))
+#set($userRef = $xcontext.getRequest().getParameter('user'))
+#if("$!paperRef" != "" &amp;&amp; "$!userRef" != "")
+  #if($userRef != $xcontext.user &amp;&amp; !$hasAdmin)
+    {{html}}
+      $xcontext.response.setStatus(400)
+      &lt;div class="box errormessage"&gt;
+        &lt;b&gt;Error:&lt;/b&gt;
+        You do not have rights to sign the paper on behalf of user
+        #displayUser($userRef,{ 'useInlineHTML': true})
+      &lt;/div&gt;
+    {{/html}}
+    #stop
+  #end
+  #set($paperDoc = $xwiki.getDocument($paperRef))
+  #if($paperDoc.isNew())
+    {{html}}
+      $xcontext.response.setStatus(400)
+      &lt;div class="box errormessage"&gt;
+        &lt;b&gt;Error:&lt;/b&gt;
+        No paper found corresponding to reference: $paperRef
+      &lt;/div&gt;
+    {{/html}}
+    #stop
+  #end
+  #set($paperObject = $paperDoc.getObject("Paper.Code.PaperClass"))
+  #if(!$paperObject)
+    {{html}}
+      $xcontext.response.setStatus(400)
+      &lt;div class="box errormessage"&gt;
+        &lt;b&gt;Error:&lt;/b&gt;
+        XWiki page does not seem to correspond to a paper: $paperDocRef
+      &lt;/div&gt;
+    {{/html}}
+    #stop
+  #end
+  #if(!$hasAdmin &amp;&amp; $paperObject.getValue('signupOpen')==0)
+    {{html}}
+      $xcontext.response.setStatus(400)
+      &lt;div class="box errormessage"&gt;
+        &lt;b&gt;Error:&lt;/b&gt;
+        Paper sign-up period is &lt;u&gt;not open&lt;/u&gt;, you cannot sign the paper at this time.
+      &lt;/div&gt;
+    {{/html}}
+    #stop
+  #end
+  #set($sigDocRef = $services.model.createDocumentReference('', 'PaperSignature', $userRef))
+  #set($sigDoc = $xwiki.getDocument($sigDocRef))
+  #if($sigDoc.isNew())
+    $sigDoc.setTitle("Paper signatures for $userRef")
+  #end
+  #set($sigObject = $sigDoc.getObject("PaperSignature.Code.PaperSignatureClass","paper",$paperRef))
+  #set($comment = "Updated signature for $paperRef")
+  #set($updated = true)
+  #if(!$sigObject)
+    #set($sigObject = $sigDoc.newObject("PaperSignature.Code.PaperSignatureClass"))
+    #set($comment = "Signed $paperRef")
+    #set($updated = false)
+  #end
+  #set($discard = $sigObject.set("paper", $paperRef))
+  #set($discard = $sigObject.set("author", $userRef))
+  #set($discard = $sigObject.set("eligibility", $xcontext.getRequest().getParameter('eligibility')))
+  #set($discard = $sigObject.set("eligibilityExplanation", $xcontext.getRequest().getParameter('eligibilityExplanation')))
+  #set($discard = $sigObject.set("eligibilityValidated", 0))
+  #set($discard = $sigObject.set("creationDate", $datetool.date))
+  #set($discard = $sigObject.set("creator", $xcontext.user))
+  #set($discard = $sigDoc.saveAsAuthor($comment,$updated))
+  #if($xcontext.getRequest().getParameter('xredirect'))
+    $xcontext.getResponse().sendRedirect($xcontext.getRequest().getParameter('xredirect'))
+    #stop
+  #else
+    {{html}}
+      &lt;div class="box successmessage"&gt;
+        &lt;b&gt;Success:&lt;/b&gt; $comment for author #displayUser($userRef,{ 'useInlineHTML': true})
+      &lt;/div&gt;
+    {{/html}}
+
+  #end
+#end
+{{velocity}}
+</content>
+</xwikidoc>

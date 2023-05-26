@@ -20,25 +20,25 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<xwikidoc version="1.5" reference="UserAffiliation.Code.UserAffiliationClass" locale="">
-  <web>UserAffiliation.Code</web>
-  <name>UserAffiliationClass</name>
+<xwikidoc version="1.5" reference="PaperSignature.Code.PaperSignatureClass" locale="">
+  <web>PaperSignature.Code</web>
+  <name>PaperSignatureClass</name>
   <language/>
   <defaultLanguage/>
   <translation>0</translation>
   <creator>xwiki:XWiki.Admin</creator>
-  <parent>UserAffiliation.WebHome</parent>
+  <parent>PaperSignature.WebHome</parent>
   <author>xwiki:XWiki.Admin</author>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <version>1.1</version>
-  <title>UserAffiliation Class</title>
+  <title>PaperSignature Class</title>
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
   <content/>
   <class>
-    <name>UserAffiliation.Code.UserAffiliationClass</name>
+    <name>PaperSignature.Code.PaperSignatureClass</name>
     <customClass/>
     <customMapping/>
     <defaultViewSheet/>
@@ -46,121 +46,152 @@
     <defaultWeb/>
     <nameField/>
     <validationScript/>
-    <email>
+    <author>
+      <cache>0</cache>
       <customDisplay/>
       <disabled>0</disabled>
+      <displayType>select</displayType>
       <hint/>
-      <name>email</name>
-      <number>4</number>
-      <picker>1</picker>
-      <prettyName>Contact author email address</prettyName>
-      <size>30</size>
-      <unmodifiable>0</unmodifiable>
-      <validationMessage/>
-      <validationRegExp>/^(([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[a-zA-Z]{2,}))?$/</validationRegExp>
-      <classType>com.xpn.xwiki.objects.classes.EmailClass</classType>
-    </email>
-    <firstName>
-      <customDisplay>{{include reference="UserAffiliation.Code.FirstAndLastNameDisplayer"/}}</customDisplay>
-      <disabled>0</disabled>
-      <hint/>
-      <name>firstName</name>
+      <multiSelect>0</multiSelect>
+      <name>author</name>
       <number>2</number>
       <picker>0</picker>
-      <prettyName>First name</prettyName>
-      <size>30</size>
+      <prettyName>Author</prettyName>
+      <relationalStorage>0</relationalStorage>
+      <separator> </separator>
+      <separators/>
+      <size>6</size>
+      <sort>none</sort>
+      <unmodifiable>0</unmodifiable>
+      <usesList>1</usesList>
+      <validationMessage/>
+      <validationRegExp/>
+      <classType>com.xpn.xwiki.objects.classes.UsersClass</classType>
+    </author>
+    <creationDate>
+      <customDisplay>{{include reference="AppWithinMinutes.DateDisplayer" /}}</customDisplay>
+      <dateFormat>dd/MM/yyyy HH:mm:ss</dateFormat>
+      <disabled>0</disabled>
+      <emptyIsToday>1</emptyIsToday>
+      <hint/>
+      <name>creationDate</name>
+      <number>6</number>
+      <picker>1</picker>
+      <prettyName>Signature Date</prettyName>
+      <size>20</size>
       <unmodifiable>0</unmodifiable>
       <validationMessage/>
       <validationRegExp/>
-      <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-    </firstName>
-    <lastName>
-      <customDisplay>{{include reference="UserAffiliation.Code.FirstAndLastNameDisplayer"/}}</customDisplay>
+      <classType>com.xpn.xwiki.objects.classes.DateClass</classType>
+    </creationDate>
+    <creator>
+      <cache>0</cache>
+      <customDisplay/>
       <disabled>0</disabled>
+      <displayType>select</displayType>
       <hint/>
-      <name>lastName</name>
+      <multiSelect>0</multiSelect>
+      <name>creator</name>
+      <number>7</number>
+      <picker>0</picker>
+      <prettyName>Created By</prettyName>
+      <relationalStorage>0</relationalStorage>
+      <separator> </separator>
+      <separators/>
+      <size>6</size>
+      <sort>none</sort>
+      <unmodifiable>0</unmodifiable>
+      <usesList>1</usesList>
+      <validationMessage/>
+      <validationRegExp/>
+      <classType>com.xpn.xwiki.objects.classes.UsersClass</classType>
+    </creator>
+    <eligibility>
+      <cache>0</cache>
+      <customDisplay/>
+      <defaultValue/>
+      <disabled>0</disabled>
+      <displayType>select</displayType>
+      <freeText/>
+      <hint/>
+      <multiSelect>0</multiSelect>
+      <name>eligibility</name>
       <number>3</number>
       <picker>0</picker>
-      <prettyName>Last name</prettyName>
-      <size>30</size>
+      <prettyName>Eligibility</prettyName>
+      <relationalStorage>1</relationalStorage>
+      <separator> </separator>
+      <separators> ,|</separators>
+      <size>1</size>
+      <sort>none</sort>
       <unmodifiable>0</unmodifiable>
       <validationMessage/>
       <validationRegExp/>
-      <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-    </lastName>
-    <orcidURL>
+      <values>member=Current CTAC member (for one year or more)|exMember=Former CTAC member (until &lt;6 months ago)|other=Non-CTAC member (please specify elibibility reason)</values>
+      <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+    </eligibility>
+    <eligibilityExplanation>
       <customDisplay/>
       <disabled>0</disabled>
-      <hint>https://orcid.org/xxxx-xxxx-xxxx-xxxx</hint>
-      <name>orcidURL</name>
-      <number>5</number>
-      <picker>0</picker>
-      <prettyName>ORCID iD URL</prettyName>
-      <size>30</size>
-      <unmodifiable>0</unmodifiable>
-      <validationMessage/>
-      <validationRegExp/>
-      <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-    </orcidURL>
-    <signature>
-      <customDisplay/>
-      <disabled>0</disabled>
+      <editor>---</editor>
       <hint/>
-      <name>signature</name>
-      <number>6</number>
-      <prettyName>Signature</prettyName>
-      <script>{{include reference="UserAffiliation.Code.Macros"/}}
-
-{{velocity}}
-#set($fn = $object.getValue('firstName').strip())
-#set($ln = $object.getValue('lastName').strip())
-#signature($fn, $ln)
-{{/velocity}}</script>
+      <name>eligibilityExplanation</name>
+      <number>4</number>
+      <picker>0</picker>
+      <prettyName>Non-CTAC Eligibility Reason</prettyName>
+      <rows>5</rows>
+      <size>40</size>
       <unmodifiable>0</unmodifiable>
       <validationMessage/>
       <validationRegExp/>
-      <classType>com.xpn.xwiki.objects.classes.ComputedFieldClass</classType>
-    </signature>
-    <syncWithProfile>
+      <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+    </eligibilityExplanation>
+    <eligibilityValidated>
       <customDisplay/>
-      <defaultValue>0</defaultValue>
+      <defaultValue/>
       <disabled>0</disabled>
-      <displayFormType>select</displayFormType>
+      <displayFormType>checkbox</displayFormType>
       <displayType/>
       <hint/>
-      <name>syncWithProfile</name>
-      <number>1</number>
-      <prettyName>Synchronise name and email with user profile</prettyName>
+      <name>eligibilityValidated</name>
+      <number>5</number>
+      <prettyName>Non-CTAC Eligibility Validated</prettyName>
       <unmodifiable>0</unmodifiable>
       <validationMessage/>
       <validationRegExp/>
       <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
-    </syncWithProfile>
-    <userProfile>
-      <customDisplay>{{velocity}}
-{{html clean="false"}}
-#displayUser( $object.documentReference.name, { "useInlineHTML": true} )
-{{/html}}
-{{/velocity}}</customDisplay>
+    </eligibilityValidated>
+    <paper>
+      <cache>0</cache>
+      <classname/>
+      <customDisplay/>
       <disabled>0</disabled>
+      <displayType>input</displayType>
       <hint/>
-      <name>userProfile</name>
-      <number>7</number>
-      <prettyName>User Profile</prettyName>
-      <script>{{velocity}}
-$object.documentReference.name
-{{/velocity}}</script>
+      <idField/>
+      <multiSelect>0</multiSelect>
+      <name>paper</name>
+      <number>1</number>
+      <picker>1</picker>
+      <prettyName>Paper</prettyName>
+      <relationalStorage>1</relationalStorage>
+      <separator> </separator>
+      <separators/>
+      <size>1</size>
+      <sort>none</sort>
+      <sql/>
       <unmodifiable>0</unmodifiable>
       <validationMessage/>
       <validationRegExp/>
-      <classType>com.xpn.xwiki.objects.classes.ComputedFieldClass</classType>
-    </userProfile>
+      <valueField/>
+      <classType>com.xpn.xwiki.objects.classes.PageClass</classType>
+    </paper>
   </class>
   <object>
-    <name>UserAffiliation.Code.UserAffiliationClass</name>
+    <name>PaperSignature.Code.PaperSignatureClass</name>
     <number>0</number>
     <className>AppWithinMinutes.MetadataClass</className>
-    <guid>76819503-76e6-4ead-b6e3-0076d8908c99</guid>
+    <guid>3fae8ea9-e6b3-447e-b641-8d41110f8928</guid>
     <class>
       <name>AppWithinMinutes.MetadataClass</name>
       <customClass/>
@@ -189,10 +220,10 @@ $object.documentReference.name
     </property>
   </object>
   <object>
-    <name>UserAffiliation.Code.UserAffiliationClass</name>
+    <name>PaperSignature.Code.PaperSignatureClass</name>
     <number>0</number>
     <className>XWiki.ClassSheetBinding</className>
-    <guid>3638d2bf-6aab-4885-8dea-87732049d4a1</guid>
+    <guid>c22abfa9-8d9b-443d-b930-8166873c7ea9</guid>
     <class>
       <name>XWiki.ClassSheetBinding</name>
       <customClass/>
@@ -229,14 +260,14 @@ $object.documentReference.name
       </sheet>
     </class>
     <property>
-      <sheet>UserAffiliationSheet</sheet>
+      <sheet>PaperSignatureSheet</sheet>
     </property>
   </object>
   <object>
-    <name>UserAffiliation.Code.UserAffiliationClass</name>
+    <name>PaperSignature.Code.PaperSignatureClass</name>
     <number>0</number>
     <className>XWiki.DocumentSheetBinding</className>
-    <guid>f91bf232-85c2-4649-891e-fe794c2882d6</guid>
+    <guid>e546ec39-4874-49e5-a316-45cd3197dc9b</guid>
     <class>
       <name>XWiki.DocumentSheetBinding</name>
       <customClass/>
@@ -277,10 +308,10 @@ $object.documentReference.name
     </property>
   </object>
   <object>
-    <name>UserAffiliation.Code.UserAffiliationClass</name>
+    <name>PaperSignature.Code.PaperSignatureClass</name>
     <number>1</number>
     <className>XWiki.DocumentSheetBinding</className>
-    <guid>4e1151b7-d3da-42cb-80c2-0fcc96195255</guid>
+    <guid>bbf9db76-5c23-4e10-93aa-bc8fd03d8da4</guid>
     <class>
       <name>XWiki.DocumentSheetBinding</name>
       <customClass/>
