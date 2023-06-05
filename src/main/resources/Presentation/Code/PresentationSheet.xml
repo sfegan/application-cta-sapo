@@ -213,7 +213,7 @@ $event.display('bannerMessage','view')
         #renderEditableProperty($object, 'slides', 'image', $hasEdit, $overrideLabel)
 
         #if( $object.getValue('hasProceedings')==1 )
-          #renderEditableProperty($object, 'proceedings', 'book', $hasEdit, $overrideLabel)
+          #renderEditableProperty($object, 'proceedings', 'book', $hasEdit, false)
         #end
       &lt;/dl&gt;
     &lt;/div&gt;
