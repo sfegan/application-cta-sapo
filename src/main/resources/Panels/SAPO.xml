@@ -40,6 +40,7 @@
 #set( $panelTitle = "SAPO space" )
 #set( $panelEntries = [
   { "target": "Main.WebHome", "icon": "icon:home", "label": "SAPO Home" },
+  { "target": "UserAffiliation.Code.MyAffiliation", "icon": "icon:vcard", "label": "My affiliation" },
   { "target": "Event.WebHome", "icon": "icon:comments", "label": "Conferences" },
   { "target": "Consortium Publication Projects.WebHome", "icon": "icon:page_white_text", "label": "Papers" },
   { "url": "https://indico.cta-observatory.org/event/1075/", "icon": "icon:zoom", "label": "Paper reviewing" },
@@ -87,7 +88,7 @@
         <separators>|, </separators>
         <size>5</size>
         <unmodifiable>0</unmodifiable>
-        <values>action=Action|doc.reference=Document|icon.theme=Icon theme|locale=Language|rendering.defaultsyntax=Default syntax|rendering.restricted=Restricted|rendering.targetsyntax=Target syntax|request.base=Request base URL|request.cookies|request.parameters=Request parameters|request.url=Request URL|request.wiki=Request wiki|user=User|wiki=Wiki</values>
+        <values>action=Action|doc.reference=Document|icon.theme=Icon theme|locale=Language|rendering.defaultsyntax=Default syntax|rendering.restricted=Restricted|rendering.targetsyntax=Target syntax|request.base=Request base URL|request.cookies|request.headers|request.parameters=Request parameters|request.remoteAddr|request.url=Request URL|request.wiki=Request wiki|user=User|wiki=Wiki</values>
         <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
       </async_context>
       <async_enabled>
@@ -125,6 +126,7 @@
         <name>content</name>
         <number>5</number>
         <prettyName>Executed Content</prettyName>
+        <restricted>0</restricted>
         <rows>25</rows>
         <size>120</size>
         <unmodifiable>0</unmodifiable>
@@ -136,6 +138,7 @@
         <name>description</name>
         <number>2</number>
         <prettyName>Description</prettyName>
+        <restricted>0</restricted>
         <rows>5</rows>
         <size>40</size>
         <unmodifiable>0</unmodifiable>
@@ -288,6 +291,7 @@
         <name>code</name>
         <number>2</number>
         <prettyName>Code</prettyName>
+        <restricted>0</restricted>
         <rows>20</rows>
         <size>50</size>
         <unmodifiable>0</unmodifiable>
@@ -446,6 +450,7 @@ require(['scriptaculous/effects'], function() {
         <name>code</name>
         <number>2</number>
         <prettyName>Code</prettyName>
+        <restricted>0</restricted>
         <rows>20</rows>
         <size>50</size>
         <unmodifiable>0</unmodifiable>
