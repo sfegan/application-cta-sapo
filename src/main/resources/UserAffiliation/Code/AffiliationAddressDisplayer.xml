@@ -171,7 +171,7 @@
       </use>
     </class>
     <property>
-      <cache>short</cache>
+      <cache>forbid</cache>
     </property>
     <property>
       <code>#set($hql = "select doc.fullName, prop_country.value, doc.title, prop_address.value from XWikiDocument doc, BaseObject obj, StringProperty prop_country, StringProperty prop_address where doc.fullName=obj.name and obj.className='AffiliationAddress.Code.AffiliationAddressClass' and obj.name like 'AffiliationAddress%' and obj.name!='AffiliationAddress.Code.AffiliationAddressTemplate' and prop_country.id.id=obj.id and prop_country.name='country' and prop_address.id.id=obj.id and prop_address.name='publicationAddress'")
