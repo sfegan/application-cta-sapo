@@ -124,7 +124,7 @@
     <name>PaperSignature.WebPreferences</name>
     <number>1</number>
     <className>XWiki.XWikiGlobalRights</className>
-    <guid>ebfd3cfa-8acb-431d-84fa-c75109523344</guid>
+    <guid>84955dad-bf6c-426b-aa10-b26bb3560055</guid>
     <class>
       <name>XWiki.XWikiGlobalRights</name>
       <customClass/>
@@ -194,7 +194,7 @@
       <allow>1</allow>
     </property>
     <property>
-      <groups>XWiki.XWikiAdminGroup</groups>
+      <groups>xwiki:XWiki.XWikiAdminGroup</groups>
     </property>
     <property>
       <levels>edit</levels>
