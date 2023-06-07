@@ -124,7 +124,7 @@
     <name>AffiliationAddress.WebPreferences</name>
     <number>1</number>
     <className>XWiki.XWikiGlobalRights</className>
-    <guid>e7bfee38-6ff3-4994-8ece-06fa922f4540</guid>
+    <guid>9b800524-0a3f-43ef-b00a-6780a8d14fb6</guid>
     <class>
       <name>XWiki.XWikiGlobalRights</name>
       <customClass/>
@@ -194,7 +194,7 @@
       <allow>1</allow>
     </property>
     <property>
-      <groups>XWiki.XWikiAdminGroup</groups>
+      <groups>xwiki:XWiki.XWikiAdminGroup</groups>
     </property>
     <property>
       <levels>edit</levels>
