@@ -127,7 +127,7 @@
       <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
     </journal>
     <latestVersion>
-      <customDisplay/>
+      <customDisplay>{{include reference="Presentation.Code.SlidesDisplayer"/}}</customDisplay>
       <disabled>0</disabled>
       <hint/>
       <name>latestVersion</name>
@@ -141,7 +141,7 @@
       <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
     </latestVersion>
     <otherAuthors>
-      <contenttype>---</contenttype>
+      <contenttype>FullyRenderedText</contenttype>
       <customDisplay/>
       <disabled>0</disabled>
       <editor>---</editor>
