@@ -38,6 +38,8 @@
   <hidden>true</hidden>
   <content>{{include reference="UserAffiliation.Code.Macros"/}}
 
+{{include reference="Presentation.Code.Macros"/}}
+
 {{velocity}}
 #set ($object = $doc.getObject('Paper.Code.PaperClass'))
 #if (!$object)
@@ -62,115 +64,51 @@
 
 {{html wiki="true" clean="false"}}
 &lt;div class="xform"&gt;
+  &lt;div class="row"&gt;
+    &lt;div class="col-sm-8"&gt;
+      &lt;dl&gt;
+        #renderEditableProperty($object, 'title', 'font', $hasEdit, false)
+        #renderEditableProperty($object, 'authors', 'group', $hasEdit, false)
+        #renderEditableProperty($object, 'otherAuthors', 'group', $hasEdit, false)
+      &lt;/dl&gt;
+      &lt;div class="row"&gt;
+        &lt;div class="col-sm-6"&gt;
+          &lt;dl&gt;
+            #renderEditableProperty($object, 'journal', 'book', $hasEdit, false)
+          &lt;/dl&gt;
+        &lt;/div&gt;
+        &lt;div class="col-sm-6"&gt;
+          &lt;dl&gt;
+            #renderEditableProperty($object, 'status', 'list', $hasEdit, false)
+          &lt;/dl&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="row"&gt;
+        &lt;div class="col-sm-6"&gt;
+          &lt;dl&gt;
+            #renderEditableProperty($object, 'arxiv', 'world', $hasEdit, false)
+          &lt;/dl&gt;
+        &lt;/div&gt;
+        &lt;div class="col-sm-6"&gt;
+          &lt;dl&gt;
+            #renderEditableProperty($object, 'doi', 'world', $hasEdit, false)
+          &lt;/dl&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="col-sm-4" style="padding-left: 0"&gt;
+      &lt;div style="background-color: cornsilk; border: 2px solid sienna; padding: 10px"&gt;
+        &lt;h5&gt;$escapetool.xml($services.localization.render("presentation.sheet.sapo_header"))&lt;/h5&gt;
+        &lt;dl style="margin-bottom: 2px"&gt;
+          #renderEditableProperty($object, 'reviewers', 'search', $hasAdmin, false)
+          #renderEditableProperty($object, 'signupOpen', 'tick', $hasAdmin, false)
+        &lt;/dl&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
   &lt;dl&gt;
-    &lt;dt #if (!$editing &amp;&amp; $hasEdit)
-        class="editableProperty"
-        data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('title')))"
-        data-property-type="object"#end&gt;
-      &lt;label#if ($editing) for="Paper.Code.PaperClass_0_title"#end&gt;
-        $escapetool.xml($doc.displayPrettyName('title', false, false))
-      &lt;/label&gt;
-    &lt;/dt&gt;
-    &lt;dd&gt;$doc.display('title')&lt;/dd&gt;
-    &lt;dt #if (!$editing &amp;&amp; $hasEdit)
-        class="editableProperty"
-        data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('authors')))"
-        data-property-type="object"#end&gt;
-      &lt;label#if ($editing) for="Paper.Code.PaperClass_0_authors"#end&gt;
-        $escapetool.xml($doc.displayPrettyName('authors', false, false))
-      &lt;/label&gt;
-    &lt;/dt&gt;
-    &lt;dd&gt;$doc.display('authors')&lt;/dd&gt;
-    &lt;dt #if (!$editing &amp;&amp; $hasEdit)
-        class="editableProperty"
-        data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('otherAuthors')))"
-        data-property-type="object"#end&gt;
-      &lt;label#if ($editing) for="Paper.Code.PaperClass_0_otherAuthors"#end&gt;
-        $escapetool.xml($doc.displayPrettyName('otherAuthors', false, false))
-      &lt;/label&gt;
-    &lt;/dt&gt;
-    &lt;dd&gt;$doc.display('otherAuthors')&lt;/dd&gt;
-    &lt;dt #if (!$editing &amp;&amp; $hasEdit)
-        class="editableProperty"
-        data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('journal')))"
-        data-property-type="object"#end&gt;
-      &lt;label#if ($editing) for="Paper.Code.PaperClass_0_journal"#end&gt;
-        $escapetool.xml($doc.displayPrettyName('journal', false, false))
-      &lt;/label&gt;
-    &lt;/dt&gt;
-    &lt;dd&gt;$doc.display('journal')&lt;/dd&gt;
-    &lt;dt #if (!$editing &amp;&amp; $hasEdit)
-        class="editableProperty"
-        data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('status')))"
-        data-property-type="object"#end&gt;
-      &lt;label#if ($editing) for="Paper.Code.PaperClass_0_status"#end&gt;
-        $escapetool.xml($doc.displayPrettyName('status', false, false))
-      &lt;/label&gt;
-    &lt;/dt&gt;
-    &lt;dd&gt;$doc.display('status')&lt;/dd&gt;
-    #if ($editing)
-      &lt;dt&gt;
-        &lt;label for="Paper.Code.PaperClass_0_signupOpen"&gt;
-          $doc.display('signupOpen')
-          $escapetool.xml($doc.displayPrettyName('signupOpen', false, false))
-        &lt;/label&gt;
-      &lt;/dt&gt;
-    #else
-      &lt;dt #if (!$editing &amp;&amp; $hasEdit)
-          class="editableProperty"
-          data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('signupOpen')))"
-          data-property-type="object"#end&gt;
-        &lt;label#if ($editing) for="Paper.Code.PaperClass_0_signupOpen"#end&gt;
-          $escapetool.xml($doc.displayPrettyName('signupOpen', false, false))
-        &lt;/label&gt;
-      &lt;/dt&gt;
-      &lt;dd&gt;$doc.display('signupOpen')&lt;/dd&gt;
-    #end
-    &lt;dt #if (!$editing &amp;&amp; $hasEdit)
-        class="editableProperty"
-        data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('arxiv')))"
-        data-property-type="object"#end&gt;
-      &lt;label#if ($editing) for="Paper.Code.PaperClass_0_arxiv"#end&gt;
-        $escapetool.xml($doc.displayPrettyName('arxiv', false, false))
-      &lt;/label&gt;
-    &lt;/dt&gt;
-    &lt;dd&gt;$doc.display('arxiv')&lt;/dd&gt;
-    &lt;dt #if (!$editing &amp;&amp; $hasEdit)
-        class="editableProperty"
-        data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('doi')))"
-        data-property-type="object"#end&gt;
-      &lt;label#if ($editing) for="Paper.Code.PaperClass_0_doi"#end&gt;
-        $escapetool.xml($doc.displayPrettyName('doi', false, false))
-      &lt;/label&gt;
-    &lt;/dt&gt;
-    &lt;dd&gt;$doc.display('doi')&lt;/dd&gt;
-    &lt;dt #if (!$editing &amp;&amp; $hasEdit)
-        class="editableProperty"
-        data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('reviewers')))"
-        data-property-type="object"#end&gt;
-      &lt;label#if ($editing) for="Paper.Code.PaperClass_0_reviewers"#end&gt;
-        $escapetool.xml($doc.displayPrettyName('reviewers', false, false))
-      &lt;/label&gt;
-    &lt;/dt&gt;
-    &lt;dd&gt;$doc.display('reviewers')&lt;/dd&gt;
-    &lt;dt #if (!$editing &amp;&amp; $hasEdit)
-        class="editableProperty"
-        data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('description')))"
-        data-property-type="object"#end&gt;
-      &lt;label#if ($editing) for="Paper.Code.PaperClass_0_description"#end&gt;
-        $escapetool.xml($doc.displayPrettyName('description', false, false))
-      &lt;/label&gt;
-    &lt;/dt&gt;
-    &lt;dd&gt;$doc.display('description')&lt;/dd&gt;
-    &lt;dt #if (!$editing &amp;&amp; $hasEdit)
-        class="editableProperty"
-        data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('latestVersion')))"
-        data-property-type="object"#end&gt;
-      &lt;label#if ($editing) for="Paper.Code.PaperClass_0_latestVersion"#end&gt;
-        $escapetool.xml($doc.displayPrettyName('latestVersion', false, false))
-      &lt;/label&gt;
-    &lt;/dt&gt;
-    &lt;dd&gt;$doc.display('latestVersion')&lt;/dd&gt;
+    #renderEditableProperty($object, 'description', 'information', $hasEdit, false)
+    #renderEditableProperty($object, 'latestVersion', 'file-text', $hasEdit, false)
   &lt;/dl&gt;
 &lt;/div&gt;
 {{/html}}
