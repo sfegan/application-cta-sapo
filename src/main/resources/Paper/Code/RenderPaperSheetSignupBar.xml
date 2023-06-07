@@ -37,6 +37,10 @@
   <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
   <content>{{velocity}}
+#if($doc.fullName == "Paper.Code.RenderPaperSheetSignupBar")
+  {{info}}Script to render the paper sign-up bar if the paper is open for sign-up, or if the user has signed the paper{{/info}}
+  #stop
+#end
 {{html}}
 #if(!$editing)
   #set($sigDocRef = $services.model.createDocumentReference('', 'PaperSignature', $xcontext.user))
@@ -85,7 +89,7 @@
         &lt;/div&gt;
       #else
         &lt;div class="box errormessage"&gt;
-          &lt;h5 style="margin-top:0"&gt;$services.icon.renderHTML('cross')
+          &lt;h5 style="margin-top:0"&gt;$services.icon.renderHTML('warning')
             You have requested to sign this paper, but there's a problem!&lt;/h5&gt;
           &lt;p&gt;&lt;b&gt;&lt;/b&gt;Your name will appear on the author list
             if you meet the elibility criteria and the problem is resolved.&lt;/p&gt;
@@ -130,7 +134,7 @@
           &lt;div class="row"&gt;
             &lt;div class="col-sm-10"&gt;
               &lt;dd&gt;
-                &lt;select id="eligibilitySelect" onchange="enableButton()"&gt;
+                &lt;select name="eligibility" id="eligibilitySelect" onchange="enableButton()"&gt;
                   &lt;option value=""&gt;---&lt;/option&gt;
                   &lt;option value="member"&gt;$escapetool.xml($services.localization.render('PaperSignature.Code.PaperSignatureClass_eligibility_member'))&lt;/option&gt;
                   &lt;option value="exMember"&gt;$escapetool.xml($services.localization.render('PaperSignature.Code.PaperSignatureClass_eligibility_exMember'))&lt;/option&gt;
