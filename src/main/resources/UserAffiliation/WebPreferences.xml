@@ -122,9 +122,9 @@
   </object>
   <object>
     <name>UserAffiliation.WebPreferences</name>
-    <number>1</number>
+    <number>3</number>
     <className>XWiki.XWikiGlobalRights</className>
-    <guid>79c38f55-4a9c-4446-bd5e-e3610704617f</guid>
+    <guid>302ac26c-535c-47bb-a6d0-bd9324baff9f</guid>
     <class>
       <name>XWiki.XWikiGlobalRights</name>
       <customClass/>
@@ -194,7 +194,7 @@
       <allow>1</allow>
     </property>
     <property>
-      <groups>XWiki.XWikiAdminGroup</groups>
+      <groups>xwiki:XWiki.XWikiAdminGroup</groups>
     </property>
     <property>
       <levels>edit</levels>
