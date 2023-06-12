@@ -39,10 +39,9 @@
   <content>{{velocity}}
 #set ($columnsProperties = {
   'doc.title': {"link":"view"},
-  'doc.location': {"html":true},
-  'doc.date': {},
-  'doc.author': {"link":"author"},
-  '_actions': {"sortable":false,"filterable":false,"html":true,"actions":["edit","delete"]}
+  'author': {"html":true},
+  'paper': {"html":true},
+  'creationDate': {"html":true}
 })
 #set ($options = {
   'className': 'PaperSignature.Code.PaperSignatureClass',
@@ -53,7 +52,7 @@
   'selectedColumn': 'doc.title',
   'defaultOrder': 'asc'
 })
-#set ($columns = ['doc.title', 'doc.location', 'doc.date', 'doc.author', '_actions'])
+#set ($columns = ['doc.title', 'author', 'paper', 'creationDate'])
 #livetable('papersignature' $columns $columnsProperties $options)
 {{/velocity}}</content>
   <object>
