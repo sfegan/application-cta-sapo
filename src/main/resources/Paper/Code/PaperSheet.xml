@@ -62,6 +62,8 @@
 #set ($editing = $xcontext.action == 'edit')
 {{include reference="Paper.Code.RenderPaperSheetSignupBar"/}}
 
+#set($hql = "select count(distinct prop_author.value) from BaseObject obj, LargeStringProperty prop_author, StringProperty prop_paper where obj.className='PaperSignature.Code.PaperSignatureClass' and obj.name like 'PaperSignature.%' and prop_author.id.id=obj.id and prop_author.name='author' and prop_paper.id.id=obj.id and prop_paper.name='paper' and prop_paper.value=:paper")
+#set($authorCount = $services.query.hql($hql).bindValue('paper', $doc.fullName).execute()[0])
 {{html wiki="true" clean="false"}}
 &lt;div class="xform"&gt;
   &lt;div class="row"&gt;
@@ -102,6 +104,8 @@
         &lt;dl style="margin-bottom: 2px"&gt;
           #renderEditableProperty($object, 'reviewers', 'search', $hasAdmin, false)
           #renderEditableProperty($object, 'signupOpen', 'tick', $hasAdmin, false)
+          &lt;dt&gt;&lt;label&gt;$services.icon.renderHTML('group') Author sign-up count&lt;/label&gt;&lt;/dt&gt;
+          &lt;dd&gt;$numbertool.integer($authorCount)&lt;/dd&gt;
         &lt;/dl&gt;
       &lt;/div&gt;
     &lt;/div&gt;
