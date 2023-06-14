@@ -78,11 +78,21 @@
           &lt;p style="margin-left:1em"&gt;
             $escapetool.xml($signature)##
             &lt;sup&gt;$stringtool.join([1..$addresses.size()],",")&lt;/sup&gt;
+            #if("$!uaObject.getValue('orcidURL')" != "")
+              &lt;a href="$escapetool.xml($uaObject.getValue('orcidURL'))"&gt;
+                &lt;img src="$xwiki.getAttachmentURL('UserAffiliation.Code.UserAffiliationSheet','ORCIDiD_icon16x16.png')"/&gt;
+              &lt;/a&gt;
+            #else
+              (No ORCID id)
+            #end
             #foreach($address in $addresses)
               &lt;br&gt;&lt;sup&gt;$foreach.count&lt;/sup&gt; $escapetool.xml($address)
             #end
           &lt;/p&gt;
           &lt;p&gt;To change the name and affiliations that will appear on the author list for this paper,
+            #if("$uaObject.getValue('orcidURL')" == "")
+              or to add your ORCID id (if the journal accepts it),
+            #end
             &lt;a href="$xwiki.getDocument("UserAffiliation.Code.MyAffiliation").getURL('view')" style="font-size:18px"&gt;
               &lt;b&gt;edit your SAPO profile page&lt;/b&gt;&lt;/a&gt;
             at any time before the sign-up period closes.&lt;/p&gt;
