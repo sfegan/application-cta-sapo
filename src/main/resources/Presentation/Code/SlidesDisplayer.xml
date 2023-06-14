@@ -39,7 +39,7 @@
   <content>{{velocity}}
 #if ($doc.FullName == 'Presentation.Code.SlidesDisplayer')
   {{info}}
-    Custom display for slides and proceedinfs. In view mode, render the material name, provide an attachment button, and invoke the PDF or Office viewer.
+    Custom display for slides and proceedings. In view mode, render the material name, provide an attachment button, and invoke the PDF or Office viewer.
   {{/info}}
   #stop
 #end
@@ -67,9 +67,12 @@
 
   {{attachmentSelector className="$className" property="$name" filter="pdf,odp,ppt,pptx" savemode="direct" displayImage="true"/}}
 
+  #if(!$slidesDisplayerHeight)
+    #set($slidesDisplayerHeight = 400)
+  #end
   #if($!value!='' &amp;&amp; $doc.getAttachment($value))
     #if($value.endsWith('.pdf'))
-      {{pdfviewer file="$value" height=400/}}
+      {{pdfviewer file="$value" height="$slidesDisplayerHeight"/}}
 
     #elseif($value.endsWith('.odp') ||
             $value.endsWith('.ppt') ||
