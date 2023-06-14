@@ -68,7 +68,7 @@
         data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('shortName')))"
         data-property-type="object"#end&gt;
       &lt;label#if ($editing) for="AffiliationAddress.Code.AffiliationAddressClass_0_shortName"#end&gt;
-        $escapetool.xml($doc.displayPrettyName('shortName', false, false))
+        $services.icon.render('right') $escapetool.xml($doc.displayPrettyName('shortName', false, false))
       &lt;/label&gt;
     &lt;/dt&gt;
     &lt;dd&gt;$doc.display('shortName')&lt;/dd&gt;
@@ -77,7 +77,7 @@
         data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('country')))"
         data-property-type="object"#end&gt;
       &lt;label#if ($editing) for="AffiliationAddress.Code.AffiliationAddressClass_0_country"#end&gt;
-        $escapetool.xml($doc.displayPrettyName('country', false, false))
+         $services.icon.render('flag') $escapetool.xml($doc.displayPrettyName('country', false, false))
       &lt;/label&gt;
     &lt;/dt&gt;
     &lt;dd&gt;$doc.display('country', $protectedAction)&lt;/dd&gt;
@@ -86,7 +86,7 @@
         data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('publicationAddress')))"
         data-property-type="object"#end&gt;
       &lt;label#if ($editing) for="AffiliationAddress.Code.AffiliationAddressClass_0_publicationAddress"#end&gt;
-        $escapetool.xml($doc.displayPrettyName('publicationAddress', false, false))
+        $services.icon.render('building') $escapetool.xml($doc.displayPrettyName('publicationAddress', false, false))
       &lt;/label&gt;
     &lt;/dt&gt;
     &lt;dd&gt;$doc.display('publicationAddress')&lt;/dd&gt;
@@ -97,7 +97,7 @@
           data-property="$escapetool.xml($services.model.serialize($raObject.getPropertyReference('users')))"
           data-property-type="object"#end&gt;
         &lt;label#if ($editing) for="XWiki.XWikiRights_${raObject.number}_users"#end&gt;
-          $escapetool.xml($services.localization.render('affiliationaddress.sheet.manager'))
+          $services.icon.render('briefcase') $escapetool.xml($services.localization.render('affiliationaddress.sheet.manager'))
         &lt;/label&gt;
       &lt;/dt&gt;
       &lt;dd&gt;$doc.display('users',$raObject)&lt;/dd&gt;
@@ -109,7 +109,7 @@
       &lt;input name="XWiki.XWikiRights_${raObject.number}_allow" type="hidden" value="1" /&gt;
       &lt;dt&gt;
         &lt;label#if ($editing) for="XWiki.XWikiRights_${raObject.number}_users"#end&gt;
-          $escapetool.xml($services.localization.render('affiliationaddress.sheet.manager'))
+          $services.icon.render('briefcase') $escapetool.xml($services.localization.render('affiliationaddress.sheet.manager'))
         &lt;/label&gt;
       &lt;/dt&gt;
       &lt;dd&gt;$doc.display('users',$raObject)&lt;/dd&gt;
