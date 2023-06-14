@@ -132,7 +132,11 @@
         <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
       </journal>
       <latestVersion>
-        <customDisplay>{{include reference="Presentation.Code.SlidesDisplayer"/}}</customDisplay>
+        <customDisplay>{{velocity output="false"}}
+#set($slidesDisplayerHeight = 600)
+{{/velocity}}
+
+{{include reference="Presentation.Code.SlidesDisplayer"/}}</customDisplay>
         <disabled>0</disabled>
         <hint/>
         <name>latestVersion</name>
@@ -155,7 +159,6 @@
         <number>3</number>
         <picker>0</picker>
         <prettyName>Additional Corresponding Authors</prettyName>
-        <restricted>0</restricted>
         <rows>3</rows>
         <size>40</size>
         <unmodifiable>0</unmodifiable>
