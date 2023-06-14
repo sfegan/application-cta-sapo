@@ -124,7 +124,7 @@
     <syncWithProfile>
       <customDisplay/>
       <defaultValue>0</defaultValue>
-      <disabled>0</disabled>
+      <disabled>1</disabled>
       <displayFormType>select</displayFormType>
       <displayType/>
       <hint/>
