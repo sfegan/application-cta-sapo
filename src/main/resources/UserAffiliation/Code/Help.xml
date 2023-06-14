@@ -39,6 +39,7 @@
   <content>{{html}}
   &lt;p&gt;This page allows CTA authors to change their signature and affiliations for
     papers managed by SAPO.&lt;/p&gt;
+  &lt;h4&gt;Change of signature&lt;/h4&gt;
   &lt;p&gt;Authors can choose change the name used by SAPO using the &lt;b&gt;FIRST NAME&lt;/b&gt; and
     &lt;b&gt;LAST NAME&lt;/b&gt; fields. Unicode characters can be used as desired.
     The author's signature, which will be used to CTA papers, is shown in the
@@ -49,21 +50,24 @@
       &lt;li&gt;&lt;b&gt;FIRST NAME&lt;/b&gt;="Alpha-Beta Gamma", and&lt;/li&gt;
       &lt;li&gt;&lt;b&gt;LAST NAME&lt;/b&gt;="delta Epsilon Zêta-Eta"&lt;/li&gt;
     &lt;/ul&gt;
-    the author's signature would be 
+    the author's signature would be
     &lt;ul&gt;
       &lt;li&gt;"A.-B. G. delta Epsilon Zêta-Eta".&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/p&gt;
-  &lt;p&gt;Authors can manage their affiliations by selecting the insititutions
-    they are affiliated with in the fields at the bottom of the page. All authors 
-    can specify a primary and secondary affiliation. In certain circumstances
-    authors can request SAPO add an additional affiliation by contacting
-    SAPO by email and explaining the circumstances.&lt;/p&gt;
-  &lt;p&gt;If the name and address given for the affiliation is not correct, please
-    click on the address to see the entry for this affilation, and conatct the
-    &lt;b&gt;MANAGER&lt;b&gt; listed on the page to request it be changed, or SAPO if no
+  &lt;p&gt;You can also supply your ORCID id (as a URL) if you wish this to be added
+    to you signature for journals that accept it.&lt;/p&gt;
+  &lt;h4&gt;Change of affiliations&lt;/h4&gt;
+  &lt;p&gt;Authors can manage their affiliations by selecting the institutions
+    they are affiliated with in the fields at the bottom of the page. All authors
+    can specify a primary and secondary affiliation from the database maintained
+    by SAPO. Exceptionally, authors can request SAPO add a third affiliation
+    by contacting SAPO by email and explain the circumstances.&lt;/p&gt;
+  &lt;p&gt;If the &lt;u&gt;address for your affiliation is not correct&lt;/u&gt;, please
+    click on the address to see the entry for this affilation, and contact the
+    &lt;b&gt;MANAGER&lt;/b&gt; listed on the page to request it be changed, or SAPO if no
     manager is given&lt;/p&gt;
-  &lt;p&gt;Finally, if your institution is not present in the list, please contact
-    SAPO by email and explaining the circumstances.&lt;/p&gt;
+  &lt;p&gt;Finally, &lt;u&gt;if your institution is not present&lt;/u&gt; in the list, please contact
+    SAPO by email and explain the circumstances.&lt;/p&gt;
 {{/html}}</content>
 </xwikidoc>
