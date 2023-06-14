@@ -177,7 +177,7 @@
             data-property="$escapetool.xml($services.model.serialize($raObject.getPropertyReference('users')))"
             data-property-type="object"#end&gt;
           &lt;label#if ($editing) for="XWiki.XWikiRights_${raObject.number}_users"#end&gt;
-            $escapetool.xml($services.localization.render('useraffiliation.sheet.manager'))
+            $services.icon.render('briefcase') $escapetool.xml($services.localization.render('useraffiliation.sheet.manager'))
           &lt;/label&gt;
         &lt;/dt&gt;
         &lt;dd&gt;$doc.display('users',$raObject)&lt;/dd&gt;
@@ -273,6 +273,16 @@
   }
   document.observe("xwiki:dom:loaded", init);
 &lt;/script&gt;
+#if($xcontext.getRequest().getParameter('show_help'))
+  &lt;script&gt;
+    require(['jquery',"$services.webjars.url('jquery-ui', 'jquery-ui.js')"], function($) {
+      $(window).on('load', function() {
+        $('#helpModal').modal('show');
+      });
+    });
+  &lt;/script&gt;
+#end
+
 {{/html}}
 
 {{/velocity}}</content>
@@ -326,7 +336,6 @@
         <name>code</name>
         <number>2</number>
         <prettyName>Code</prettyName>
-        <restricted>0</restricted>
         <rows>20</rows>
         <size>50</size>
         <unmodifiable>0</unmodifiable>

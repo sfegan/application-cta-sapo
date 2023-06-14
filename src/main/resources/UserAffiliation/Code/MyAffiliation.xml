@@ -64,7 +64,7 @@
   $raObj.set('users', $userRef)
   $uaDoc.saveAsAuthor('Create SAPO profile')
 #end
-$xcontext.getResponse().sendRedirect($uaDoc.getURL())
+$xcontext.getResponse().sendRedirect($uaDoc.getURL("view","show_help"))
 {{velocity}}
 </content>
 </xwikidoc>
