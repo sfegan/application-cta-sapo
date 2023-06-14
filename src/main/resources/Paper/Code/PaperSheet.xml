@@ -105,7 +105,7 @@
           #renderEditableProperty($object, 'reviewers', 'search', $hasAdmin, false)
           #renderEditableProperty($object, 'signupOpen', 'tick', $hasAdmin, false)
           &lt;dt&gt;&lt;label&gt;$services.icon.renderHTML('group') Author sign-up count&lt;/label&gt;&lt;/dt&gt;
-          &lt;dd&gt;$numbertool.integer($authorCount)&lt;/dd&gt;
+          &lt;dd&gt;&lt;a href="$xwiki.getURL("Paper.Code.GenerateAuthorList","view","paper=$escapetool.url($doc.fullName)")"&gt;$numbertool.integer($authorCount)&lt;/a&gt;&lt;/dd&gt;
         &lt;/dl&gt;
       &lt;/div&gt;
     &lt;/div&gt;

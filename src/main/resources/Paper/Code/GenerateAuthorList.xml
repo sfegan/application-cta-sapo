@@ -1,0 +1,80 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="Paper.Code.GenerateAuthorList" locale="">
+  <web>Paper.Code</web>
+  <name>GenerateAuthorList</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>Paper.Code.WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title>GenerateAuthorList</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{velocity}}
+#set($paperRef = $xcontext.getRequest().getParameter('paper'))
+#if("$!paperRef" == "")
+  #stop
+#end
+#set($hql = "select prop_author.value, prop_date.value, prop_eligibility.value from BaseObject obj, LargeStringProperty prop_author, StringProperty prop_paper, DateProperty prop_date, StringProperty prop_eligibility where obj.className='PaperSignature.Code.PaperSignatureClass' and obj.name like 'PaperSignature.%' and prop_author.id.id=obj.id and prop_author.name='author' and prop_paper.id.id=obj.id and prop_paper.name='paper' and prop_paper.value=:paper and prop_date.id.id=obj.id and prop_date.name='creationDate' and prop_eligibility.id.id=obj.id and prop_eligibility.name='eligibility' order by prop_date.value desc")
+#set($authorList = $services.query.hql($hql).bindValue('paper', $paperRef).execute())
+#set($paperDoc = $xwiki.getDocument($paperRef))
+{{html wiki="false" clean="false"}}
+  &lt;dl&gt;
+    &lt;dt&gt;&lt;label&gt;Sign-up list for paper&lt;/label&gt;&lt;/dt&gt;
+    #if($paperDoc)
+      &lt;dd&gt;$escapetool.xml($paperDoc.getTitle())&lt;/dd&gt;
+    #else
+      &lt;dd&gt;Paper not found ($escapetool.xml($paperRef))&lt;/dd&gt;
+    #end
+  &lt;/dl&gt;
+  &lt;table class="table table-striped"&gt;
+    &lt;thead&gt;
+      &lt;tr style="border: none"&gt;
+        &lt;th&gt;$escapetool.xml($services.localization.render('PaperSignature.Code.PaperSignatureClass_author'))&lt;/th&gt;
+        &lt;th&gt;SAPO profile&lt;/th&gt;
+        &lt;th&gt;$escapetool.xml($services.localization.render('PaperSignature.Code.PaperSignatureClass_eligibility'))&lt;/th&gt;
+        &lt;th&gt;$escapetool.xml($services.localization.render('PaperSignature.Code.PaperSignatureClass_creationDate'))&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+#foreach($authorEntry in $authorList)
+      #set($sapoProfile = $services.model.createDocumentReference("","UserAffiliation",$authorEntry[0]))
+      &lt;tr&gt;
+        &lt;td&gt;#displayUser($authorEntry[0],{ 'useInlineHTML': true})&lt;/td&gt;
+        &lt;td&gt;&lt;a href="$xwiki.getURL($sapoProfile,"view")"&gt;$services.icon.renderHTML("flag")&lt;/a&gt;&lt;/td&gt;
+        &lt;td&gt;$escapetool.xml($services.localization.render("PaperSignature.Code.PaperSignatureClass_eligibility_$authorEntry[2]_short"))&lt;/td&gt;
+        &lt;td&gt;$escapetool.xml($authorEntry[1])&lt;/td&gt;
+      &lt;/tr&gt;
+#end
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+{{/html}}
+{{/velocity}}
+</content>
+</xwikidoc>
