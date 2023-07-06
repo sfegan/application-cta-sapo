@@ -80,7 +80,7 @@
             &lt;sup&gt;$stringtool.join([1..$addresses.size()],",")&lt;/sup&gt;
             #if("$!uaObject.getValue('orcidURL')" != "")
               &lt;a href="$escapetool.xml($uaObject.getValue('orcidURL'))"&gt;
-                &lt;img src="$xwiki.getAttachmentURL('UserAffiliation.Code.UserAffiliationSheet','ORCIDiD_icon16x16.png')"/&gt;
+                &lt;img src="$xwiki.getAttachmentURL('UserAffiliation.Code.UserAffiliationSheet','ORCIDiD_icon16x16.png')" style="pointer-events: none;"/&gt;
               &lt;/a&gt;
             #else
               (No ORCID id)
@@ -157,6 +157,13 @@
           &lt;/dd&gt;
         &lt;/dl&gt;
       &lt;/form&gt;
+    &lt;/div&gt;
+  #elseif($authorCount &gt; 10)
+    &lt;div class="box errormessage"&gt;
+      &lt;h5 style="margin-top:0"&gt;$services.icon.renderHTML('lock')
+        Sign-up for this paper has closed.&lt;/h5&gt;
+      &lt;p&gt;You did not request to sign this paper during the sign-up period, and SAPO is no
+        longer accepting requests to sign-up as an author.&lt;/p&gt;
     &lt;/div&gt;
   #end
 #end ## not editing
