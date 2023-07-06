@@ -40,8 +40,8 @@
 PaperSignature.Code.PaperSignatureClass_paper=Paper
 PaperSignature.Code.PaperSignatureClass_author=Author
 PaperSignature.Code.PaperSignatureClass_eligibility=Eligibility
-PaperSignature.Code.PaperSignatureClass_eligibility_member=Current CTAC member that has been a collaboration member for one year or more
-PaperSignature.Code.PaperSignatureClass_eligibility_exMember=Former CTAC member that left the collaboration less than 6 months ago
+PaperSignature.Code.PaperSignatureClass_eligibility_member=Current CTAC member that has been a collaboration member for 6 months or more
+PaperSignature.Code.PaperSignatureClass_eligibility_exMember=Former CTAC member that left the collaboration less than one year ago
 PaperSignature.Code.PaperSignatureClass_eligibility_other=Non-CTAC member (please specify elibibility reason)
 PaperSignature.Code.PaperSignatureClass_eligibility_member_short=Current member
 PaperSignature.Code.PaperSignatureClass_eligibility_exMember_short=Former member
