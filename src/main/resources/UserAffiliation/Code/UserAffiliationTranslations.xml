@@ -41,7 +41,8 @@ UserAffiliation.Code.UserAffiliationClass_firstName=First name
 UserAffiliation.Code.UserAffiliationClass_lastName=Last name
 UserAffiliation.Code.UserAffiliationClass_email=Contact author email address
 UserAffiliation.Code.UserAffiliationClass_orcidURL=ORCID iD (URL)
-UserAffiliation.Code.UserAffiliationClass_ syncFromProfile=Synchronise name and email from user profile
+UserAffiliation.Code.UserAffiliationClass_signature=Signature
+UserAffiliation.Code.UserAffiliationClass_syncFromProfile=Synchronise name and email from user profile
 
 # Sheet keys
 useraffiliation.sheet.description=This page controls how UserAffiliation pages are displayed in both view and edit modes.
