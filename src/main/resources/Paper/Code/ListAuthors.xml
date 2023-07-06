@@ -1,0 +1,221 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="Paper.Code.ListAuthors" locale="">
+  <web>Paper.Code</web>
+  <name>ListAuthors</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title>ListAuthors</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{include reference="UserAffiliation.Code.Macros" /}}
+
+{{velocity}}
+#set($paperRef = $xcontext.getRequest().getParameter('paper'))
+#if("$!paperRef" == "")
+  {{error}}
+    No paper reference given.
+  {{/error}}
+  #stop
+#end
+#set($hql = "select prop_author.value, prop_date.value, prop_eligibility.value from BaseObject obj, LargeStringProperty prop_author, StringProperty prop_paper, DateProperty prop_date, StringProperty prop_eligibility where obj.className='PaperSignature.Code.PaperSignatureClass' and obj.name like 'PaperSignature.%' and prop_author.id.id=obj.id and prop_author.name='author' and prop_paper.id.id=obj.id and prop_paper.name='paper' and prop_paper.value=:paper and prop_date.id.id=obj.id and prop_date.name='creationDate' and prop_eligibility.id.id=obj.id and prop_eligibility.name='eligibility' order by prop_date.value desc")
+#set($authorList = $services.query.hql($hql).bindValue('paper', $paperRef).execute())
+#set($uaMap = {})
+#set($hql = "select obj_ua.name, prop_fname.value, prop_lname.value, prop_orcid.value, prop_email.value from BaseObject obj, BaseObject obj_ua, StringProperty prop_paper, StringProperty prop_fname, StringProperty prop_lname, StringProperty prop_orcid, StringProperty prop_email where obj.className='PaperSignature.Code.PaperSignatureClass' and obj.name like 'PaperSignature.%' and prop_paper.id.id=obj.id and prop_paper.name='paper' and prop_paper.value=:paper and obj_ua.className='UserAffiliation.Code.UserAffiliationClass' and obj_ua.name = concat('UserAffiliation.',substring(obj.name,16)) and prop_fname.id.id=obj_ua.id and prop_fname.name='firstName' and prop_lname.id.id=obj_ua.id and prop_lname.name='lastName' and prop_orcid.id.id=obj_ua.id and prop_orcid.name='orcidURL' and prop_email.id.id=obj_ua.id and prop_email.name='email'")
+#foreach($ua in $services.query.hql($hql).bindValue('paper', $paperRef).execute())
+  #set($discard = $uaMap.put($services.model.resolveDocument($ua[0]).name, [$ua[1], $ua[2], $ua[3], [], $ua[4]]))
+#end
+#set($hql = "select obj_sa.name, prop_affil.value from BaseObject obj, BaseObject obj_sa, StringProperty prop_paper, StringProperty prop_affil where obj.className='PaperSignature.Code.PaperSignatureClass' and obj.name like 'PaperSignature.%' and prop_paper.id.id=obj.id and prop_paper.name='paper' and prop_paper.value=:paper and obj_sa.className='UserAffiliation.Code.SingleAffiliationClass' and obj_sa.name = concat('UserAffiliation.',substring(obj.name,16)) and prop_affil.id.id=obj_sa.id and prop_affil.name='affiliationAddressRef' order by obj_sa.number")
+#foreach($sa in $services.query.hql($hql).bindValue('paper', $paperRef).execute())
+  #set($discard = $uaMap[$services.model.resolveDocument($sa[0]).name][3].add($sa[1]))
+#end
+#set($aaMap = {})
+#set($hql = "select obj.name, doc.title, prop_country.value, prop_address.value from BaseObject obj, XWikiDocument doc, StringProperty prop_country, StringProperty prop_address where obj.className='AffiliationAddress.Code.AffiliationAddressClass' and obj.name like 'AffiliationAddress.%' and obj.name!='AffiliationAddress.Code.AffiliationAddressTemplate' and doc.fullName=obj.name and prop_country.id.id=obj.id and prop_country.name='country' and prop_address.id.id=obj.id and prop_address.name='publicationAddress'")
+#foreach($aa in $services.query.hql($hql).execute())
+  #set($discard = $aaMap.put($aa[0], [$aa[1], $aa[2], $aa[3]]))
+#end
+#set($paperDoc = $xwiki.getDocument($paperRef))
+#set($authorTableEntries = [])
+#set($signatureCount = {})
+#set($authorsPerCountryInstitute = {})
+#foreach($authorEntry in $authorList)
+  #set($authorTableEntry = {})
+  #set($discard = $authorTableEntry.put('user', $authorEntry[0]))
+  #set($discard = $authorTableEntry.put('signatureDate', $authorEntry[1]))
+  #if($uaMap.containsKey($authorEntry[0]))
+    #set($ua = $uaMap[$authorEntry[0]])
+  #else
+    #set($ua = ["","","",""])
+  #end
+  #set($discard = $authorTableEntry.put('firstName', $ua[0]))
+  #set($discard = $authorTableEntry.put('lastName', $ua[1]))
+  #set($signature = "#signature($ua[0],$ua[1])")
+  #set($discard = $authorTableEntry.put('signature', $signature))
+  #set($sapoProfile = $services.model.createDocumentReference("","UserAffiliation",$authorEntry[0]))
+  #set($sapoProfileURL = $xwiki.getURL($sapoProfile,"view"))
+  #set($discard = $authorTableEntry.put('sapoProfileURL', $sapoProfileURL))
+  #set($signatureObject = $services.model.createDocumentReference("","PaperSignature",$authorEntry[0]))
+  #set($discard = $authorTableEntry.put('signatureObjectURL', $xwiki.getURL($signatureObject,"view")))
+  #set($signatureCount[$signature] = $signatureCount.getOrDefault($signature,0) + 1)
+  #set($discard = $authorTableEntry.put('orcid', $ua[2]))
+  #set($discard = $authorTableEntry.put('email', $ua[4]))
+  #set($discard = $authorTableEntry.put('affiliations', $ua[3]))
+  #set($countries = [])
+  #foreach($affil in $ua[3])
+    #if($aaMap.containsKey($affil))
+      #set($affilCountry = $aaMap[$affil][1])
+      #if(!$countries.contains($affilCountry))
+        #set($discard = $countries.add($affilCountry))
+      #end
+      #if(!$authorsPerCountryInstitute.containsKey($affilCountry))
+        #set($authorsPerCountryInstitute[$affilCountry] = { 'country': $affilCountry, 'institutions': {}, 'total': 0.0 })
+      #end
+      #if(!$authorsPerCountryInstitute[$affilCountry]['institutions'].containsKey($aaMap[$affil][0]))
+        #set($authorsPerCountryInstitute[$affilCountry]['institutions'][$aaMap[$affil][0]] = {
+          'institution': $aaMap[$affil][0], 'institutionURL': $xwiki.getURL($affil, 'view'), 'total': 0.0, 'authors': [] })
+      #end
+      #set($authorFTE = $mathtool.div(1.0,$ua[3].size()))
+      #set($authorsPerCountryInstitute[$affilCountry]['total'] = $authorsPerCountryInstitute[$affilCountry]['total'] + $authorFTE)
+      #set($authorsPerCountryInstitute[$affilCountry]['institutions'][$aaMap[$affil][0]]['total'] = $authorsPerCountryInstitute[$affilCountry]['institutions'][$aaMap[$affil][0]]['total'] + $authorFTE)
+      #set($discard = $authorsPerCountryInstitute[$affilCountry]['institutions'][$aaMap[$affil][0]]['authors'].add(
+        { 'signature': $signature, 'sapoProfileURL': $sapoProfileURL, 'lastName': $ua[1], 'firstName': $ua[0] }))
+    #end
+  #end
+  #set($discard = $authorTableEntry.put('countriesList', $countries))
+  #set($discard = $authorTableEntry.put('countries', $stringtool.join($countries,", ")))
+  #set($discard = $authorTableEntry.put('eligibility',$services.localization.render(
+    "PaperSignature.Code.PaperSignatureClass_eligibility_$authorEntry[2]_short")))
+  #set($discared = $authorTableEntries.add($authorTableEntry))
+#end
+#if($xcontext.action == 'get')
+  {{include reference="Paper.Code.RenderAuthorListAsJSON" /}}
+  #stop
+#end
+#set($authorSortField = ${xcontext.getRequest().getParameter('sort_field')|"signatureDate:desc"})
+{{html wiki="false" clean="false"}}
+  &lt;dl&gt;
+    &lt;dt&gt;&lt;label&gt;Sign-up list for paper&lt;/label&gt;&lt;/dt&gt;
+    #if($paperDoc)
+      &lt;dd&gt;&lt;a href="$paperDoc.getURL('view')"&gt;$escapetool.xml($paperDoc.getTitle())&lt;/a&gt;&lt;/dd&gt;
+    #else
+      &lt;dd&gt;Paper not found ($escapetool.xml($paperRef))&lt;/dd&gt;
+    #end
+  &lt;/dl&gt;
+  &lt;table class="table table-striped"&gt;
+    &lt;thead&gt;
+      &lt;tr style="border: none"&gt;
+        &lt;th colspan="2"&gt;Number&lt;/th&gt;
+        &lt;th&gt;$escapetool.xml($services.localization.render('PaperSignature.Code.PaperSignatureClass_author'))&lt;/th&gt;
+        &lt;th&gt;$escapetool.xml($services.localization.render('UserAffiliation.Code.UserAffiliationClass_signature'))&lt;/th&gt;
+        &lt;th&gt;$escapetool.xml($services.localization.render('AffiliationAddress.Code.AffiliationAddressClass_country'))&lt;/th&gt;
+        &lt;th&gt;$escapetool.xml($services.localization.render('PaperSignature.Code.PaperSignatureClass_eligibility'))&lt;/th&gt;
+        &lt;th&gt;$escapetool.xml($services.localization.render('PaperSignature.Code.PaperSignatureClass_creationDate'))&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+    #foreach($authorEntry in $collectiontool.sort($authorTableEntries,$authorSortField))
+      &lt;tr&gt;
+        &lt;td&gt;
+          #if($hasAdmin)
+            &lt;a href="$authorEntry['signatureObjectURL']"&gt;
+          #end
+          $numbertool.integer($authorTableEntries.size() - $foreach.index)
+          #if($hasAdmin)
+            &lt;/a&gt;
+          #end
+        &lt;/td&gt;
+        #if($signatureCount[$authorEntry['signature']] &gt; 1)
+          &lt;td&gt;$services.icon.renderHTML('warning')&lt;/td&gt;
+        #else
+          &lt;td/&gt;
+        #end
+##        &lt;td&gt;#displayUser($authorEntry['user'],{ 'useInlineHTML': true})&lt;/td&gt; ## Too slow when lots of authors
+        &lt;td&gt;&lt;a href="$xwiki.getURL($authorEntry['user'])"&gt;$escapetool.xml("$authorEntry['firstName'] $authorEntry['lastName']")&lt;/a&gt;&lt;/td&gt;
+        &lt;td&gt;
+          &lt;a href="$authorEntry['sapoProfileURL']"&gt;$escapetool.xml($authorEntry['signature'])&lt;/a&gt;
+          #if($authorEntry['orcid'] != "")
+            &lt;a href="$escapetool.xml($authorEntry['orcid'])"&gt;
+              &lt;img src="$xwiki.getAttachmentURL('UserAffiliation.Code.UserAffiliationSheet','ORCIDiD_icon16x16.png')" style="pointer-events: none;"/&gt;
+            &lt;/a&gt;
+          #end
+        &lt;/td&gt;
+        &lt;td&gt;$escapetool.xml($authorEntry['countries'])&lt;/td&gt;
+        &lt;td&gt;$escapetool.xml($authorEntry['eligibility'])&lt;/td&gt;
+        &lt;td&gt;$escapetool.xml($authorEntry['signatureDate'])&lt;/td&gt;
+      &lt;/tr&gt;
+    #end
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+  &lt;h5&gt;Authors per country&lt;/h5&gt;
+    &lt;table class="table table-striped"&gt;
+    &lt;thead&gt;
+      &lt;tr style="border: none"&gt;
+        &lt;th&gt;Country&lt;/th&gt;
+        #if($xcontext.getRequest().getParameter('show_institutes'))
+          &lt;th&gt;Institution&lt;/th&gt;
+          &lt;th&gt;Authors&lt;/th&gt;
+        #end
+        &lt;th&gt;Number&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+    #foreach($authorsPerCountry in $collectiontool.sort($authorsPerCountryInstitute, 'total:desc'))
+      &lt;tr&gt;
+        &lt;td #if($xcontext.getRequest().getParameter('show_institutes'))colspan="3"#end&gt;$escapetool.xml($authorsPerCountry['country'])&lt;/td&gt;
+        &lt;td&gt;$numbertool.number($authorsPerCountry['total'])&lt;/td&gt;
+      &lt;/tr&gt;
+      #if($xcontext.getRequest().getParameter('show_institutes'))
+        #foreach($authorsPerInstitution in $collectiontool.sort($authorsPerCountry['institutions'], 'total:desc'))
+          #set($authors = [])
+          #foreach($a in $collectiontool.sort($authorsPerInstitution['authors'], 'lastName'))
+            #set($discard = $authors.add("&lt;a href=" + '"' + $a['sapoProfileURL'] + '"' + "&gt;$escapetool.xml($a['signature'])&lt;/a&gt;"))
+          #end
+          &lt;tr&gt;
+            &lt;td/&gt;
+            &lt;td&gt;&lt;a href="$authorsPerInstitution['institutionURL']"&gt;$escapetool.xml($authorsPerInstitution['institution'])&lt;/a&gt;&lt;/td&gt;
+            &lt;td&gt;$stringtool.join($authors, ', ')&lt;/td&gt;
+            &lt;td&gt;$numbertool.number($authorsPerInstitution['total'])&lt;/td&gt;
+          &lt;/tr&gt;
+        #end
+      #end
+    #end
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+  #if($xcontext.getRequest().getParameter('show_institutes'))
+    &lt;a href="$doc.getURL('view', "paper=$escapetool.url($paperRef)")" class="btn btn-primary"&gt;Hide institutes&lt;/a&gt;
+  #else
+    &lt;a href="$doc.getURL('view', "show_institutes&amp;paper=$escapetool.url($paperRef)")" class="btn btn-primary"&gt;Show institutes&lt;/a&gt;
+  #end
+  &lt;a href="$doc.getURL('get', "download&amp;outputSyntax=plain&amp;paper=$escapetool.url($paperRef)")" class="btn btn-primary"&gt;Export to JSON&lt;/a&gt;
+{{/html}}
+{{/velocity}}
+</content>
+</xwikidoc>
