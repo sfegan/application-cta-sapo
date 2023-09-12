@@ -116,7 +116,11 @@
   #set($discared = $authorTableEntries.add($authorTableEntry))
 #end
 #if($xcontext.action == 'get')
-  {{include reference="Paper.Code.RenderAuthorListAsJSON" /}}
+  #if("$!xcontext.getRequest().getParameter('generate')" == "email")
+    {{include reference="Paper.Code.RenderAuthorEmails" /}}
+  #else
+    {{include reference="Paper.Code.RenderAuthorListAsJSON" /}}
+  #end
   #stop
 #end
 #set($authorSortField = ${xcontext.getRequest().getParameter('sort_field')|"signatureDate:desc"})
@@ -215,6 +219,7 @@
     &lt;a href="$doc.getURL('view', "show_institutes&amp;paper=$escapetool.url($paperRef)")" class="btn btn-primary"&gt;Show institutes&lt;/a&gt;
   #end
   &lt;a href="$doc.getURL('get', "download&amp;outputSyntax=plain&amp;paper=$escapetool.url($paperRef)")" class="btn btn-primary"&gt;Export to JSON&lt;/a&gt;
+  &lt;a href="$doc.getURL('get', "outputSyntax=plain&amp;paper=$escapetool.url($paperRef)&amp;generate=email")" class="btn btn-primary"&gt;Generate author email list&lt;/a&gt;
 {{/html}}
 {{/velocity}}
 </content>

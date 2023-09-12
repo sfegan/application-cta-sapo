@@ -37,6 +37,10 @@
   <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
   <content>{{velocity wiki="false"}}
+#if (!$paperDoc)
+  #stop
+#end
+
 $response.setContentType('application/json')
 #if($xcontext.getRequest().getParameter('download'))
   $response.setHeader('Content-Disposition','attachment; filename="cta_authors.json"')
