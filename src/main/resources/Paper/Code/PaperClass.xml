@@ -154,6 +154,7 @@
       <number>3</number>
       <picker>0</picker>
       <prettyName>Additional Corresponding Authors</prettyName>
+      <restricted>0</restricted>
       <rows>3</rows>
       <size>40</size>
       <unmodifiable>0</unmodifiable>
@@ -186,6 +187,22 @@
       <validationRegExp/>
       <classType>com.xpn.xwiki.objects.classes.UsersClass</classType>
     </reviewers>
+    <signupDeadline>
+      <customDisplay/>
+      <dateFormat>yyyy-MM-dd HH:mm:ss z</dateFormat>
+      <disabled>0</disabled>
+      <emptyIsToday>0</emptyIsToday>
+      <hint/>
+      <name>signupDeadline</name>
+      <number>12</number>
+      <picker>1</picker>
+      <prettyName>Signup Deadline</prettyName>
+      <size>20</size>
+      <unmodifiable>0</unmodifiable>
+      <validationMessage/>
+      <validationRegExp/>
+      <classType>com.xpn.xwiki.objects.classes.DateClass</classType>
+    </signupDeadline>
     <signupOpen>
       <customDisplay/>
       <defaultValue/>
