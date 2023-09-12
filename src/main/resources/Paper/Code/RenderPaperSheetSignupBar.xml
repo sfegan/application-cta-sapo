@@ -46,8 +46,11 @@
   #set($sigDocRef = $services.model.createDocumentReference('', 'PaperSignature', $xcontext.user))
   #set($sigDoc = $xwiki.getDocument($sigDocRef))
   #set($sigObject = $sigDoc.getObject("PaperSignature.Code.PaperSignatureClass","paper",$doc.fullName))
+  #if($object.getValue('signupDeadline'))
+    #set($signupTimeLeft = $datetool.whenIs($object.getValue('signupDeadline')).seconds)
+  #end
   #if($sigObject)
-    #if($object.getValue('signupOpen')==1)
+    #if($object.getValue('signupOpen')==1 &amp;&amp; (!$signupTimeLeft || $signupTimeLeft&gt;0))
       #set($uaDocRef = $services.model.createDocumentReference('', 'UserAffiliation', $xcontext.user))
       #set($uaDoc = $xwiki.getDocument($uaDocRef))
       #set($uaObject = $uaDoc.getObject("UserAffiliation.Code.UserAffiliationClass"))
@@ -115,7 +118,7 @@
           You have requested to sign this paper!&lt;/h5&gt;
       &lt;/div&gt;
     #end
-  #elseif($object.getValue('signupOpen')==1)
+  #elseif($object.getValue('signupOpen')==1 &amp;&amp; (!$signupTimeLeft || $signupTimeLeft&gt;0))
     &lt;script&gt;
       function enableButton() {
         var selectElement = document.getElementById("eligibilitySelect");
@@ -129,7 +132,13 @@
     &lt;/script&gt;
     &lt;div class="box warningmessage"&gt;
       &lt;h5 style="margin-top:0"&gt;$services.icon.renderHTML('terminal')
-        This paper is open for author sign-up.&lt;/h5&gt;
+        #if($object.getValue('signupDeadline'))
+          This paper is open for author sign-up until
+          &lt;span id="signupDeadlineSpan"&gt;$datetool.format('yyyy-MM-dd HH:mm:ss z',$object.getValue('signupDeadline'))&lt;/span&gt;
+        #else
+          This paper is open for author sign-up.
+        #end
+      &lt;/h5&gt;
       &lt;p&gt;As a CTAC member you can request to sign this paper by declaring your eligibility here and clicking
         on the "Sign paper" button.&lt;/p&gt;
 
@@ -158,7 +167,7 @@
         &lt;/dl&gt;
       &lt;/form&gt;
     &lt;/div&gt;
-  #elseif($authorCount &gt; 10)
+  #elseif(($signupTimeLeft &amp;&amp; $signupTimeLeft&lt;=0) || (!$signupTimeLeft &amp;&amp; $authorCount&gt;=15))
     &lt;div class="box errormessage"&gt;
       &lt;h5 style="margin-top:0"&gt;$services.icon.renderHTML('lock')
         Sign-up for this paper has closed.&lt;/h5&gt;

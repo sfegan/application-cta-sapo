@@ -73,7 +73,10 @@
     {{/html}}
     #stop
   #end
-  #if(!$hasAdmin &amp;&amp; $paperObject.getValue('signupOpen')==0)
+  #if($paperObject.getValue('signupDeadline'))
+    #set($signupTimeLeft = $datetool.whenIs($paperObject.getValue('signupDeadline')).seconds)
+  #end
+  #if(!$hasAdmin &amp;&amp; ($paperObject.getValue('signupOpen')==0 || ( $signupTimeLeft &amp;&amp; $signupTimeLeft&lt;=0)))
     {{html}}
       $xcontext.response.setStatus(400)
       &lt;div class="box errormessage"&gt;
