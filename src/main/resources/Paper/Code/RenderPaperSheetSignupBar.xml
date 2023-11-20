@@ -96,9 +96,12 @@
             #if("$uaObject.getValue('orcidURL')" == "")
               or to add your ORCID id (if the journal accepts it),
             #end
-            &lt;a href="$xwiki.getDocument("UserAffiliation.Code.MyAffiliation").getURL('view')" style="font-size:18px"&gt;
+            &lt;a href="$xwiki.getURL("UserAffiliation.Code.MyAffiliation","view")" style="font-size:18px"&gt;
               &lt;b&gt;edit your SAPO profile page&lt;/b&gt;&lt;/a&gt;
-            at any time before the sign-up period closes.&lt;/p&gt;
+            at any time before the sign-up period closes. If you wish, you can
+            &lt;a href="$xwiki.getURL("Paper.Code.UnsignPaper", "view", "user=$escapetool.url($xcontext.user)&amp;paper=$escapetool.url($doc.fullName)&amp;xredirect=$escapetool.xml($doc.URL)")" style="font-size:18px"&gt;
+              &lt;b&gt;remove your signature&lt;/b&gt;&lt;/a&gt;
+            from the paper util the sign-up period closes.&lt;/p&gt;
         &lt;/div&gt;
       #else
         &lt;div class="box errormessage"&gt;
@@ -107,9 +110,12 @@
           &lt;p&gt;&lt;b&gt;&lt;/b&gt;Your name will appear on the author list
             if you meet the elibility criteria and the problem is resolved.&lt;/p&gt;
           &lt;p&gt;There's a problem with your signature or your affiliations. To fix this, please
-            &lt;a href="$xwiki.getDocument("UserAffiliation.Code.MyAffiliation").getURL('view')" style="font-size:18px"&gt;
+            &lt;a href="$xwiki.getURL("UserAffiliation.Code.MyAffiliation","view")" style="font-size:18px"&gt;
               &lt;b&gt;edit your SAPO profile page&lt;/b&gt;&lt;/a&gt;
-            at any time before the sign-up period closes.&lt;/p&gt;
+            at any time before the sign-up period closes.If you wish, you can
+            &lt;a href="$xwiki.getURL("Paper.Code.UnsignPaper", "view", "user=$escapetool.url($xcontext.user)&amp;paper=$escapetool.url($doc.fullName)&amp;xredirect=$escapetool.xml($doc.URL)")" style="font-size:18px"&gt;
+              &lt;b&gt;remove your signature&lt;/b&gt;&lt;/a&gt;
+            from the paper util the sign-up period closes.&lt;/p&gt;
         &lt;/div&gt;
       #end
     #else
@@ -142,7 +148,7 @@
       &lt;p&gt;As a CTAC member you can request to sign this paper by declaring your eligibility here and clicking
         on the "Sign paper" button.&lt;/p&gt;
 
-      &lt;form class="xform" action="$xwiki.getURL("Paper.Code.SignPaper","view")"user=$escapetool.url($xcontext.user)&amp;paper=" class="xform" method="get"&gt;
+      &lt;form class="xform" action="$xwiki.getURL("Paper.Code.SignPaper","view")" class="xform" method="get"&gt;
         &lt;input type="hidden" name="paper" value="$escapetool.xml($doc.fullName)" /&gt;
         &lt;input type="hidden" name="user" value="$escapetool.xml($xcontext.user)" /&gt;
         &lt;input type="hidden" name="xredirect" value="$escapetool.xml($doc.URL)" /&gt;

@@ -1,0 +1,153 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="Paper.Code.UnsignPaper" locale="">
+  <web>Paper.Code</web>
+  <name>UnsignPaper</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title>UnsignPaper</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{velocity}}
+#set($paperRef = $xcontext.getRequest().getParameter('paper'))
+#set($userRef = $xcontext.getRequest().getParameter('user'))
+#set($xredirect = $xcontext.getRequest().getParameter('xredirect'))
+#set($confirm = $xcontext.getRequest().getParameter('confirm'))
+#if("$!paperRef" != "" &amp;&amp; "$!userRef" != "")
+  #if($userRef != $xcontext.user &amp;&amp; !$hasAdmin)
+    {{html}}
+      $xcontext.response.setStatus(400)
+      &lt;div class="box errormessage"&gt;
+        &lt;b&gt;Error:&lt;/b&gt;
+        You do not have rights to sign the paper on behalf of user
+        #displayUser($userRef,{ 'useInlineHTML': true})
+      &lt;/div&gt;
+    {{/html}}
+    #stop
+  #end
+  #set($paperDoc = $xwiki.getDocument($paperRef))
+  #if($paperDoc.isNew())
+    {{html}}
+      $xcontext.response.setStatus(400)
+      &lt;div class="box errormessage"&gt;
+        &lt;b&gt;Error:&lt;/b&gt;
+        No paper found corresponding to reference: $paperRef
+      &lt;/div&gt;
+    {{/html}}
+    #stop
+  #end
+  #set($paperObject = $paperDoc.getObject("Paper.Code.PaperClass"))
+  #if(!$paperObject)
+    {{html}}
+      $xcontext.response.setStatus(400)
+      &lt;div class="box errormessage"&gt;
+        &lt;b&gt;Error:&lt;/b&gt;
+        XWiki page does not seem to correspond to a paper: $paperRef
+      &lt;/div&gt;
+    {{/html}}
+    #stop
+  #end
+  #set($sigDocRef = $services.model.createDocumentReference('', 'PaperSignature', $userRef))
+  #set($sigDoc = $xwiki.getDocument($sigDocRef))
+  #if($sigDoc.isNew())
+    {{html}}
+      $xcontext.response.setStatus(400)
+      &lt;div class="box successmessage"&gt;
+        &lt;b&gt;Note:&lt;/b&gt;
+        #displayUser($userRef,{ 'useInlineHTML': true}) has not signed paper
+          &lt;a href="$paperDoc.getURL()"&gt;$paperDoc.getTitle()&lt;/a&gt;
+      &lt;/div&gt;
+    {{/html}}
+    #stop
+  #end
+  #set($sigObject = $sigDoc.getObject("PaperSignature.Code.PaperSignatureClass","paper",$paperRef))
+  #if(!$sigObject)
+    {{html}}
+      $xcontext.response.setStatus(400)
+      &lt;div class="box successmessage"&gt;
+        &lt;b&gt;Note:&lt;/b&gt;
+        #displayUser($userRef,{ 'useInlineHTML': true}) has not signed paper
+          &lt;a href="$paperDoc.getURL()"&gt;$paperDoc.getTitle()&lt;/a&gt;
+      &lt;/div&gt;
+    {{/html}}
+    #stop
+  #end
+  #if($paperObject.getValue('signupDeadline'))
+    #set($signupTimeLeft = $datetool.whenIs($paperObject.getValue('signupDeadline')).seconds)
+  #end
+  #if(!$hasAdmin &amp;&amp; ($paperObject.getValue('signupOpen')==0 || ( $signupTimeLeft &amp;&amp; $signupTimeLeft&lt;=0)))
+    {{html}}
+      $xcontext.response.setStatus(400)
+      &lt;div class="box errormessage"&gt;
+        &lt;b&gt;Error:&lt;/b&gt;
+        Paper sign-up period is &lt;u&gt;not open&lt;/u&gt;, you cannot unsign the paper at this time.
+      &lt;/div&gt;
+    {{/html}}
+    #stop
+  #end
+  #if("$!confirm" != "true")
+    {{html}}
+      &lt;div class="box warningmessage"&gt;
+        &lt;h5 style="margin-top:0"&gt;$services.icon.renderHTML('warning')
+          Confirm deletion of signature&lt;/h5&gt;
+        &lt;p&gt;Please confirm you wish to delete signature. &lt;b&gt;Note:&lt;/b&gt; if you delete the signature,
+          you can sign again until the sign-up deadline expires.&lt;p&gt;
+        &lt;p&gt;User: #displayUser($userRef,{ 'useInlineHTML': true})&lt;/p&gt;
+        &lt;p&gt;Paper: &lt;a href="$paperDoc.getURL()"&gt;$escapetool.xml($paperDoc.getTitle())&lt;/a&gt;&lt;/p&gt;
+        #set($params = "paper=$escapetool.url($paperRef)&amp;user=$escapetool.url($userRef)&amp;confirm=true")
+        #if($xredirect)
+          #set($params = "${params}&amp;xredirect=$xredirect")
+        #end
+        &lt;p&gt;&lt;a href="$doc.getURL('view', $params)" class="btn btn-primary"&gt;Confirm deletion&lt;/a&gt;&lt;/p&gt;
+      &lt;/div&gt;
+    {{/html}}
+
+  #else
+    #set($comment = "Removed signature for $paperRef")
+    #set($updated = true)
+    #set($discard = $sigDoc.removeObject($sigObject))
+    #set($discard = $sigDoc.saveAsAuthor($comment,$updated))
+    #if("$!xredirect" != "")
+      $xcontext.getResponse().sendRedirect($xredirect)
+      #stop
+    #else
+      {{html}}
+        &lt;div class="box successmessage"&gt;
+          &lt;b&gt;Success:&lt;/b&gt; $comment for author #displayUser($userRef,{ 'useInlineHTML': true})
+        &lt;/div&gt;
+      {{/html}}
+
+    #end
+  #end
+#end
+{{velocity}}
+</content>
+</xwikidoc>
