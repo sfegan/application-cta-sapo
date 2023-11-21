@@ -115,19 +115,25 @@
   #end
   #if("$!confirm" != "true")
     {{html}}
+    #if($userRef != $xcontext.user)
+      &lt;div class="box errormessage"&gt;
+        &lt;h4 style="margin-top:0" class="alert-heading"&gt;&lt;b&gt;$services.icon.renderHTML('warning') Warning:&lt;/b&gt; you are about to delete a user's signature with administration privilages.&lt;/h4&gt;
+        &lt;p&gt;Please confirm you wish to delete signature.&lt;p&gt;
+    #else
       &lt;div class="box warningmessage"&gt;
         &lt;h5 style="margin-top:0"&gt;$services.icon.renderHTML('warning')
           Confirm deletion of signature&lt;/h5&gt;
         &lt;p&gt;Please confirm you wish to delete signature. &lt;b&gt;Note:&lt;/b&gt; if you delete the signature,
           you can sign again until the sign-up deadline expires.&lt;p&gt;
+    #end
         &lt;p&gt;User: #displayUser($userRef,{ 'useInlineHTML': true})&lt;/p&gt;
         &lt;p&gt;Paper: &lt;a href="$paperDoc.getURL()"&gt;$escapetool.xml($paperDoc.getTitle())&lt;/a&gt;&lt;/p&gt;
-        #set($params = "paper=$escapetool.url($paperRef)&amp;user=$escapetool.url($userRef)&amp;confirm=true")
+    #set($params = "paper=$escapetool.url($paperRef)&amp;user=$escapetool.url($userRef)&amp;confirm=true")
         &lt;p&gt;
-        #if($xredirect)
-          #set($params = "${params}&amp;xredirect=$xredirect")
+    #if($xredirect)
+      #set($params = "${params}&amp;xredirect=$xredirect")
           &lt;a href="$xredirect" class="btn btn-primary"&gt;Cancel&lt;/a&gt;
-        #end
+    #end
           &lt;a href="$doc.getURL('view', $params)" class="btn btn-danger"&gt;Confirm deletion&lt;/a&gt;
         &lt;/p&gt;
       &lt;/div&gt;

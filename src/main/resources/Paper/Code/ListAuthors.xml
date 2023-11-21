@@ -113,7 +113,7 @@
   #set($discard = $authorTableEntry.put('countries', $stringtool.join($countries,", ")))
   #set($discard = $authorTableEntry.put('eligibility',$services.localization.render(
     "PaperSignature.Code.PaperSignatureClass_eligibility_$authorEntry[2]_short")))
-  #set($discared = $authorTableEntries.add($authorTableEntry))
+  #set($discard = $authorTableEntries.add($authorTableEntry))
 #end
 #if($xcontext.action == 'get')
   #if("$!xcontext.getRequest().getParameter('generate')" == "email")
@@ -122,6 +122,10 @@
     {{include reference="Paper.Code.RenderAuthorListAsJSON" /}}
   #end
   #stop
+#end
+#set($enableAdminMode = false)
+#if($hasAdmin &amp;&amp; "$!xcontext.getRequest().getParameter('admin')"=="true")
+  #set($enableAdminMode = true)
 #end
 #set($authorSortField = ${xcontext.getRequest().getParameter('sort_field')|"signatureDate:desc"})
 {{html wiki="false" clean="false"}}
@@ -136,7 +140,11 @@
   &lt;table class="table table-striped"&gt;
     &lt;thead&gt;
       &lt;tr style="border: none"&gt;
+    #if($enableAdminMode)
+        &lt;th colspan="3"&gt;Number&lt;/th&gt;
+    #else
         &lt;th colspan="2"&gt;Number&lt;/th&gt;
+    #end
         &lt;th&gt;$escapetool.xml($services.localization.render('PaperSignature.Code.PaperSignatureClass_author'))&lt;/th&gt;
         &lt;th&gt;$escapetool.xml($services.localization.render('UserAffiliation.Code.UserAffiliationClass_signature'))&lt;/th&gt;
         &lt;th&gt;$escapetool.xml($services.localization.render('AffiliationAddress.Code.AffiliationAddressClass_country'))&lt;/th&gt;
@@ -148,14 +156,20 @@
     #foreach($authorEntry in $collectiontool.sort($authorTableEntries,$authorSortField))
       &lt;tr&gt;
         &lt;td&gt;
-          #if($hasAdmin)
+          #if($enableAdminMode)
             &lt;a href="$authorEntry['signatureObjectURL']"&gt;
           #end
           $numbertool.integer($authorTableEntries.size() - $foreach.index)
-          #if($hasAdmin)
+          #if($enableAdminMode)
             &lt;/a&gt;
           #end
         &lt;/td&gt;
+        #if($enableAdminMode)
+          #set($redirectURL = $doc.getURL('view', "paper=$escapetool.url($paperRef)&amp;admin=true"))
+          &lt;td&gt;&lt;a href="$xwiki.getURL("Paper.Code.UnsignPaper","view","paper=$escapetool.url($paperRef)&amp;user=$escapetool.url($authorEntry['user'])&amp;xredirect=$escapetool.url($redirectURL)")"&gt;
+            $services.icon.renderHTML('cross','silk')
+          &lt;/a&gt;&lt;/td&gt;
+        #end
         #if($signatureCount[$authorEntry['signature']] &gt; 1)
           &lt;td&gt;$services.icon.renderHTML('warning')&lt;/td&gt;
         #else
@@ -220,6 +234,9 @@
   #end
   &lt;a href="$doc.getURL('get', "download&amp;outputSyntax=plain&amp;paper=$escapetool.url($paperRef)")" class="btn btn-primary"&gt;Export to JSON&lt;/a&gt;
   &lt;a href="$doc.getURL('get', "outputSyntax=plain&amp;paper=$escapetool.url($paperRef)&amp;generate=email")" class="btn btn-primary"&gt;Generate author email list&lt;/a&gt;
+  #if($hasAdmin &amp;&amp; !$enableAdminMode)
+    &lt;a href="$doc.getURL('view', "paper=$escapetool.url($paperRef)&amp;admin=true")" class="btn btn-danger"&gt;Enable admin mode&lt;/a&gt;
+  #end
 {{/html}}
 {{/velocity}}
 </content>
