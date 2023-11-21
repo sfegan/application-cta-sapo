@@ -101,7 +101,7 @@
             at any time before the sign-up period closes. If you wish, you can
             &lt;a href="$xwiki.getURL("Paper.Code.UnsignPaper", "view", "user=$escapetool.url($xcontext.user)&amp;paper=$escapetool.url($doc.fullName)&amp;xredirect=$escapetool.xml($doc.URL)")" style="font-size:18px"&gt;
               &lt;b&gt;remove your signature&lt;/b&gt;&lt;/a&gt;
-            from the paper util the sign-up period closes.&lt;/p&gt;
+            from the paper until the sign-up period closes.&lt;/p&gt;
         &lt;/div&gt;
       #else
         &lt;div class="box errormessage"&gt;
@@ -115,7 +115,7 @@
             at any time before the sign-up period closes.If you wish, you can
             &lt;a href="$xwiki.getURL("Paper.Code.UnsignPaper", "view", "user=$escapetool.url($xcontext.user)&amp;paper=$escapetool.url($doc.fullName)&amp;xredirect=$escapetool.xml($doc.URL)")" style="font-size:18px"&gt;
               &lt;b&gt;remove your signature&lt;/b&gt;&lt;/a&gt;
-            from the paper util the sign-up period closes.&lt;/p&gt;
+            from the paper until the sign-up period closes.&lt;/p&gt;
         &lt;/div&gt;
       #end
     #else

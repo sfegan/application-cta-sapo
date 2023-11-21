@@ -123,10 +123,13 @@
         &lt;p&gt;User: #displayUser($userRef,{ 'useInlineHTML': true})&lt;/p&gt;
         &lt;p&gt;Paper: &lt;a href="$paperDoc.getURL()"&gt;$escapetool.xml($paperDoc.getTitle())&lt;/a&gt;&lt;/p&gt;
         #set($params = "paper=$escapetool.url($paperRef)&amp;user=$escapetool.url($userRef)&amp;confirm=true")
+        &lt;p&gt;
         #if($xredirect)
           #set($params = "${params}&amp;xredirect=$xredirect")
+          &lt;a href="$xredirect" class="btn btn-primary"&gt;Cancel&lt;/a&gt;
         #end
-        &lt;p&gt;&lt;a href="$doc.getURL('view', $params)" class="btn btn-primary"&gt;Confirm deletion&lt;/a&gt;&lt;/p&gt;
+          &lt;a href="$doc.getURL('view', $params)" class="btn btn-danger"&gt;Confirm deletion&lt;/a&gt;
+        &lt;/p&gt;
       &lt;/div&gt;
     {{/html}}
 
