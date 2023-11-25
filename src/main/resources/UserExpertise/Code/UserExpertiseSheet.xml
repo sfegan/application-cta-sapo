@@ -1,0 +1,111 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="UserExpertise.Code.UserExpertiseSheet" locale="">
+  <web>UserExpertise.Code</web>
+  <name>UserExpertiseSheet</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>UserExpertiseClass</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{velocity}}
+#set ($object = $doc.getObject('UserExpertise.Code.UserExpertiseClass'))
+#if (!$object)
+  #set ($messageKey = 'userexpertise.sheet.description')
+  #set ($messageType = 'info')
+  #if ($doc.documentReference.name != 'UserExpertiseSheet')
+    #set ($messageKey = 'userexpertise.sheet.noObject')
+    #set ($messageType = 'warning')
+  #end
+  {{$messageType}}
+  $services.localization.render($messageKey)
+  {{/$messageType}}
+  #stop
+#end
+#set ($discard = $xwiki.jsfx.use('uicomponents/edit/editableProperty.js', {
+  'forceSkinAction': true,
+  'language': $xcontext.locale
+}))
+#set ($discard = $doc.use($object))
+#set ($editing = $xcontext.action == 'edit')
+{{html wiki="true" clean="false"}}
+&lt;div class="xform"&gt;
+  &lt;dl&gt;
+    &lt;dt #if (!$editing &amp;&amp; $hasEdit)
+        class="editableProperty"
+        data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('category')))"
+        data-property-type="object"#end&gt;
+      &lt;label#if ($editing) for="UserExpertise.Code.UserExpertiseClass_0_category"#end&gt;
+        $escapetool.xml($doc.displayPrettyName('category', false, false))
+      &lt;/label&gt;
+    &lt;/dt&gt;
+    &lt;dd&gt;$doc.display('category')&lt;/dd&gt;
+    &lt;dt #if (!$editing &amp;&amp; $hasEdit)
+        class="editableProperty"
+        data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('expertise')))"
+        data-property-type="object"#end&gt;
+      &lt;label#if ($editing) for="UserExpertise.Code.UserExpertiseClass_0_expertise"#end&gt;
+        $escapetool.xml($doc.displayPrettyName('expertise', false, false))
+      &lt;/label&gt;
+    &lt;/dt&gt;
+    &lt;dd&gt;$doc.display('expertise')&lt;/dd&gt;
+    #if ($editing)
+      &lt;dt&gt;
+        &lt;label for="UserExpertise.Code.UserExpertiseClass_0_showInSelector"&gt;
+          $doc.display('showInSelector')
+          $escapetool.xml($doc.displayPrettyName('showInSelector', false, false))
+        &lt;/label&gt;
+      &lt;/dt&gt;
+    #else
+      &lt;dt #if (!$editing &amp;&amp; $hasEdit)
+          class="editableProperty"
+          data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('showInSelector')))"
+          data-property-type="object"#end&gt;
+        &lt;label#if ($editing) for="UserExpertise.Code.UserExpertiseClass_0_showInSelector"#end&gt;
+          $escapetool.xml($doc.displayPrettyName('showInSelector', false, false))
+        &lt;/label&gt;
+      &lt;/dt&gt;
+      &lt;dd&gt;$doc.display('showInSelector')&lt;/dd&gt;
+    #end
+    &lt;dt #if (!$editing &amp;&amp; $hasEdit)
+        class="editableProperty"
+        data-property="$escapetool.xml($services.model.serialize($object.getPropertyReference('sortOrder')))"
+        data-property-type="object"#end&gt;
+      &lt;label#if ($editing) for="UserExpertise.Code.UserExpertiseClass_0_sortOrder"#end&gt;
+        $escapetool.xml($doc.displayPrettyName('sortOrder', false, false))
+      &lt;/label&gt;
+    &lt;/dt&gt;
+    &lt;dd&gt;$doc.display('sortOrder')&lt;/dd&gt;
+  &lt;/dl&gt;
+&lt;/div&gt;
+{{/html}}
+{{/velocity}}</content>
+</xwikidoc>

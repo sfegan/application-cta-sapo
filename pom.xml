@@ -66,6 +66,10 @@
               <type>configuration</type>
             </entry>
             <entry>
+              <document>UserExpertise.WebPreferences</document>
+              <type>configuration</type>
+            </entry>
+            <entry>
               <document>Paper.WebPreferences</document>
               <type>configuration</type>
             </entry>
@@ -79,6 +83,7 @@
             <visibleTechnicalPage>.*/Event/Reports/.*\.xml</visibleTechnicalPage>
             <visibleTechnicalPage>.*/Presentation/WebHome\.xml</visibleTechnicalPage>
             <visibleTechnicalPage>.*/UserAffiliation/WebHome\.xml</visibleTechnicalPage>
+            <visibleTechnicalPage>.*/UserExpertise/WebHome\.xml</visibleTechnicalPage>
             <visibleTechnicalPage>.*/AffiliationAddress/WebHome\.xml</visibleTechnicalPage>
             <visibleTechnicalPage>.*/Paper/WebHome\.xml</visibleTechnicalPage>
             <visibleTechnicalPage>.*/PaperSignature/WebHome\.xml</visibleTechnicalPage>
