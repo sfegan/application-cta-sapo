@@ -65,6 +65,80 @@
         <validationRegExp>/^(([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[a-zA-Z]{2,}))?$/</validationRegExp>
         <classType>com.xpn.xwiki.objects.classes.EmailClass</classType>
       </email>
+      <expertise>
+        <cache>0</cache>
+        <classname/>
+        <customDisplay>{{velocity}}
+#set ($propertyClass = $object.xWikiClass.get($name))
+#set ($className = $object.xWikiClass.name)
+#if ($type == 'edit')
+  {{html clean=false}}
+    &lt;span class="xHint"&gt;Select two or more categories that describe your expertise. On MacOS hold Command while clicking to select multiple options.&lt;/span&gt;
+    $doc.displayEdit($propertyClass, $prefix, $object)
+  {{/html}}
+#else
+  #set($hql = "select category.value, expertise.value
+    from BaseObject as o, StringProperty as expertise, StringProperty as category
+    where o.name=:name
+    and o.className = 'UserExpertise.Code.UserExpertiseClass'
+    and o.id=expertise.id.id and expertise.id.name='expertise'
+    and o.id=category.id.id and category.id.name='category'")
+  #set($query = $services.query.hql($hql))
+  {{html clean=false}}
+    #set($colors = { "Astronomy" : "#faedcb", "CTA systems" : "#c9e4de", "Technology" : "#c6def1", "Physics" : "#dbcdf0", "General" : "#f2c6de", "Analysis methods" : "#f7d9c4", "Science" : "#b0b5ed" })
+    #set($hasOne = false)
+    #foreach($v in $value)
+      #set($ce = $query.bindValue('name',$v).execute())
+      #if($ce.size() &gt; 0)
+        #if(!$hasOne)
+          &lt;p&gt;
+          #set($hasOne = true)
+        #end
+        #set($c = $ce[0][0])
+        #set($e = $ce[0][1])
+        #set($color = $colors.getOrDefault($c, "#dddddd"))
+        &lt;span style="display: inline-block; background:$color; border-radius: 10px; padding:1px; padding-left: 9px; padding-right: 9px"&gt;$e&lt;/span&gt;
+      #end
+    #end
+    #if(!$hasOne)
+      &lt;/p&gt;
+    #end
+  {{/html}}
+#end
+{{/velocity}}</customDisplay>
+        <defaultValue/>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <hint/>
+        <idField/>
+        <largeStorage>1</largeStorage>
+        <multiSelect>1</multiSelect>
+        <name>expertise</name>
+        <number>8</number>
+        <picker>0</picker>
+        <prettyName>Expertise</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator>, </separator>
+        <separators/>
+        <size>10</size>
+        <sort>none</sort>
+        <sql>select d.fullName, category.value+' - '+expertise.value
+  from XWikiDocument as d, BaseObject as o, StringProperty as expertise, StringProperty as category, IntegerProperty as show, IntegerProperty as priority
+  where o.name = d.fullName
+  and o.className = 'UserExpertise.Code.UserExpertiseClass'
+  and d.fullName &lt;&gt; 'UserExpertise.Code.UserExpertiseTemplate'
+  and o.id=expertise.id.id and expertise.id.name='expertise'
+  and o.id=category.id.id and category.id.name='category'
+  and o.id=show.id.id and show.id.name='showInSelector' and show.value=1
+  and o.id=priority.id.id and priority.id.name='sortOrder'
+  order by priority.value ASC, category.value ASC, expertise.value ASC</sql>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <valueField/>
+        <classType>com.xpn.xwiki.objects.classes.DBListClass</classType>
+      </expertise>
       <firstName>
         <customDisplay>{{include reference="UserAffiliation.Code.FirstAndLastNameDisplayer"/}}</customDisplay>
         <disabled>0</disabled>
@@ -163,6 +237,9 @@ $object.documentReference.name
     </class>
     <property>
       <email/>
+    </property>
+    <property>
+      <expertise/>
     </property>
     <property>
       <firstName/>
