@@ -43,6 +43,7 @@ UserAffiliation.Code.UserAffiliationClass_email=Contact author email address
 UserAffiliation.Code.UserAffiliationClass_orcidURL=ORCID iD (URL)
 UserAffiliation.Code.UserAffiliationClass_expertise=Expertise
 UserAffiliation.Code.UserAffiliationClass_signature=Signature
+UserAffiliation.Code.UserAffiliationClass_isStudent=I am a student (PhD, Masters, Undergrad, etc...)
 UserAffiliation.Code.UserAffiliationClass_syncFromProfile=Synchronise name and email from user profile
 
 # Sheet keys

@@ -115,7 +115,7 @@
         <largeStorage>1</largeStorage>
         <multiSelect>1</multiSelect>
         <name>expertise</name>
-        <number>8</number>
+        <number>9</number>
         <picker>0</picker>
         <prettyName>Expertise</prettyName>
         <relationalStorage>0</relationalStorage>
@@ -153,6 +153,21 @@
         <validationRegExp/>
         <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
       </firstName>
+      <isStudent>
+        <customDisplay/>
+        <defaultValue/>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType/>
+        <hint/>
+        <name>isStudent</name>
+        <number>8</number>
+        <prettyName>Student (PhD, Masters, Undergraduate)</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </isStudent>
       <lastName>
         <customDisplay>{{include reference="UserAffiliation.Code.FirstAndLastNameDisplayer"/}}</customDisplay>
         <disabled>0</disabled>
@@ -243,6 +258,9 @@ $object.documentReference.name
     </property>
     <property>
       <firstName/>
+    </property>
+    <property>
+      <isStudent/>
     </property>
     <property>
       <lastName/>
