@@ -12,3 +12,7 @@ Supports
   - Notification of new presentation by email (requires [XWiki Script Component extension](https://extensions.xwiki.org/xwiki/bin/view/Extension/Script%20Component/) be installed on the root namespace)
   - Summary reports giving number of presentations per year, per reviewer, and many more
   - Also includes SAPO navigation panel based on XWiki "Applications" panel
+
+## Installation
+
+From the [releases page](https://github.com/sfegan/application-ctac-sapo/releases), download the XAR file for the version you wish to install (note XAR is a standard Zip file whose contents describe the application to the XWiki system). On your XWiki instance, go to the "Administer wiki" page by first cliking on the button on the top-right of the Wiki page that has three horizontal lines. Then naviage to "Content" and then "Import". Upload the XAR file to the system, and then click on the uploaded version. This will present a tree that allows you to select the files you wish to install. You can select a subset, or install them all as you wish.
