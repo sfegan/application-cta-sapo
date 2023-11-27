@@ -19,4 +19,8 @@ From the [releases page](https://github.com/sfegan/application-ctac-sapo/release
 
 ## Development
 
-Development of the application should be done in the XWiki system itself by editing the classes, scripts, sheets etc using the edit buttons. Seek out help on the XWiki webpages for help on this. When you have modified the system to suit your needs, you should download the changes to your computer and merge them into the github version of the application.
+Development of the application should be done in the XWiki system itself by editing the classes, scripts, sheets etc, storred by converntion in the "Code" drectory of the various components of the system. Make changes directly to the code by using the edit button on the page. It is beyond the scope of this readme to describe this in detail; seek out help on the XWiki webpages for help on this. When you have modified the system to suit your needs, you should download the changes to your computer and merge them into the github version of the application. It is eseential to reformat the downloaded pages using the Maven macros supplied by xwiki before merging them:
+
+mvn xar:format
+
+
