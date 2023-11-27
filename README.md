@@ -15,4 +15,8 @@ Supports
 
 ## Installation
 
-From the [releases page](https://github.com/sfegan/application-ctac-sapo/releases), download the XAR file for the version you wish to install (note XAR is a standard Zip file whose contents describe the application to the XWiki system). On your XWiki instance, go to the "Administer wiki" page by first cliking on the button on the top-right of the Wiki page that has three horizontal lines. Then naviage to "Content" and then "Import". Upload the XAR file to the system in the "Upload a new package" section of the page, and then click on the uploaded version in the "Available packages" section. This will present a tree that allows you to select the directories and/or files you wish to install. You can select a subset, or install them all as you wish.
+From the [releases page](https://github.com/sfegan/application-ctac-sapo/releases), download the XAR file for the version you wish to install (note XAR is a standard Zip file whose contents describe the application to the XWiki system). On your XWiki instance, go to the "Administer wiki" page by first cliking on the button on the top-right of the Wiki page that has three horizontal lines. Then navigate to "Content" and then "Import". Upload the XAR file to the system in the "Upload a new package" section of the page, and then click on the uploaded version in the "Available packages" section. This will present a tree that allows you to select the directories and/or files you wish to install. You can select a subset, or install them all as you wish.
+
+## Development
+
+Development of the application should be done in the XWiki system itself by editing the classes, scripts, sheets etc using the edit buttons. Seek out help on the XWiki webpages for help on this. When you have modified the system to suit your needs, you should download the changes to your computer and merge them into the github version of the application.
