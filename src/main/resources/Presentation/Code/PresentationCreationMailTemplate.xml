@@ -58,6 +58,7 @@
         <name>html</name>
         <number>4</number>
         <prettyName>HTML</prettyName>
+        <restricted>0</restricted>
         <rows>15</rows>
         <size>80</size>
         <unmodifiable>0</unmodifiable>
@@ -88,6 +89,7 @@
         <name>text</name>
         <number>3</number>
         <prettyName>Text</prettyName>
+        <restricted>0</restricted>
         <rows>15</rows>
         <size>80</size>
         <unmodifiable>0</unmodifiable>
