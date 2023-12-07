@@ -54,6 +54,7 @@
 #if($uaDoc.isNew())
   #set($userProperties = $services.user.getAllProperties($userRef))
   #set($uaObj = $uaDoc.getObject('UserAffiliation.Code.UserAffiliationClass', true))
+  $uaObj.set('syncWithProfile', 0)
   $uaObj.set('firstName', $userProperties.getFirstName())
   $uaObj.set('lastName', $userProperties.getLastName())
   $uaObj.set('email', $userProperties.getEmail())

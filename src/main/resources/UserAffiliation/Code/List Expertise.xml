@@ -1,0 +1,146 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="UserAffiliation.Code.List Expertise" locale="">
+  <web>UserAffiliation.Code</web>
+  <name>List Expertise</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>UserAffiliation.Code.WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title>List Expertise</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{velocity}}
+#set($hql = "select d.fullName, category.value, expertise.value
+  from XWikiDocument as d, BaseObject as o, StringProperty as expertise,
+    StringProperty as category, IntegerProperty as priority
+  where o.name = d.fullName
+  and o.className = 'UserExpertise.Code.UserExpertiseClass'
+  and d.fullName &lt;&gt; 'UserExpertise.Code.UserExpertiseTemplate'
+  and o.id=expertise.id.id and expertise.id.name='expertise'
+  and o.id=category.id.id and category.id.name='category'
+  and o.id=priority.id.id and priority.id.name='sortOrder'
+  order by priority.value ASC, category.value ASC, expertise.value ASC")
+#set($expertiseDB = {})
+#set($selectedExpertise = "$!xcontext.getRequest().getParameter('expertise')")
+{{html clean=true}}
+  &lt;form action="$doc.getURL("view")" method="get"&gt;
+    &lt;div class="xform"&gt;
+      &lt;div class="row"&gt;
+        &lt;div class="col-md-12"&gt;
+          &lt;dl&gt;
+            &lt;dt&gt;Search for expertise: select from list here or click on colored bubble in table below&lt;/dt&gt;
+            &lt;dd&gt;
+              &lt;select name="expertise" id="expertise-select" onchange="this.form.submit()"&gt;
+                &lt;option value=""&gt;--- All expertise ---&lt;/option&gt;
+#foreach($row in $services.query.hql($hql).execute())
+  #set($expertiseDB[$row[0]] = { "category" : $row[1], "expertise" : $row[2] })
+  #set($selected = "")
+  #if($selectedExpertise == $row[0])
+    #set($selected = 'selected')
+  #end
+                &lt;option value="$escapetool.xml($row[0])" $selected&gt;$row[1] - $row[2]&lt;/option&gt;
+#end
+              &lt;/select&gt;
+            &lt;/dd&gt;
+          &lt;/dl&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/form&gt;
+#set($colors = { "Astronomy"        : "#faedcb",
+                 "CTA systems"      : "#c9e4de",
+                 "Technology"       : "#c6def1",
+                 "Physics"          : "#dbcdf0",
+                 "General"          : "#f2c6de",
+                 "Analysis methods" : "#f7d9c4",
+                 "Science"          : "#b0b5ed" })
+#set($hql = "SELECT obj.name, firstNameProp.value, lastNameProp.value, userExpertiseListProp.value,
+    isStudentProp.value, orcidURLProp.value
+  FROM BaseObject as obj, StringProperty as firstNameProp, StringProperty as lastNameProp,
+    LargeStringProperty as userExpertiseListProp, IntegerProperty as isStudentProp, StringProperty orcidURLProp
+  WHERE obj.className = 'UserAffiliation.Code.UserAffiliationClass'
+  AND obj.name &lt;&gt; 'UserAffiliation.Code.UserAffiliationTemplate'
+  AND obj.id=firstNameProp.id.id AND firstNameProp.id.name='firstName'
+  AND obj.id=lastNameProp.id.id AND lastNameProp.id.name='lastName'
+  AND obj.id=userExpertiseListProp.id.id AND userExpertiseListProp.id.name='expertise'
+  AND userExpertiseListProp.id.value &lt;&gt; ''
+  AND userExpertiseListProp.id.value LIKE :expertise
+  AND obj.id=isStudentProp.id.id AND isStudentProp.id.name='isStudent'
+  AND obj.id=orcidURLProp.id.id AND orcidURLProp.id.name='orcidURL'
+  ORDER BY firstNameProp.value, lastNameProp.value")
+  &lt;table class="table table-striped"&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th/&gt;
+        &lt;th&gt;User&lt;/th&gt;
+        &lt;th width="32px"/&gt;
+        &lt;th&gt;Expertise&lt;/th&gt;
+      &lt;tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      #foreach($row in $services.query.hql($hql).bindValue('expertise','%'+$selectedExpertise+'%').execute())
+        &lt;tr&gt;
+          &lt;td&gt;$foreach.count&lt;/td&gt;
+          &lt;td&gt;&lt;a href="$xwiki.getURL($row[0],'view')"&gt;$row[1] $row[2]&lt;/a&gt;&lt;/td&gt;
+            #if($row[5] != "")
+              &lt;td&gt;&lt;a href="$escapetool.xml($row[5])"&gt;
+                &lt;img src="$xwiki.getAttachmentURL('UserAffiliation.Code.UserAffiliationSheet','ORCIDiD_icon16x16.png')" style="pointer-events: none;"/&gt;
+              &lt;/a&gt;&lt;/td&gt;
+            #else
+              &lt;td/&gt;
+            #end
+          &lt;/td&gt;
+          &lt;td&gt;
+          #if($row[4] == 1)
+            &lt;span style="display: inline-block; background: red; color: white; border-radius: 5px; padding:1px; padding-left: 5px; padding-right: 5px; margin-top: 1px; margin-bottom: 1px"&gt;Student&lt;/span&gt;
+          #end
+          #foreach($expertiseRef in $stringtool.split($row[3],"|"))
+            #set($e = $expertiseDB[$expertiseRef]["expertise"])
+            #set($c = $expertiseDB[$expertiseRef]["category"])
+            #set($color = $colors.getOrDefault($c, "#dddddd"))
+            #if($expertiseRef == $selectedExpertise)
+              #set($color = "yellow")
+              #set($element = "span")
+              #set($href = "")
+            #else
+              #set($element = "a")
+              #set($url = $doc.getURL("view","expertise=$escapetool.url($expertiseRef)"))
+              #set($href = 'href="'+$url+'"')
+            #end
+            &lt;$element style="display: inline-block; background: $color; color: black; border-radius: 5px; padding:1px; padding-left: 5px; padding-right: 5px; margin-top: 1px; margin-bottom: 1px" $href&gt;$e&lt;/$element&gt;
+          #end
+          &lt;/td&gt;
+        &lt;/tr&gt;
+      #end
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+{{/html}}
+{{/velocity}}</content>
+</xwikidoc>

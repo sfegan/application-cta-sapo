@@ -73,7 +73,7 @@
 #set ($className = $object.xWikiClass.name)
 #if ($type == 'edit')
   {{html clean=false}}
-    &lt;span class="xHint"&gt;Select two or more categories that describe your expertise. On MacOS hold Command while clicking to select multiple options.&lt;/span&gt;
+    &lt;span class="xHint"&gt;Select two or more categories that describe your expertise. On MacOS hold Command while clicking to select multiple options. On other systems hold Control (or Ctrl) while clicking.&lt;/span&gt;
     $doc.displayEdit($propertyClass, $prefix, $object)
   {{/html}}
 #else
@@ -123,7 +123,7 @@
         <separators/>
         <size>10</size>
         <sort>none</sort>
-        <sql>select d.fullName, category.value+' - '+expertise.value
+        <sql>select d.fullName, CONCAT(category.value,' - ',expertise.value)
   from XWikiDocument as d, BaseObject as o, StringProperty as expertise, StringProperty as category, IntegerProperty as show, IntegerProperty as priority
   where o.name = d.fullName
   and o.className = 'UserExpertise.Code.UserExpertiseClass'

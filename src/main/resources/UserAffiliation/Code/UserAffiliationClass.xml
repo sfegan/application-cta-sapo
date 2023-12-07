@@ -68,7 +68,7 @@
 #set ($className = $object.xWikiClass.name)
 #if ($type == 'edit')
   {{html clean=false}}
-    &lt;span class="xHint"&gt;Select two or more categories that describe your expertise. On MacOS hold Command while clicking to select multiple options.&lt;/span&gt;
+    &lt;span class="xHint"&gt;Select two or more categories that describe your expertise. On MacOS hold Command while clicking to select multiple options. On other systems hold Control (or Ctrl) while clicking.&lt;/span&gt;
     $doc.displayEdit($propertyClass, $prefix, $object)
   {{/html}}
 #else
