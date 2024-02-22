@@ -40,7 +40,7 @@
 #set( $panelTitle = "SAPO space" )
 #set( $panelEntries = [
   { "target": "Main.WebHome", "icon": "icon:home", "label": "SAPO Home" },
-  { "target": "UserAffiliation.Code.MyAffiliation", "icon": "icon:vcard", "label": "My affiliation" },
+  { "target": "UserAffiliation.Code.MyAffiliation", "icon": "icon:vcard", "label": "My profile" },
   { "target": "Event.WebHome", "icon": "icon:comments", "label": "Conferences" },
   { "target": "Consortium Publication Projects.WebHome", "icon": "icon:page_white_text", "label": "Papers" },
   { "url": "https://indico.cta-observatory.org/event/1075/", "icon": "icon:zoom", "label": "Paper reviewing" },
