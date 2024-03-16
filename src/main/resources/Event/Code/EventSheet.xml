@@ -208,8 +208,8 @@
         'presenters': {"html":true},
         'reviewers': {"html":true},
         'status': {'type': 'list', 'html': true},
-        'event': {'type': 'hidden'},
-        '_actions': {"sortable":false,"filterable":false,"html":true,"actions":["edit","delete"]}
+        'workingGroup' : {'type': 'list', 'html': true, "displayName":"Working group"},
+        'event': {'type': 'hidden'}
       })
       #set ($options = {
         'className': 'Presentation.Code.PresentationClass',
@@ -221,10 +221,13 @@
         'defaultOrder': 'asc',
         'extraParams': "event=${escapetool.url($doc.fullName)}"
        })
-       #set ($columns = ['doc.title', 'presenters', 'reviewers', 'status', '_actions', 'event'])
+       #set ($columns = ['doc.title', 'presenters', 'reviewers', 'status', 'workingGroup', 'event'])
        #livetable('presentations' $columns $columnsProperties $options)
     &lt;/div&gt;
   &lt;/div&gt;
+  #set($eventRef = $escapetool.url($services.model.serialize($doc.getDocumentReference(),'local')))
+  #set($arxivURL = $xwiki.getURL('Event.Code.GenerateArxivIndexForConference','view', "event=$eventRef&amp;title=CTA+contributions+to+$escapetool.url($doc.title)"))
+  &lt;a href="$arxivURL" class="btn btn-primary"&gt;Export all presentations as arXiv index&lt;/a&gt;
 #end
 {{/html}}
 {{/velocity}}</content>
@@ -268,6 +271,7 @@
         <name>code</name>
         <number>2</number>
         <prettyName>Code</prettyName>
+        <restricted>0</restricted>
         <rows>20</rows>
         <size>50</size>
         <unmodifiable>0</unmodifiable>

@@ -1,0 +1,115 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="Event.Code.GenerateArxivIndexForConference" locale="">
+  <web>Event.Code</web>
+  <name>GenerateArxivIndexForConference</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title>GenerateArxivIndexForConference</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{velocity}}
+#set($eventRef = $xcontext.getRequest().getParameter('event'))
+#if("$!eventRef" == "")
+  {{error}}
+    No event reference given.
+  {{/error}}
+  #stop
+#end
+#set($title = $xcontext.getRequest().getParameter('title'))
+#set($report = $xcontext.getRequest().getParameter('report'))
+
+#if("$!title" == "" || "$!report" == "")
+  {{html}}
+    &lt;p&gt;Enter title for these presentations and report identifier, as described in the 
+      &lt;a href="https://info.arxiv.org/help/submit_index.html#index_before"&gt;arXiv documentation&lt;/a&gt;.&lt;/p&gt;
+    &lt;form action="$doc.getURL('get')" class="xform" method="get"&gt;
+      &lt;input type="hidden" name="event" value="$escapetool.xml($eventRef)" /&gt;
+      &lt;input type="hidden" name="outputSyntax" value="plain" /&gt;
+      &lt;div&gt;
+        &lt;dl&gt;
+          &lt;dt&gt;
+            &lt;label for="targetTitle"&gt;Title for conference contributions&lt;/label&gt;
+            &lt;span class="xHint"&gt;For example: CTA contributions to the 38th International Cosmic Ray Conference (ICRC 2023)&lt;/span&gt;
+          &lt;/dt&gt;
+          &lt;dd&gt;
+            &lt;input type="text" id="targetTitle" name="title" value="$escapetool.xml("$!title")" /&gt;
+          &lt;/dd&gt;
+          &lt;dt&gt;
+            &lt;label for="targetReport"&gt;Report identifier unique across arXiv&lt;/label&gt;
+            &lt;span class="xHint"&gt;For example: CTA_ICRC/2023&lt;/span&gt;
+          &lt;/dt&gt;
+          &lt;dd&gt;
+            &lt;input type="text" id="targetReport" name="report" value="$escapetool.xml("$!report")" /&gt;
+          &lt;/dd&gt;
+        &lt;/dl&gt;
+        &lt;span class="buttonwrapper"&gt;
+          &lt;input class="button" type="submit" value="Create arXiv index"/&gt;
+        &lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/form&gt;
+  {{/html}}
+  #stop
+#end
+
+#set($hql = "select doc.title, prop_author.value from BaseObject obj, XWikiDocument doc, LargeStringProperty prop_author, StringProperty prop_event, StringProperty prop_status where obj.className='Presentation.Code.PresentationClass' and doc.fullName=obj.name and prop_author.id.id=obj.id and prop_author.name='presenters' and prop_event.id.id=obj.id and prop_event.name='event' and prop_event.value=:event and prop_status.id.id=obj.id and prop_status.name='status' and prop_status.value != 'withdrawn'")
+$response.setContentType('text/html')
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;$escapetool.xml($title)&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;$escapetool.xml($title)&lt;/h1&gt;
+&lt;dl&gt;
+#set($uaHQL = "select prop_fname.value, prop_lname.value from BaseObject obj, StringProperty prop_fname, StringProperty prop_lname where obj.className='UserAffiliation.Code.UserAffiliationClass' and obj.name=:ua and prop_fname.id.id=obj.id and prop_fname.name='firstName' and prop_lname.id.id=obj.id and prop_lname.name='lastName'")
+#set($uaQuery = $services.query.hql($uaHQL))
+#foreach($presentation in $services.query.hql($hql).bindValue('event', $eventRef).execute())
+&lt;dt&gt;&lt;b&gt;$escapetool.xml($presentation[0])&lt;/b&gt;&lt;/dt&gt;
+&lt;dd&gt;##
+  #set($hasAuthor = false)
+  #foreach($userRef in $stringtool.split($presentation[1],","))
+    #set($author = $uaQuery.bindValue('ua', $services.model.createDocumentReference("","UserAffiliation",$userRef).getLocaleDocumentReference().toString()).execute())
+    #if($author.size() &gt; 0)
+      #if($hasAuthor), #{end}$escapetool.xml("$author[0][0] $author[0][1]")##
+      #set($hasAuthor = true)
+    #end
+  #end
+&lt;br/&gt;
+(paper
+REPORT-NO:$report/$foreach.count
+)
+&lt;/dd&gt;
+#end
+&lt;/dl&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+{{/velocity}}</content>
+</xwikidoc>

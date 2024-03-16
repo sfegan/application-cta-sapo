@@ -40,7 +40,21 @@
 {{html wiki="true"}}
   &lt;ul&gt;
     &lt;li&gt;[[List of conferences : upcoming, or for a calendar year&gt;&gt;List of conferences]]&lt;/li&gt;
-    &lt;li&gt;[[List of presentations : upcoming, or for a given calendar year&gt;&gt;List of presentations]]&lt;/li&gt;
+    &lt;li&gt;[[List of presentations : upcoming, or for a given calendar year&gt;&gt;List of presentations]]
+      &lt;ul&gt;
+        &lt;li&gt;Filtered by working group :
+          #set( $url = $xwiki.getDocument('Event.Reports.List of presentations').getURL() )
+          #set( $xclass = $xwiki.getClass('Presentation.Code.PresentationClass') )
+          #set( $wgList = $xclass.get('workingGroup').getListValues() )
+          #foreach ( $wg in $wgList )
+            &lt;a href="$url?wg=$wg"&gt;##
+              $services.localization.render("Presentation.Code.PresentationClass_abbreviatedWorkingGroup_$wg")##
+            &lt;/a&gt;,
+          #end
+          or &lt;a href="$url?wg=none"&gt;&lt;i&gt;unassigned&lt;/i&gt;&lt;/a&gt;
+        &lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
     &lt;li&gt;[[Number of conferences and presentations per year&gt;&gt;Number of presentations per year]]&lt;/li&gt;
     &lt;li&gt;[[Reviewer and working-group statistics]]&lt;/li&gt;
     &lt;li&gt;[[My presentations]]&lt;/li&gt;

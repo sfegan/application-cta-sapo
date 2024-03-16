@@ -191,6 +191,22 @@
     #end
   #end
 #end
+#macro( renderSlidesOrProceedingsLinkedIconHQL $value $presentationDoc $type )
+  #if( "$!value" != "" )
+    #if($type=="slides")
+      #set ( $icon = $services.icon.renderHTML('image') )
+    #else
+      #set ( $icon = $services.icon.renderHTML('book') )
+    #end
+    #if( $urltool.toURL($value) )
+      &lt;a href="$escapetool.xml($value)"&gt;$icon&lt;/a&gt;
+    #elseif( $presentationDoc.getAttachment($value) )
+      &lt;a href="$escapetool.xml($presentationDoc.getAttachmentURL($value))"&gt;$icon&lt;/a&gt;
+    #else
+      $icon
+    #end
+  #end
+#end
 #macro( renderAbstractLinkedIcon $presentation $presentationDoc $abstractModals )
   #set( $value = $presentation.getValue('abstract').trim() )
   #set( $icon = $services.icon.renderHTML('align-justify') )
@@ -202,6 +218,21 @@
       #set( $abstractDOM = $services.rendering.parse($value, "xwiki/2.1") )
       #set( $abstractHTML = $services.rendering.render($abstractDOM, "xhtml/1.0") )
       #set( $discard = $abstractModals.put($abstractKey, { "title" : $presentationDoc.title, "abstract" : $abstractHTML}))
+      &lt;a href="#" data-toggle="modal" data-target="#$abstractKey"&gt;$icon&lt;/a&gt;
+    #end
+  #end
+#end
+#macro( renderAbstractLinkedIconHQL $abstract $title $abstractModals )
+  #set( $value = $abstract.trim() )
+  #set( $icon = $services.icon.renderHTML('align-justify') )
+  #if( "$!value" != "" )
+    #if( $urltool.toURL($value) )
+      &lt;a href="$value"&gt;$icon&lt;/a&gt;
+    #else
+      #set( $abstractKey = "absModal$abstractModals.size()" )
+      #set( $abstractDOM = $services.rendering.parse($value, "xwiki/2.1") )
+      #set( $abstractHTML = $services.rendering.render($abstractDOM, "xhtml/1.0") )
+      #set( $discard = $abstractModals.put($abstractKey, { "title" : $title, "abstract" : $abstractHTML}))
       &lt;a href="#" data-toggle="modal" data-target="#$abstractKey"&gt;$icon&lt;/a&gt;
     #end
   #end
@@ -283,6 +314,29 @@
   &lt;td&gt;&lt;div style="$style"&gt;$swg_html&lt;/div&gt;&lt;/td&gt;
   &lt;td&gt;&lt;div style="$style"&gt;$sapo_html&lt;/div&gt;&lt;/td&gt;
 #end
+#macro( renderTwoColumnApprovalsHQL $presentation $approvalSet )
+  #set( $approvalIconName = {"pending" : "shape_square", "approved" : "thumb_up", "rejected" : "thumb_down"} )
+  #set( $swg_html = "" )
+  #if($presentation['approvalBy'] != "sapo")
+    #set( $approved_value = ${presentation["${approvalSet}ApprovalSWG"]|"pending"} )
+    #set( $approval = $approved_value )
+    #set( $swg_html = "#presentationApprovalIcon($approved_value)" )
+  #else
+    #set( $approval = "approved" )
+  #end
+  #set( $sapo_html = "" )
+  #if($presentation['approvalBy'] != "swg")
+    #set( $approved_value = ${presentation["${approvalSet}ApprovalSAPO"]|"pending"} )
+    #if($approval == "approved" || ( $approval == "pending" &amp;&amp; $approved_value == "rejected"))
+      #set($approval = $approved_value)
+    #end
+    #set( $sapo_html = "#presentationApprovalIcon($approved_value)" )
+  #end
+  #set( $style = "#approvalsDivStyle($approval)" )
+  &lt;td&gt;&lt;div style="$style"&gt;$swg_html&lt;/div&gt;&lt;/td&gt;
+  &lt;td&gt;&lt;div style="$style"&gt;$sapo_html&lt;/div&gt;&lt;/td&gt;
+#end
+
 #macro( renderPresentationKey )
   &lt;h5&gt;Key&lt;/h5&gt;
   &lt;div class="row"&gt;
@@ -404,8 +458,26 @@
     &lt;/div&gt;
   &lt;/form&gt;
 #end
-#macro( displayUserOrBlank $user )
+#macro( displayUserOrBlank $user)
   #if("$!user" != "")#displayUser($user, { "useInlineHTML": true} )#end
+#end
+#macro( displayUsersOrBlank $userList $maxuser $cache)
+  #foreach ( $user in $userList.split(",") )
+    #if("$!user" != "")
+      #if($cache)
+        #if($maxuser and $maxuser&gt;0 and $foreach.index&gt;=$maxuser)
+          et al.
+          #break
+        #end
+        #if(!$cache.has($user))
+          #set($cache[$user]="#displayUser($user, { 'useInlineHTML': true} )")
+        #end
+        $cache[$user]
+      #else
+        #displayUser($user, { "useInlineHTML": true} )
+      #end
+    #end
+  #end
 #end
 #macro( renderCreateConferenceBox )
   &lt;div style="background-color: powderblue; border: 2px solid navy; padding: 10px; margin-bottom: 10px"&gt;

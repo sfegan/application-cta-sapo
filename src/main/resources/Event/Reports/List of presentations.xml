@@ -40,65 +40,173 @@
 
 {{velocity}}
   #set ($discard = $xwiki.jsx.use($doc.fullName) )
+  #set( $selectedYear = $xcontext.getRequest().getParameter('year') )
+  #set( $selectedWG = $xcontext.getRequest().getParameter('wg') )
+  #set( $selectedEvent = $xcontext.getRequest().getParameter('event') )
 
   {{html}}
+  &lt;form action="$doc.getURL("view")" method="get"&gt;
+    &lt;div class="xform"&gt;
+      &lt;div class="row"&gt;
+        &lt;div class="col-md-6"&gt;
+          &lt;dl&gt;
+            #if( "$!selectedEvent" == "" )
+              #set( $nextYear = $datetool.year + 1 )
+              #set( $firstYear = 2008 )
+              #set( $lastYear = $xwiki.getDocument($services.query.xwql("FROM doc.object(Event.Code.EventClass) AS evt ORDER BY evt.startDate desc").setLimit(1).execute()).getObject("Event.Code.EventClass").getValue('startDate').year + 1900)
+              #if( !$lastYear )
+                #set( $lastYear = $datetool.year )
+              #end
+              &lt;dt&gt;Presentations for year&lt;/dt&gt;
+              &lt;dd&gt;
+                &lt;select name="year" id="year-select" onchange="this.form.submit()"&gt;
+                  &lt;option value=""&gt;--- All upcoming conferences ---&lt;/option&gt;
+                  #foreach( $year in [$lastYear..$firstYear] )
+                    #set( $selected = "" )
+                    #if ( "$year" == "$!selectedYear" )
+                      #set( $selected = 'selected' )
+                    #end
+                    &lt;option value="$year" $selected&gt;$year&lt;/option&gt;
+                  #end
+                &lt;/select&gt;
+              &lt;/dd&gt;
+            #else
+              #set( $eventDoc = $xwiki.getDocument($selectedEvent) )
+              &lt;dt&gt;Presentations for conference&lt;/dt&gt;
+              &lt;dd&gt;$escapetool.xml(${eventDoc.title|"Conference not found: $selectedEvent"})&lt;/dd&gt;
+              &lt;input type="hidden" id="eventInput" name="event" value="$escapetool.xml($selectedEvent)"&gt;
+            #end
+            &lt;/dl&gt;
+          &lt;/div&gt;
+          &lt;div class="col-md-6"&gt;
+            &lt;dl&gt;
+              &lt;dt&gt;Filter by working group&lt;/dt&gt;
+              &lt;dd&gt;
+                &lt;select name="wg" id="wg-select" onchange="this.form.submit()"&gt;
+                  &lt;option value=""&gt;--- All working groups ---&lt;/option&gt;
+                  #set( $xclass = $xwiki.getClass('Presentation.Code.PresentationClass') )
+                  #set( $wgList = $xclass.get('workingGroup').getListValues() )
+                  #foreach ( $wg in $wgList )
+                    #set( $selected = "" )
+                    #if ( "$wg" == "$!selectedWG" )
+                      #set( $selected = 'selected' )
+                    #end
+                    &lt;option value="$wg" $selected&gt;
+                      $services.localization.render("Presentation.Code.PresentationClass_workingGroup_$wg")
+                      ($services.localization.render("Presentation.Code.PresentationClass_abbreviatedWorkingGroup_$wg"))
+                    &lt;/option&gt;
+                  #end
+                  &lt;option value="none" #if($!selectedWG=="none")selected#end&gt;-- No working group specified --&lt;/option&gt;
+                &lt;/select&gt;
+              &lt;/dd&gt;
+            &lt;/dl&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/form&gt;
 
-    #set( $selectedYear = $xcontext.getRequest().getParameter('year') )
-    #set( $selectedEvent = $xcontext.getRequest().getParameter('event') )
+    #set( $hqlElements = [ 'docName', 'title', 'status', 'type',
+                           'presenters', 'reviewers', 'workingGroup',
+                           'abstract', 'slides', 'proceedings',
+                           'hasProceedings', 'approvalBy',
+                           'absApprovalSWG', 'absApprovalSAPO',
+                           'talkApprovalSWG', 'talkApprovalSAPO',
+                           'procApprovalSWG', 'procApprovalSAPO',
+                           'eventDocName', 'eventTitle', 'eventStartDate', 'eventEndDate' ])
+    #set( $hql = "select obj_pres.name, doc_pres.title, prop_status.value, prop_type.value,
+        prop_presenters.value, prop_reviewers.value, prop_working_group.value,
+        prop_abstract.value, prop_slides.value, prop_proceedings.value,
+        prop_has_proceedings.value, prop_approval_by.value,
+        prop_abs_approval_swg.value, prop_abs_approval_sapo.value,
+        prop_talk_approval_swg.value, prop_talk_approval_sapo.value,
+        prop_proc_approval_swg.value, prop_proc_approval_sapo.value,
+        obj_event.name, doc_event.title, prop_start_date.value, prop_end_date.value
+      FROM BaseObject obj_pres, XWikiDocument doc_pres, StringProperty prop_event,
+        StringProperty prop_status, StringProperty prop_type,  StringProperty prop_working_group,
+        LargeStringProperty prop_presenters, LargeStringProperty prop_reviewers,
+        LargeStringProperty prop_abstract, StringProperty prop_slides, StringProperty prop_proceedings,
+        IntegerProperty prop_has_proceedings, StringProperty prop_approval_by,
+        StringProperty prop_abs_approval_swg, StringProperty prop_abs_approval_sapo,
+        StringProperty prop_talk_approval_swg, StringProperty prop_talk_approval_sapo,
+        StringProperty prop_proc_approval_swg, StringProperty prop_proc_approval_sapo,
+        BaseObject obj_event, XWikiDocument doc_event, 
+        DateProperty prop_start_date, DateProperty prop_end_date
+      WHERE obj_pres.className='Presentation.Code.PresentationClass'
+      AND obj_pres.name != 'Presentation.Code.PresentationTemplate'
+      AND doc_pres.fullName=obj_pres.name
+      AND prop_event.id.id=obj_pres.id AND prop_event.name='event'
+      AND prop_status.id.id=obj_pres.id AND prop_status.name='status'
+      AND prop_type.id.id=obj_pres.id AND prop_type.name='type'
+      AND prop_presenters.id.id=obj_pres.id AND prop_presenters.name='presenters'
+      AND prop_reviewers.id.id=obj_pres.id AND prop_reviewers.name='reviewers'
+      AND prop_working_group.id.id=obj_pres.id AND prop_working_group.name='workingGroup'
+      AND prop_abstract.id.id=obj_pres.id AND prop_abstract.name='abstract'
+      AND prop_slides.id.id=obj_pres.id AND prop_slides.name='slides'
+      AND prop_proceedings.id.id=obj_pres.id AND prop_proceedings.name='proceedings'
+      AND prop_has_proceedings.id.id=obj_pres.id AND prop_has_proceedings.name='hasProceedings'
+      AND prop_approval_by.id.id=obj_pres.id AND prop_approval_by.name='approvalBy'
+      AND prop_abs_approval_swg.id.id=obj_pres.id AND prop_abs_approval_swg.name='absApprovalSWG'
+      AND prop_abs_approval_sapo.id.id=obj_pres.id AND prop_abs_approval_sapo.name='absApprovalSAPO'
+      AND prop_talk_approval_swg.id.id=obj_pres.id AND prop_talk_approval_swg.name='talkApprovalSWG'
+      AND prop_talk_approval_sapo.id.id=obj_pres.id AND prop_talk_approval_sapo.name='talkApprovalSAPO'
+      AND prop_proc_approval_swg.id.id=obj_pres.id AND prop_proc_approval_swg.name='procApprovalSWG'
+      AND prop_proc_approval_sapo.id.id=obj_pres.id AND prop_proc_approval_sapo.name='procApprovalSAPO'
+      AND obj_event.name=prop_event.value
+      AND doc_event.fullName=obj_event.name
+      AND prop_start_date.id.id=obj_event.id AND prop_start_date.name='startDate'
+      AND prop_end_date.id.id=obj_event.id AND prop_end_date.name='endDate'" )
+    #set( $hqlOrder = "ORDER BY prop_start_date.value DESC, doc_event.title, doc_pres.title")
 
-    #if( "$!selectedEvent" == "" )
-      #set( $nextYear = $datetool.year + 1 )
-      #renderConferenceYearSelectorForm("Presentations for year", $selectedYear)
-    #else
-      #set( $eventDoc = $xwiki.getDocument($selectedEvent) )
-      &lt;dl&gt;
-        &lt;dt&gt;Presentations for conference&lt;/dt&gt;
-        &lt;dd&gt;$escapetool.xml(${eventDoc.title|"Conference not found: $selectedEvent"})&lt;/dd&gt;
-      &lt;/dl&gt;
-    #end
-
-    #set( $eventDocRefList = [] )
+    #set( $hqlBindVals = {} )
+    #set( $hqlSelect = "" )
     #if( "$!selectedEvent" != "" )
-      #set( $eventDocRefList = [ $selectedEvent ] )
+      #set( $hqlSelect = "AND prop_event.value=:event" )
+      #set( $discard = $hqlBindVals.put('event', $selectedEvent) )
     #elseif( "$!selectedYear" != "" )
-      #set( $query = "FROM doc.object(Event.Code.EventClass) AS evt WHERE evt.startDate&gt;=:sdate AND evt.startDate&lt;=:edate ORDER BY evt.startDate DESC" )
+      #set( $hqlSelect = "AND prop_start_date.value&gt;=:sdate AND prop_start_date.value&lt;=:edate" )
       #set( $sdate = $datetool.toDate('yyyy-MM-dd',"${selectedYear}-01-01") )
       #set( $eyear = $numbertool.toNumber($selectedYear) + 1 )
       #set( $edate = $datetool.toDate('yyyy-MM-dd',"${eyear}-01-01") )
-      #set( $eventDocRefList = $services.query.xwql($query).bindValue('sdate',$sdate).bindValue('edate',$edate).execute() )
+      #set( $discard = $hqlBindVals.put('sdate', $sdate) )
+      #set( $discard = $hqlBindVals.put('edate', $edate) )
     #else
-      #set( $query = "FROM doc.object(Event.Code.EventClass) AS evt WHERE evt.startDate&gt;=:sdate OR evt.endDate&gt;=:sdate OR evt.proceedingsDeadline&gt;=:sdate ORDER BY evt.startDate DESC" )
+      #set( $hqlSelect = "AND ( prop_start_date.value&gt;=:sdate OR prop_end_date.value&gt;=:edate )" )
       #set( $sdate = $datetool.date )
-      #set( $eventDocRefList = $services.query.xwql($query).bindValue('sdate',$sdate).execute() )
+      #set( $discard = $hqlBindVals.put('sdate', $sdate) )
+      #set( $discard = $hqlBindVals.put('edate', $sdate) )
     #end
 
-    #set( $presentationEventDocList = [] )
-    #set( $query = 'FROM doc.object(Presentation.Code.PresentationClass) as presentation WHERE presentation.event = :event' )
-    #foreach( $eventDocRef in $eventDocRefList )
-      #set( $eventDoc = $xwiki.getDocument($eventDocRef) )
-      ## Case-insensitive sort, see : https://blog.teknkl.com/case-sensitivity-quirks-with-velocity-sorts/
-      #set( $eventPresentationList = [] )
-      #foreach( $presentationDocRef in $services.query.xwql($query).bindValue('event',$eventDoc.fullName).execute() )
-        #set( $presentationDoc = $xwiki.getDocument($presentationDocRef) )
-        #set( $discard = $eventPresentationList.add({ "title": $presentationDoc.title, "presentationDoc": $presentationDoc, "eventDoc": $eventDoc }) )
+    #if( "$!selectedWG" != "" )
+      #set( $hqlSelect = $hqlSelect + " AND prop_working_group.value=:wg" )
+      #set( $wg = $selectedWG )
+      #if($selectedWG == "none")
+        #set( $wg = "" )
       #end
-      #set( $discard = $presentationEventDocList.addAll($collectiontool.sort($eventPresentationList, "title")) )
+      #set( $discard = $hqlBindVals.put('wg', $wg) )
     #end
 
-    #if( $presentationEventDocList.isEmpty() )
+    #set( $query = $services.query.hql($hql+" "+$hqlSelect+" "+$hqlOrder) )
+    #foreach ( $key in $hqlBindVals.keySet() )
+      #set( $discard = $query.bindValue($key, $hqlBindVals[$key]))
+    #end
+
+    #set( $queryResults = $query.execute() )
+
+    #if( $queryResults.isEmpty() )
       &lt;p&gt;No presentations found.&lt;/p&gt;
     #else
       #set( $abstractModals = {} )
       &lt;table class="table table-striped"&gt;
         &lt;thead&gt;
           &lt;tr style="border: none"&gt;
-            &lt;th rowspan=2 colspan=3&gt;Presentation (total: $numbertool.number($presentationEventDocList.size()))&lt;/th&gt;
+            &lt;th rowspan=2 colspan=3&gt;Presentation (total: $numbertool.number($queryResults.size()))&lt;/th&gt;
             &lt;th colspan=2 rowspan=2&gt;Authors&lt;/th&gt;
             &lt;th colspan=2 rowspan=2&gt;Reviewers&lt;/th&gt;
+            &lt;th colspan=1 rowspan=2&gt;WG&lt;/th&gt;
             &lt;th colspan=3 style="border: none"&gt;Uploaded&lt;/th&gt;
             &lt;th colspan=7 style="border: none"&gt;Approvals&lt;/th&gt;
           &lt;/tr&gt;
-            &lt;tr style="border: none"&gt;
+          &lt;tr style="border: none"&gt;
             &lt;th style="border-top: none"&gt;$services.icon.renderHTML('align-justify')&lt;/th&gt;
             &lt;th style="border-top: none"&gt;$services.icon.renderHTML('image')&lt;/th&gt;
             &lt;th style="border-top: none"&gt;$services.icon.renderHTML('book')&lt;/th&gt;
@@ -109,47 +217,69 @@
           &lt;/tr&gt;
         &lt;/thead&gt;
         &lt;tbody&gt;
-        &lt;/tbody&gt;
-          #foreach( $presentationEventDoc in $presentationEventDocList )
+          #set($userHTMLCache = {})
+          #foreach( $row in $queryResults )
+            #set($presentation = {})
+            #foreach( $elementValue in $row )
+              #set($presentation[$hqlElements[$foreach.index]] = $elementValue)
+            #end
+            #set( $presentationDoc = $xwiki.getDocument($presentation['docName']) )
+            #set( $presentationURL = $xwiki.getURL($presentation['docName']) )
+            #set( $presentationExternalURL = $xwiki.getXWiki().getExternalURL($presentation['presentationPageName'],'view',$xcontext.getContext()) )
             &lt;tr&gt;
-              #set ( $presentationDoc = $presentationEventDoc["presentationDoc"] )
-              #set ( $eventDoc = $presentationEventDoc["eventDoc"] )
-              #set( $presentation = $presentationDoc.getObject("Presentation.Code.PresentationClass") )
-              #if($presentation.getValue('status') == "withdrawn" or $presentation.getValue('status') == "refused")
-                &lt;td&gt;&lt;a href="$presentationDoc.URL"&gt;&lt;s&gt;$services.xml.escape($presentationDoc.title)&lt;/s&gt;&lt;/a&gt;&lt;/td&gt;
+              #if($presentation['status'] == "withdrawn" or $presentation['status'] == "refused")
+                &lt;td&gt;&lt;a href="$presentationURL"&gt;&lt;s&gt;$services.xml.escape($presentation['title'])&lt;/s&gt;&lt;/a&gt;&lt;/td&gt;
               #else
-                &lt;td&gt;&lt;a href="$presentationDoc.URL"&gt;$services.xml.escape($presentationDoc.title)&lt;/a&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;a href="$presentationURL"&gt;$services.xml.escape($presentation['title'])&lt;/a&gt;&lt;/td&gt;
               #end
               #if( "$!selectedEvent" == "" )
-                &lt;td&gt;&lt;a href="#" data-toggle="tooltip" data-delay=50 title="$escapetool.xml($eventDoc.title)" data-placement="top"&gt;
-                  #presentationTypeIcon($presentation.getValue('type'))
+                &lt;td&gt;&lt;a href="#" data-toggle="tooltip" data-delay=50 title="$escapetool.xml($presentation['eventTitle'])" data-placement="top"&gt;
+                  #presentationTypeIcon($presentation['type'])
                 &lt;/a&gt;&lt;/td&gt;
               #else
-                &lt;td&gt;#presentationTypeIcon($presentation.getValue('type'))&lt;/td&gt;
+                &lt;td&gt;#presentationTypeIcon($presentation['type'])&lt;/td&gt;
               #end
-              &lt;td&gt;#presentationStatusIcon($presentation.getValue('status'))&lt;/td&gt;
-              #set( $mailSubject = "Presentation - $presentationDoc.title" )
-              #set( $mailURL = "#mailtoURL($presentation.getValue('presenters'), $mailSubject, $presentationDoc.externalURL)" )
+              &lt;td&gt;#presentationStatusIcon($presentation['status'])&lt;/td&gt;
+              #set( $mailSubject = "Presentation - $presentation['title']" )
+              #set( $mailURL = "#mailtoURL($presentation['presenters'], $mailSubject, $presentationURL)" )
               &lt;td&gt;#mailtoAnchor($mailURL)&lt;/td&gt;
-              &lt;td&gt;#displayUserOrBlank($presentation.getValue('presenters'))&lt;/td&gt;
-              #set( $mailSubject = "Presentation - $presentationDoc.title" )
-              #set( $mailURL = "#mailtoURL($presentation.getValue('reviewers'), $mailSubject, $presentationDoc.externalURL)" )
+              &lt;td&gt;#displayUsersOrBlank($presentation['presenters'], 1, $userHTMLCache)&lt;/td&gt;
+              #set( $mailSubject = "Presentation - $presentation['title']" )
+              #set( $mailURL = "#mailtoURL($presentation['reviewers'], $mailSubject, $presentationURL)" )
               &lt;td&gt;#mailtoAnchor($mailURL)&lt;/td&gt;
-              &lt;td&gt;#displayUserOrBlank($presentation.getValue('reviewers'))&lt;/td&gt;
-              &lt;td&gt;#renderAbstractLinkedIcon($presentation, $presentationDoc, $abstractModals)&lt;/td&gt;
-              &lt;td&gt;#renderSlidesOrProceedingsLinkedIcon($presentation, $presentationDoc, 'slides')&lt;/td&gt;
-              &lt;td&gt;#renderSlidesOrProceedingsLinkedIcon($presentation, $presentationDoc, 'proceedings')&lt;/td&gt;
-              &lt;td&gt;#renderApprovalsBy($presentation.getValue('approvalBy'))&lt;/td&gt;
-              #renderTwoColumnApprovals($presentation "abs")
-              #renderTwoColumnApprovals($presentation "talk")
-              #if( $!presentation.getValue('hasProceedings')==1 or "$presentation.getValue('proceedings')" != "")
-                #renderTwoColumnApprovals($presentation "proc")
+              &lt;td&gt;#displayUsersOrBlank($presentation['reviewers'], 1, $userHTMLCache)&lt;/td&gt;
+              #set( $url = $doc.getURL() )
+              #if( "$!selectedEvent" != "" )
+                #set( $url = $url + "?event=$escapetool.url($selectedEvent)&amp;" )
+              #elseif("$!selectedYear"  != "" )
+                #set( $url = $url + "?year=$escapetool.url($selectedYear)&amp;" )
+              #else
+                #set( $url = $url + "?" )
+              #end
+              #if($!presentation['workingGroup'] != "")
+                #set( $url = $url + "wg=$presentation['workingGroup']" )
+                &lt;td&gt;&lt;a href="$escapetool.xml($url)"&gt;$services.localization.render(
+                  "Presentation.Code.PresentationClass_abbreviatedWorkingGroup_$presentation['workingGroup']")
+                &lt;/a&gt;&lt;/td&gt;
+              #else
+                #set( $url = $url + "wg=none" )
+                &lt;td&gt;&lt;a href="$escapetool.xml($url)"&gt;&lt;i&gt;none&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
+              #end
+              &lt;td&gt;#renderAbstractLinkedIconHQL($presentation['abstract'], $presentation['title'], $abstractModals)&lt;/td&gt;
+              &lt;td&gt;#renderSlidesOrProceedingsLinkedIconHQL($presentation['slides'], $presentationDoc, 'slides')&lt;/td&gt;
+              &lt;td&gt;#renderSlidesOrProceedingsLinkedIconHQL($presentation['proceedings'], $presentationDoc, 'proceedings')&lt;/td&gt;
+              &lt;td&gt;#renderApprovalsBy($presentation['approvalBy'])&lt;/td&gt;
+              #renderTwoColumnApprovalsHQL($presentation "abs")
+              #renderTwoColumnApprovalsHQL($presentation "talk")
+              #if( $!value['hasProceedings']==1 or "$value['proceedings']" != "")
+                #renderTwoColumnApprovalsHQL($presentation "proc")
               #else
                 &lt;td/&gt;
                 &lt;td/&gt;
               #end
             &lt;/tr&gt;
           #end
+        &lt;/tbody&gt;
       &lt;/table&gt;
 
     #renderAbstractModals($abstractModals)
@@ -164,7 +294,7 @@
     <name>Event.Reports.List of presentations</name>
     <number>0</number>
     <className>XWiki.JavaScriptExtension</className>
-    <guid>2483e9ef-e8bc-4699-b8d6-f5f9407f5ac3</guid>
+    <guid>6664ca0f-5591-49cf-9d81-c510dc9f8654</guid>
     <class>
       <name>XWiki.JavaScriptExtension</name>
       <customClass/>
