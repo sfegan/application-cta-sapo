@@ -1,0 +1,104 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="PaperSignature.Code.Merge duplicate LDAP account signatures " locale="">
+  <web>PaperSignature.Code</web>
+  <name>Merge duplicate LDAP account signatures </name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title>Merge duplicate LDAP account signatures </title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{velocity}}
+#set($hql = "select obj.name from BaseObject obj where obj.className='PaperSignature.Code.PaperSignatureClass' and obj.name like '%@cta-consortiumorg_%'")
+#set($results = $xwiki.search($hql))
+#if($results.size() == 0)
+  No signatures from duplicate LDAP user accounts found.
+  #stop
+#end
+#set($sigDocRefMap = {})
+#foreach ($sigDocRef in $results)
+  #set($sigDocRefMap[$sigDocRef] = $sigDocRefMap.getOrDefault($sigDocRef,0) + 1)
+#end
+#foreach ($sigDocRef in $sigDocRefMap.keySet())
+  #set($sigDoc = $xwiki.getDocument($sigDocRef))
+  1. [[$sigDoc]] ##
+  #if($sigDocRefMap[$sigDocRef] &gt; 1)
+    (x$sigDocRefMap[$sigDocRef]) ##
+  #end
+  #if($foreach.index &lt; 1)
+    #set($baseSigDocRef = $stringtool.substringBefore($sigDocRef, '@cta-consortiumorg') + "@cta-consortiumorg")
+    #set($baseSigDoc = $xwiki.getDocument($baseSigDocRef))
+    #if($baseSigDoc.isNew())
+      #set($userRef = $baseSigDoc.getDocumentReference().name)
+      #set($discard = $baseSigDoc.setTitle("Paper signatures for $userRef"))
+    #end
+    #set($sigObjList = $sigDoc.getObjects('PaperSignature.Code.PaperSignatureClass'))
+    #foreach($sigObj in $sigObjList)
+      #set($baseSigObj = $baseSigDoc.newObject('PaperSignature.Code.PaperSignatureClass'))
+      #foreach($prop in $sigObj.getPropertyNames())
+        #set($discard = $baseSigObj.set($prop, $sigObj.getValue($prop)))
+      #end
+      #set($discard = $baseSigObj.set("author", $baseSigDoc.getDocumentReference().name))
+      #if($sigObj.getValue("creator") == $sigDoc.getDocumentReference().name)
+        #set($discard = $baseSigObj.set("creator", $baseSigDoc.getDocumentReference().name))
+      #end
+      #set($discard = $sigDoc.removeObject($sigObj))
+    #end
+    #set($discard = $baseSigDoc.save("Transferred from $sigDoc.getDocumentReference().name"))
+    #set($discard = $sigDoc.save("Transferred to $baseSigDoc.getDocumentReference().name"))
+    Transferred signatures ##
+    #set($uaDocRef = $services.model.createDocumentReference("","UserAffiliation",$sigDoc.getDocumentReference().name))
+    #set($uaDoc = $xwiki.getDocument($uaDocRef))
+    #if(!$uaDoc.isNew())
+      #set($baseUADocRef = $services.model.createDocumentReference("","UserAffiliation",$baseSigDoc.getDocumentReference().name))
+      #set($baseUADoc = $xwiki.getDocument($baseUADocRef))
+      #if($baseUADoc.isNew() || $uaDoc.getDate().after($baseUADoc.getDate()))
+        #set($uaObj = $uaDoc.getObject('UserAffiliation.Code.UserAffiliationClass'))
+        #set($baseUAObj = $baseUADoc.getObject('UserAffiliation.Code.UserAffiliationClass'))
+        #foreach($prop in $uaObj.getPropertyNames())
+          #set($discard = $baseUAObj.set($prop, $uaObj.getValue($prop)))
+        #end
+        #if($baseUADoc.isNew())
+          #set($raObj = $baseUADoc.getObject('XWiki.XWikiRights', true))
+          #set($discard = $raObj.set('groups', ''))
+          #set($discard = $raObj.set('levels', 'edit'))
+          #set($discard = $raObj.set('allow', 1))
+          #set($discard = $raObj.set('users', $userRef))
+        #end
+        #set($discard = $baseUADoc.save("Merged from $uaDoc.getDocumentReference().name"))
+        and Merged profile ##
+      #end
+    #end
+  #end
+  
+#end
+{{/velocity}}</content>
+</xwikidoc>

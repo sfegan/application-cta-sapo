@@ -1,0 +1,112 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="PaperSignature.Code.ShowUsersByLastSignatureDate" locale="">
+  <web>PaperSignature.Code</web>
+  <name>ShowUsersByLastSignatureDate</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>PaperSignature.Code.WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title>ShowUsersByLastSignatureDate</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{velocity}}
+## Load paper titles into dictionary
+#set($hql = "SELECT doc.fullName, doc.title
+    FROM XWikiDocument doc, BaseObject obj
+    WHERE obj.className='Paper.Code.PaperClass' AND doc.fullName=obj.name")
+#set($paperTitle = {})
+#foreach($row in $services.query.hql($hql).execute())
+  #set($paperTitle[$row[0]] = $row[1])
+#end
+## Get list of all users
+#set($hql = "SELECT obj.name, firstNameProp.value, lastNameProp.value, doc.creationDate
+    FROM BaseObject obj, XWikiDocument doc, IntegerProperty enabledProp, StringProperty firstNameProp,
+      StringProperty lastNameProp
+    WHERE obj.className='XWiki.XWikiUsers'
+    AND doc.fullName=obj.name
+    AND obj.id=enabledProp.id.id AND enabledProp.id.name='active' AND enabledProp.value=1
+    AND obj.id=firstNameProp.id.id AND firstNameProp.id.name='first_name'
+    AND obj.id=lastNameProp.id.id AND lastNameProp.id.name='last_name'
+    ORDER BY doc.creationDate ASC")
+#set($userDict = {})
+#set($alphaUser = [])
+#foreach($row in $services.query.hql($hql).setWiki('xwiki').execute())
+  #set($user = "xwiki:" + $row[0])
+  #set($userDict[$user] = [$user, $row[1], $row[2], $row[3]])
+  #set($discard = $alphaUser.add($user))
+#end
+## Get all signatures
+#set($hql = "SELECT authorProp.value, paperProp.value, creationDateProp.value
+    FROM BaseObject obj, StringProperty paperProp, DateProperty creationDateProp, LargeStringProperty authorProp
+    WHERE obj.className='PaperSignature.Code.PaperSignatureClass'
+    AND obj.name != 'PaperSignature.Code.PaperSignatureTemplate'
+    AND obj.id=paperProp.id.id AND paperProp.id.name='paper'
+    AND obj.id=creationDateProp.id.id AND creationDateProp.id.name='creationDate'
+    AND obj.id=authorProp.id.id AND authorProp.name='author'
+    ORDER BY creationDateProp.value DESC")
+#set($userSig = {})
+#set($orderdSig = [])
+#foreach($row in $services.query.hql($hql).execute())
+  #set($user =  $row[0])
+  #if($userDict.containsKey($user) and !$userSig.containsKey($user))
+    #set($userSig[$user] = $row)
+    #set($discard = $orderdSig.add($user))
+  #end
+#end
+#set($tableCount = 0)
+| # | Account | Creation date | Last paper signed | Signature date
+#foreach($user in $alphaUser)
+  #if(!$userSig.containsKey($user))
+    #set($userShort = $user.substring(12))
+    #set($firstName = $userDict[$user][1])
+    #set($lastName = $userDict[$user][2])
+    #set($tableCount = $tableCount+1)
+    #set($when_user_create = $services.date.displayTimeAgo($userDict[$user][3]))
+| $tableCount | [[$firstName $lastName ($userShort)&gt;&gt;$user]] | $when_user_create | None | Never
+  #end
+#end
+#set($discard = $collectiontool.reverseModifiable($orderdSig))
+#foreach($user in $orderdSig)
+    #set($userShort = $user.substring(12))
+    #set($firstName = $userDict[$user][1])
+    #set($lastName = $userDict[$user][2])
+    #set($paper = $userSig[$user][1])
+    #set($thisPaperTitle = $paperTitle[$paper])
+    #if($thisPaperTitle.length() &gt; 60)
+      #set($thisPaperTitle = $thisPaperTitle.substring(0,60) + "...")
+    #end
+    #set($when = $services.date.displayTimeAgo($userSig[$user][2]))
+    #set($when_user_create = $services.date.displayTimeAgo($userDict[$user][3]))
+    #set($tableCount = $tableCount+1)
+| $tableCount | [[$firstName $lastName ($userShort)&gt;&gt;$user]] | $when_user_create | [[$thisPaperTitle&gt;&gt;$paper]] | $when
+#end
+
+{{/velocity}}</content>
+</xwikidoc>

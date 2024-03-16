@@ -1,0 +1,74 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.5" reference="PaperSignature.Code.Cleanup Old Style XWiki Accounts" locale="">
+  <web>PaperSignature.Code</web>
+  <name>Cleanup Old Style XWiki Accounts</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>Main.WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title>Cleanup Old Style XWiki Accounts</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{velocity}}
+#set($hql = "SELECT doc.fullName, doc.title
+    FROM XWikiDocument doc, BaseObject obj
+    WHERE obj.className='Paper.Code.PaperClass' AND doc.fullName=obj.name")
+#set($paperTitle = {})
+#foreach($row in $services.query.hql($hql).execute())
+  #set($paperTitle[$row[0]] = $row[1])
+#end
+#set($hql = "SELECT obj.name, firstNameProp.value, lastNameProp.value
+    FROM BaseObject obj, IntegerProperty enabledProp, StringProperty firstNameProp, StringProperty lastNameProp
+    WHERE obj.className='XWiki.XWikiUsers' AND obj.name NOT LIKE '%cta-%'
+    AND obj.id=enabledProp.id.id AND enabledProp.id.name='active' AND enabledProp.value=1
+    AND obj.id=firstNameProp.id.id AND firstNameProp.id.name='first_name'
+    AND obj.id=lastNameProp.id.id AND lastNameProp.id.name='last_name'
+    ORDER BY firstNameProp.value, lastNameProp.value")
+#set($iql = "SELECT paperProp.value, creationDateProp.value
+    FROM BaseObject obj, StringProperty paperProp, DateProperty creationDateProp, LargeStringProperty authorProp
+    WHERE obj.className='PaperSignature.Code.PaperSignatureClass'
+    AND obj.id=paperProp.id.id AND paperProp.id.name='paper'
+    AND obj.id=creationDateProp.id.id AND creationDateProp.id.name='creationDate'
+    AND obj.id=authorProp.id.id AND authorProp.name='author' AND authorProp.value=:author
+    ORDER BY creationDateProp.value")
+#set($sigQuery = $services.query.hql($iql))
+#foreach($row in $services.query.hql($hql).setWiki('xwiki').execute())
+  #set($sigs = $sigQuery.bindValue("author", "xwiki:"+$row[0]).execute())
+  #set($paper = "")
+  #set($when = "Never")
+  #foreach($sigRow in $sigs)
+    #set($paper = $paperTitle[$sigRow[0]])
+    #set($when = $services.date.displayTimeAgo($sigRow[1]))
+  #end
+  | $foreach.count | [[$row[1] $row[2]&gt;&gt;xwiki:$row[0]]] | $sigs.size() | $paper | $when
+#end
+
+{{/velocity}}</content>
+</xwikidoc>
