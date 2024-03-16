@@ -206,10 +206,10 @@
         <disabled>0</disabled>
         <displayFormType>select</displayFormType>
         <displayType/>
-        <hint/>
+        <hint>Is the presentation being given on behalf of the CTA collaboration?</hint>
         <name>onBehalfOfCollaboration</name>
         <number>22</number>
-        <prettyName>onBehalfOfCollaboration</prettyName>
+        <prettyName>On Behalf of the CTA Collaboration</prettyName>
         <unmodifiable>0</unmodifiable>
         <validationMessage/>
         <validationRegExp/>
