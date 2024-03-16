@@ -64,6 +64,7 @@ Presentation.Code.PresentationClass_hasProceedings=Has proceedings
 Presentation.Code.PresentationClass_proceedingsArxiv=arXiv
 Presentation.Code.PresentationClass_proceedingsDOI=DOI
 Presentation.Code.PresentationClass_proceedings=Proceedings (Upload file with button, or enter external URL)
+Presentation.Code.PresentationClass_onBehalfOfCollaboration=On behalf of the CTA collaboration
 
 Presentation.Code.PresentationClass_workingGroup=Working group
 Presentation.Code.PresentationClass_workingGroup_aswg=Analysis &amp; Simulations

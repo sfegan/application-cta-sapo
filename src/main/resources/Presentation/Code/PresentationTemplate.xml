@@ -200,6 +200,21 @@
         <validationRegExp/>
         <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
       </hasProceedings>
+      <onBehalfOfCollaboration>
+        <customDisplay/>
+        <defaultValue>1</defaultValue>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType/>
+        <hint/>
+        <name>onBehalfOfCollaboration</name>
+        <number>22</number>
+        <prettyName>onBehalfOfCollaboration</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </onBehalfOfCollaboration>
       <presenters>
         <cache>0</cache>
         <customDisplay>{{include reference="Presentation.Code.UsersDisplayer"/}}</customDisplay>
@@ -512,6 +527,9 @@
     </property>
     <property>
       <hasProceedings/>
+    </property>
+    <property>
+      <onBehalfOfCollaboration/>
     </property>
     <property>
       <presenters/>
