@@ -219,10 +219,37 @@ public class PresentationCreationNotificationScriptListener extends AbstractEven
       for (DocumentReference userDocRef : userDocRefList) {
         UserProperties userProperties = 
           userPropertiesResolver.resolve(userReferenceResolver.resolve(userDocRef));
-        String email = userProperties.email;
-        emailAddressList.add(email);
+        if(userProperties != null) {
+          String email = userProperties.email;
+          if(email!=null &amp;&amp; !email.isEmpty()) {
+            emailAddressList.add(email);
+          }
+        }
       }
 
+      String wg = presentation.getStringValue("workingGroup");
+      if(!wg.isEmpty()) {
+        String wgApprovalGroupName = wg + "ApprovalGroup";
+        logger.debug("Working group approval list : {}", wgApprovalGroupName);
+        LocalDocumentReference wgLocalGroupReference =
+          new LocalDocumentReference(GROUP_SPACE, wgApprovalGroupName);
+        DocumentReference wgGroupReference = 
+          new DocumentReference(wgLocalGroupReference, xwikiContext.getWikiReference());
+        Collection&lt;DocumentReference&gt; wgUserDocRefList = 
+          groupManager.getMembers(wgGroupReference, true);
+        for (DocumentReference userDocRef : wgUserDocRefList) {
+          UserProperties userProperties = 
+            userPropertiesResolver.resolve(userReferenceResolver.resolve(userDocRef));
+          if(userProperties != null) {
+            String email = userProperties.email;
+            if(email!=null &amp;&amp; !email.isEmpty()) {
+              emailAddressList.add(email);
+            }
+          }
+        }
+      }
+
+      logger.debug("Email list : {}", String.join(',',emailAddressList));
       if(emailAddressList.isEmpty()) {
         return;
       }
@@ -288,7 +315,7 @@ public class PresentationCreationNotificationScriptListener extends AbstractEven
       velocityVariables.put("title", sourceDocument.getTitle());
       velocityVariables.put("creatorName", creatorName);
       velocityVariables.put("type", presentation.getStringValue("type"));
-      velocityVariables.put("workingGroup", presentation.getStringValue("workingGroup"));
+      velocityVariables.put("workingGroup", wg);
       velocityVariables.put("presenterReferences", presentation.getStringValue("presenters"));
       velocityVariables.put("presenterNames", authorNameList);
       velocityVariables.put("abstract", presentation.getStringValue("abstract"));
