@@ -160,12 +160,12 @@
               #set( $mailSubject = "Presentation - $presentationDoc.title" )
               #set( $mailURL = "#mailtoURL($presentation.getValue('reviewers'), $mailSubject, $presentationDoc.externalURL)" )
               &lt;td&gt;#mailtoAnchor($mailURL)&lt;/td&gt;
-              &lt;td&gt;#displayUserOrBlank($presentation.getValue('reviewers'))&lt;/td&gt;
+              &lt;td&gt;#displayUsersOrBlank($presentation.getValue('reviewers'))&lt;/td&gt;
             #elseif($role!="presenter" and "$!presentation.getValue('presenters')"!='')
               #set( $mailSubject = "Presentation - $presentationDoc.title" )
               #set( $mailURL = "#mailtoURL($presentation.getValue('presenters'), $mailSubject, $presentationDoc.externalURL)" )
               &lt;td&gt;#mailtoAnchor($mailURL)&lt;/td&gt;
-              &lt;td&gt;#displayUserOrBlank($presentation.getValue('presenters'))&lt;/td&gt;
+              &lt;td&gt;#displayUsersOrBlank($presentation.getValue('presenters'))&lt;/td&gt;
             #else
               &lt;td/&gt;
               &lt;td/&gt;

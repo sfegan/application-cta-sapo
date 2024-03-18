@@ -39,10 +39,52 @@
   <content>{{include reference="Presentation.Code.Macros"/}}
 
 {{velocity}}
+  #macro(renderName $userListString $maxUser $baseURL $userDict)
+    #set( $userList = $userListString.split(',') )
+    #foreach( $user in $userList )
+      #if( $maxUser&gt;0 &amp;&amp; $foreach.index&gt;=$maxUser )
+        et al.
+        #break
+      #end
+      #if( !$baseURL.isEmpty() )
+        &lt;a href="$escapetool.xml($baseURL+$user)" style="white-space: nowrap;"&gt;$escapetool.xml(${userDict[$user]["name"]|$user})&lt;/a&gt;
+      #else
+        $escapetool.xml(${userDict[$user]|$user})
+      #end
+    #end
+  #end
+  #set( $hql = "SELECT obj.name, firstNameProp.value, lastNameProp.value, eMailProp.value
+      FROM BaseObject obj, XWikiDocument doc, StringProperty firstNameProp,
+        StringProperty lastNameProp, StringProperty eMailProp
+      WHERE obj.className='XWiki.XWikiUsers'
+      AND doc.fullName=obj.name
+      AND obj.id=firstNameProp.id.id AND firstNameProp.id.name='first_name'
+      AND obj.id=lastNameProp.id.id AND lastNameProp.id.name='last_name'
+      AND obj.id=eMailProp.id.id AND eMailProp.id.name='email'" )
+  #set( $userDict = {} )
+  #foreach( $row in $services.query.hql($hql).setWiki('xwiki').execute() )
+    #set ( $first_name = "${row[1].substring(0,1).toUpperCase()}${row[1].substring(1)}" )
+    #set ( $last_name = "${row[2].substring(0,1).toUpperCase()}${row[2].substring(1)}" )
+    #set( $user = "xwiki:" + $row[0] )
+    #set( $userDict[$user] = { 'userId': $user, 'name': "$first_name $last_name", 'first_name': $first_name, 'email': $row[3] } )
+  #end
   #set ($discard = $xwiki.jsx.use($doc.fullName) )
   #set( $selectedYear = $xcontext.getRequest().getParameter('year') )
   #set( $selectedWG = $xcontext.getRequest().getParameter('wg') )
   #set( $selectedEvent = $xcontext.getRequest().getParameter('event') )
+  #set( $docURL = $doc.getURL() )
+  #if( "$!selectedEvent" != "" )
+    #set( $selectURL = $docURL + "?event=$escapetool.url($selectedEvent)&amp;" )
+  #elseif("$!selectedYear"  != "" )
+    #set( $selectURL = $docURL + "?year=$escapetool.url($selectedYear)&amp;" )
+  #else
+    #set( $selectURL = $docURL + "?" )
+  #end
+  #set( $myPresentationsURL = $xwiki.getURL('Event.Reports.My presentations')+"?user=" )
+  #set( $myReviewsURL = $xwiki.getURL('Event.Reports.My presentations')+"?role=reviewer&amp;user=" )
+  #set( $emailAuthorsURL = $xwiki.getURL('Presentation.Code.Email parties')+"?whom=authors&amp;presentation=" )
+  #set( $emailReviewersURL = $xwiki.getURL('Presentation.Code.Email parties')+"?whom=reviewers&amp;presentation=" )
+  #set( $renderWGLink = {} )
 
   {{html}}
   &lt;form action="$doc.getURL("view")" method="get"&gt;
@@ -91,12 +133,17 @@
                     #if ( "$wg" == "$!selectedWG" )
                       #set( $selected = 'selected' )
                     #end
+                    #set( $wgAbbrev = $services.localization.render("Presentation.Code.PresentationClass_abbreviatedWorkingGroup_$wg") )
                     &lt;option value="$wg" $selected&gt;
                       $services.localization.render("Presentation.Code.PresentationClass_workingGroup_$wg")
-                      ($services.localization.render("Presentation.Code.PresentationClass_abbreviatedWorkingGroup_$wg"))
+                      ($wgAbbrev)
                     &lt;/option&gt;
+                    #set( $wgURL = $selectURL+"wg=$wg" )
+                    #set( $renderWGLink[$wg] = "&lt;a href='$escapetool.xml($wgURL)'&gt;$wgAbbrev&lt;/a&gt;" )
                   #end
                   &lt;option value="none" #if($!selectedWG=="none")selected#end&gt;-- No working group specified --&lt;/option&gt;
+                  #set( $wgURL = $baseURL+"wg=none" )
+                  #set( $renderWGLink[""] = "&lt;a href='$escapetool.xml($wgURL)'&gt;&lt;i&gt;none&lt;/i&gt;&lt;/a&gt;" )
                 &lt;/select&gt;
               &lt;/dd&gt;
             &lt;/dl&gt;
@@ -198,7 +245,7 @@
       #set( $abstractModals = {} )
       &lt;table class="table table-striped"&gt;
         &lt;thead&gt;
-          &lt;tr style="border: none"&gt;
+          &lt;tr style="border: none;"&gt;
             &lt;th rowspan=2 colspan=3&gt;Presentation (total: $numbertool.number($queryResults.size()))&lt;/th&gt;
             &lt;th colspan=2 rowspan=2&gt;Authors&lt;/th&gt;
             &lt;th colspan=2 rowspan=2&gt;Reviewers&lt;/th&gt;
@@ -224,8 +271,8 @@
               #set($presentation[$hqlElements[$foreach.index]] = $elementValue)
             #end
             #set( $presentationDoc = $xwiki.getDocument($presentation['docName']) )
-            #set( $presentationURL = $xwiki.getURL($presentation['docName']) )
-            #set( $presentationExternalURL = $xwiki.getXWiki().getExternalURL($presentation['presentationPageName'],'view',$xcontext.getContext()) )
+            #set( $presentationURL = $presentationDoc.getURL() )
+            #set( $presentationExternalURL = $presentationDoc.getExternalURL() )
             &lt;tr&gt;
               #if($presentation['status'] == "withdrawn" or $presentation['status'] == "refused")
                 &lt;td&gt;&lt;a href="$presentationURL"&gt;&lt;s&gt;$services.xml.escape($presentation['title'])&lt;/s&gt;&lt;/a&gt;&lt;/td&gt;
@@ -241,30 +288,14 @@
               #end
               &lt;td&gt;#presentationStatusIcon($presentation['status'])&lt;/td&gt;
               #set( $mailSubject = "Presentation - $presentation['title']" )
-              #set( $mailURL = "#mailtoURL($presentation['presenters'], $mailSubject, $presentationURL)" )
+              #set( $mailURL = "#mailtoURLCache($presentation['presenters'], $mailSubject, $presentationExternalURL, $userDict)" )
               &lt;td&gt;#mailtoAnchor($mailURL)&lt;/td&gt;
-              &lt;td&gt;#displayUsersOrBlank($presentation['presenters'], 1, $userHTMLCache)&lt;/td&gt;
-              #set( $mailSubject = "Presentation - $presentation['title']" )
-              #set( $mailURL = "#mailtoURL($presentation['reviewers'], $mailSubject, $presentationURL)" )
+              &lt;td&gt;#renderName($presentation['presenters'] 1 $myPresentationsURL $userDict)&lt;/td&gt;
+              #set( $mailURL = "#mailtoURLCache($presentation['reviewers'], $mailSubject, $presentationExternalURL, $userDict)" )
               &lt;td&gt;#mailtoAnchor($mailURL)&lt;/td&gt;
-              &lt;td&gt;#displayUsersOrBlank($presentation['reviewers'], 1, $userHTMLCache)&lt;/td&gt;
-              #set( $url = $doc.getURL() )
-              #if( "$!selectedEvent" != "" )
-                #set( $url = $url + "?event=$escapetool.url($selectedEvent)&amp;" )
-              #elseif("$!selectedYear"  != "" )
-                #set( $url = $url + "?year=$escapetool.url($selectedYear)&amp;" )
-              #else
-                #set( $url = $url + "?" )
-              #end
-              #if($!presentation['workingGroup'] != "")
-                #set( $url = $url + "wg=$presentation['workingGroup']" )
-                &lt;td&gt;&lt;a href="$escapetool.xml($url)"&gt;$services.localization.render(
-                  "Presentation.Code.PresentationClass_abbreviatedWorkingGroup_$presentation['workingGroup']")
-                &lt;/a&gt;&lt;/td&gt;
-              #else
-                #set( $url = $url + "wg=none" )
-                &lt;td&gt;&lt;a href="$escapetool.xml($url)"&gt;&lt;i&gt;none&lt;/i&gt;&lt;/a&gt;&lt;/td&gt;
-              #end
+              &lt;td&gt;#renderName($presentation['reviewers'] 0 $myReviewsURL $userDict)&lt;/td&gt;
+              #set( $wg = $!presentation['workingGroup'] )
+              &lt;td&gt;${renderWGLink[$wg]|$escapetool.xml($wg)}&lt;/td&gt;
               &lt;td&gt;#renderAbstractLinkedIconHQL($presentation['abstract'], $presentation['title'], $abstractModals)&lt;/td&gt;
               &lt;td&gt;#renderSlidesOrProceedingsLinkedIconHQL($presentation['slides'], $presentationDoc, 'slides')&lt;/td&gt;
               &lt;td&gt;#renderSlidesOrProceedingsLinkedIconHQL($presentation['proceedings'], $presentationDoc, 'proceedings')&lt;/td&gt;
@@ -294,7 +325,7 @@
     <name>Event.Reports.List of presentations</name>
     <number>0</number>
     <className>XWiki.JavaScriptExtension</className>
-    <guid>6664ca0f-5591-49cf-9d81-c510dc9f8654</guid>
+    <guid>a7feefcf-8e87-4f34-a6ea-cf1fea604360</guid>
     <class>
       <name>XWiki.JavaScriptExtension</name>
       <customClass/>

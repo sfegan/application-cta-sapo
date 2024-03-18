@@ -152,6 +152,54 @@
     #end
   #end
 #end
+#macro( mailtoURLCache $userListString $subject $docurl $userDict )
+  #set ( $userList = $userListString.split(",") )
+  #if ( $userList )
+    #set ( $email_addresses = {} )
+    #set ( $email_names = {} )
+    #set ( $missing_emails = {} )
+    #foreach ( $userref in $userList )
+      #if( $userDict.containsKey($userref) )
+        #set ( $userInfo = $userDict[$userref] )
+        #set ( $first_name = $userInfo['first_name'] )
+        #set ( $name = $userInfo['name'] )
+        #set ( $email = $userInfo['email'] )
+        #if ( $email and $email!="" )
+          #set ( $discard = $email_addresses.put($email, true) )
+          #set ( $discard = $email_names.put($first_name, true) )
+        #elseif ( $name.trim() != "" )
+          #set ( $discard = $missing_emails.put("$name ($userref)", true) )
+        #else
+          #set ( $discard = $missing_emails.put($userref, true) )
+        #end
+      #elseif( $userref and "$!userref" != "" )
+        #set ( $discard = $missing_emails.put($userref, true) )
+      #end
+    #end
+    #if ( !$email_addresses.isEmpty() )
+      #if( $email_names.size() &gt; 5 )
+        #set( $mailto_body = "Dear all,$util.newline$util.newline" )
+      #elseif( $email_names.size() &gt; 2 )
+        #set( $last_name = $email_names.size() - 1 )
+        #set( $email_names_keyset = [] )
+        #set( $discard = $email_names_keyset.addAll($email_names.keySet()) )
+        #set( $mailto_body = "Dear $stringtool.join($email_names_keyset,', ',0,$last_name) and $email_names_keyset.get($last_name),$util.newline$util.newline" )
+      #else
+        #set( $mailto_body = "Dear $stringtool.join($email_names.keySet(),' and '),$util.newline$util.newline" )
+      #end
+      #if ( $docurl )
+        #set( $mailto_body = "${mailto_body}URL: $docurl" )
+      #end
+      #if( !$missing_emails.isEmpty() )
+        #set( $missing_emails = $stringtool.join($missing_emails.keySet(), ', ') )
+        #set( $mailto_body = "${mailto_body}${util.newline}Missing emails: $missing_emails" )
+      #end
+      #set( $mailto_url = "mailto:$escapetool.url($stringtool.join($email_addresses.keySet(),','))" )
+      #set( $mailto_url = "$mailto_url?subject=$escapetool.url($subject)&amp;body=$escapetool.url($mailto_body)")
+      $mailto_url
+    #end
+  #end
+#end
 #macro( renderMailToButton $href $target )
   &lt;a #if("$!href"!="")href="$href"#end #if("$!target"!="")target="$target"#end class="btn btn-primary" style="width:36px; line-height:17px; height:20px; padding:0; margin:0; margin-top:-4px; color=white;"&gt;$services.icon.renderHTML('envelope')&lt;/a&gt;
 #end
