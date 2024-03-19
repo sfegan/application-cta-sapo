@@ -36,68 +36,21 @@
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.1</syntaxId>
   <hidden>false</hidden>
-  <content>{{include reference="Presentation.Code.Macros"/}}
-
-{{velocity}}
-  #macro(renderName $userListString $maxUser $baseURL $userDict)
-    #set( $userList = $userListString.split(',') )
-    #foreach( $user in $userList )
-      #if( $maxUser&gt;0 &amp;&amp; $foreach.index&gt;=$maxUser )
-        et al.
-        #break
-      #end
-      #if( !$baseURL.isEmpty() )
-        &lt;a href="$escapetool.xml($baseURL+$user)" style="white-space: nowrap;"&gt;$escapetool.xml(${userDict[$user]["name"]|$user})&lt;/a&gt;
-      #else
-        $escapetool.xml(${userDict[$user]|$user})
-      #end
-    #end
-  #end
-  #set( $hql = "SELECT obj.name, firstNameProp.value, lastNameProp.value, eMailProp.value
-      FROM BaseObject obj, XWikiDocument doc, StringProperty firstNameProp,
-        StringProperty lastNameProp, StringProperty eMailProp
-      WHERE obj.className='XWiki.XWikiUsers'
-      AND doc.fullName=obj.name
-      AND obj.id=firstNameProp.id.id AND firstNameProp.id.name='first_name'
-      AND obj.id=lastNameProp.id.id AND lastNameProp.id.name='last_name'
-      AND obj.id=eMailProp.id.id AND eMailProp.id.name='email'" )
-  #set( $userDict = {} )
-  #foreach( $row in $services.query.hql($hql).setWiki('xwiki').execute() )
-    #set ( $first_name = "${row[1].substring(0,1).toUpperCase()}${row[1].substring(1)}" )
-    #set ( $last_name = "${row[2].substring(0,1).toUpperCase()}${row[2].substring(1)}" )
-    #set( $user = "xwiki:" + $row[0] )
-    #set( $userDict[$user] = { 'userId': $user, 'name': "$first_name $last_name", 'first_name': $first_name, 'email': $row[3] } )
-  #end
-  #set ($discard = $xwiki.jsx.use($doc.fullName) )
+  <content>{{velocity}}
   #set( $selectedYear = $xcontext.getRequest().getParameter('year') )
   #set( $selectedWG = $xcontext.getRequest().getParameter('wg') )
   #set( $selectedEvent = $xcontext.getRequest().getParameter('event') )
-  #set( $docURL = $doc.getURL() )
-  #if( "$!selectedEvent" != "" )
-    #set( $selectURL = $docURL + "?event=$escapetool.url($selectedEvent)&amp;" )
-  #elseif("$!selectedYear"  != "" )
-    #set( $selectURL = $docURL + "?year=$escapetool.url($selectedYear)&amp;" )
-  #else
-    #set( $selectURL = $docURL + "?" )
-  #end
-  #set( $myPresentationsURL = $xwiki.getURL('Event.Reports.My presentations')+"?user=" )
-  #set( $myReviewsURL = $xwiki.getURL('Event.Reports.My presentations')+"?role=reviewer&amp;user=" )
-  #set( $emailAuthorsURL = $xwiki.getURL('Presentation.Code.Email parties')+"?whom=authors&amp;presentation=" )
-  #set( $emailReviewersURL = $xwiki.getURL('Presentation.Code.Email parties')+"?whom=reviewers&amp;presentation=" )
-  #set( $renderWGLink = {} )
-
   {{html}}
-  &lt;form action="$doc.getURL("view")" method="get"&gt;
-    &lt;div class="xform"&gt;
-      &lt;div class="row"&gt;
-        &lt;div class="col-md-6"&gt;
-          &lt;dl&gt;
+    &lt;form action="$escapetool.xml($doc.getURL("view"))" method="get"&gt;
+      &lt;div class="xform"&gt;
+        &lt;div class="row"&gt;
+          &lt;div class="col-md-6"&gt;
+            &lt;dl&gt;
             #if( "$!selectedEvent" == "" )
-              #set( $nextYear = $datetool.year + 1 )
               #set( $firstYear = 2008 )
               #set( $lastYear = $xwiki.getDocument($services.query.xwql("FROM doc.object(Event.Code.EventClass) AS evt ORDER BY evt.startDate desc").setLimit(1).execute()).getObject("Event.Code.EventClass").getValue('startDate').year + 1900)
               #if( !$lastYear )
-                #set( $lastYear = $datetool.year )
+                #set( $lastYear = $datetool.year + 1 )
               #end
               &lt;dt&gt;Presentations for year&lt;/dt&gt;
               &lt;dd&gt;
@@ -138,12 +91,9 @@
                       $services.localization.render("Presentation.Code.PresentationClass_workingGroup_$wg")
                       ($wgAbbrev)
                     &lt;/option&gt;
-                    #set( $wgURL = $selectURL+"wg=$wg" )
-                    #set( $renderWGLink[$wg] = "&lt;a href='$escapetool.xml($wgURL)'&gt;$wgAbbrev&lt;/a&gt;" )
                   #end
-                  &lt;option value="none" #if($!selectedWG=="none")selected#end&gt;-- No working group specified --&lt;/option&gt;
+                  &lt;option value="none" #if($!selectedWG=="none")selected#end&gt;unassigned&lt;/option&gt;
                   #set( $wgURL = $baseURL+"wg=none" )
-                  #set( $renderWGLink[""] = "&lt;a href='$escapetool.xml($wgURL)'&gt;&lt;i&gt;none&lt;/i&gt;&lt;/a&gt;" )
                 &lt;/select&gt;
               &lt;/dd&gt;
             &lt;/dl&gt;
@@ -151,16 +101,96 @@
         &lt;/div&gt;
       &lt;/div&gt;
     &lt;/form&gt;
+  {{/html}}
+{{/velocity}}
 
-    #set( $hqlElements = [ 'docName', 'title', 'status', 'type',
-                           'presenters', 'reviewers', 'workingGroup',
-                           'abstract', 'slides', 'proceedings',
-                           'hasProceedings', 'approvalBy',
-                           'absApprovalSWG', 'absApprovalSAPO',
-                           'talkApprovalSWG', 'talkApprovalSAPO',
-                           'procApprovalSWG', 'procApprovalSAPO',
-                           'eventDocName', 'eventTitle', 'eventStartDate', 'eventEndDate' ])
-    #set( $hql = "select obj_pres.name, doc_pres.title, prop_status.value, prop_type.value,
+{{groovy}}
+  import org.xwiki.velocity.tools.EscapeTool
+  import org.xwiki.velocity.tools.ComparisonDateTool
+  import org.apache.velocity.tools.generic.NumberTool
+  import org.xwiki.velocity.tools.URLTool
+  import org.xwiki.text.StringUtils
+
+  escapetool = new EscapeTool()
+  datetool = new ComparisonDateTool()
+  numbertool = new NumberTool()
+  urltool = new URLTool()
+  stringtool = new StringUtils()
+
+  selectedYear = xcontext.getRequest().getParameter('year')
+  selectedWG = xcontext.getRequest().getParameter('wg')
+  selectedEvent = xcontext.getRequest().getParameter('event')
+
+  docURL = doc.getURL()
+
+  if( selectedEvent!=null &amp;&amp; selectedEvent!="" ) {
+    selectURL =  docURL + "?event=${escapetool.url(selectedEvent)}&amp;"
+  } else if( selectedYear!=null &amp;&amp; selectedYear!="" ) {
+    selectURL = docURL + "?year=${escapetool.url(selectedYear)}&amp;"
+  } else {
+    selectURL = docURL + "?"
+  }
+
+  fontAwesomeIconDict = [ "comment":"comment", "file-white":"file-o", "pencil":"pencil", "zoom":"search",
+                          "move":"external-link", "check":"check", "cross":"times", "cut":"cut",
+                          "align-justify":"align-justify", "image":"image", "book":"book",
+                          "shape_square":"square-o", "thumb_up":"thumbs-up", "thumb_down":"thumbs-down",
+                          "question":"question-circle", "envelope":"envelope-o" ]
+
+  def renderIcon(String icon) {
+    def knownFAIcon = fontAwesomeIconDict[icon]
+    if(knownFAIcon) {
+      return '&lt;span class="fa fa-'+knownFAIcon+'"/&gt;'
+    } else {
+      return services.icon.renderHTML(icon)
+    }
+  }
+  
+  def retrieveUserDict() {
+    def hql = """SELECT obj.name, firstNameProp.value, lastNameProp.value, eMailProp.value
+              FROM BaseObject obj, XWikiDocument doc, StringProperty firstNameProp,
+                StringProperty lastNameProp, StringProperty eMailProp
+              WHERE obj.className='XWiki.XWikiUsers'
+              AND doc.fullName=obj.name
+              AND obj.id=firstNameProp.id.id AND firstNameProp.id.name='first_name'
+              AND obj.id=lastNameProp.id.id AND lastNameProp.id.name='last_name'
+              AND obj.id=eMailProp.id.id AND eMailProp.id.name='email'"""
+    def userDict = [:]
+    def queryResults = services.query.hql(hql).setWiki("xwiki").execute()
+    for(row in queryResults) {
+      def firstName = (row[1].substring(0,1).toUpperCase()+row[1].substring(1)).trim()
+      def lastName = (row[2].substring(0,1).toUpperCase()+row[2].substring(1)).trim()
+      def name = (firstName+" "+lastName).trim()
+      def user = "xwiki:" + row[0]
+      userDict[user] = [ userId: user, name: name, firstName: firstName, email: row[3].trim() ]
+    }
+    return userDict
+  }
+
+  def retrieveWGLinkDict(String selectURL) {
+    def wgLinkDict = [:]
+    def xclass = xwiki.getClass('Presentation.Code.PresentationClass')
+    def wgList = xclass.get('workingGroup').getListValues()
+    for ( wg in wgList ) {
+      def wgAbbrev = services.localization.render("Presentation.Code.PresentationClass_abbreviatedWorkingGroup_$wg")
+      def wgURL = selectURL+"wg=$wg"
+      wgLinkDict[wg] = """&lt;a href="${escapetool.xml(wgURL)}"&gt;$wgAbbrev&lt;/a&gt;"""
+    }
+    wgLinkDict[""] = """&lt;a href="${escapetool.xml(selectURL+"wg=none")}"&gt;&lt;i&gt;none&lt;/i&gt;&lt;/a&gt;"""
+    return wgLinkDict
+  }
+
+  def retrievePresentations() {
+    def hqlElements = [ 'docName', 'title', 'status', 'type',
+                    'presenters', 'reviewers', 'workingGroup',
+                    'abstract', 'slides', 'proceedings',
+                    'hasProceedings', 'approvalBy',
+                    'absApprovalSWG', 'absApprovalSAPO',
+                    'talkApprovalSWG', 'talkApprovalSAPO',
+                    'procApprovalSWG', 'procApprovalSAPO',
+                    'eventDocName', 'eventTitle', 'eventStartDate', 'eventEndDate' ]
+    def hql = """
+      SELECT obj_pres.name, doc_pres.title, prop_status.value, prop_type.value,
         prop_presenters.value, prop_reviewers.value, prop_working_group.value,
         prop_abstract.value, prop_slides.value, prop_proceedings.value,
         prop_has_proceedings.value, prop_approval_by.value,
@@ -179,74 +209,259 @@
         BaseObject obj_event, XWikiDocument doc_event, 
         DateProperty prop_start_date, DateProperty prop_end_date
       WHERE obj_pres.className='Presentation.Code.PresentationClass'
-      AND obj_pres.name != 'Presentation.Code.PresentationTemplate'
-      AND doc_pres.fullName=obj_pres.name
-      AND prop_event.id.id=obj_pres.id AND prop_event.name='event'
-      AND prop_status.id.id=obj_pres.id AND prop_status.name='status'
-      AND prop_type.id.id=obj_pres.id AND prop_type.name='type'
-      AND prop_presenters.id.id=obj_pres.id AND prop_presenters.name='presenters'
-      AND prop_reviewers.id.id=obj_pres.id AND prop_reviewers.name='reviewers'
-      AND prop_working_group.id.id=obj_pres.id AND prop_working_group.name='workingGroup'
-      AND prop_abstract.id.id=obj_pres.id AND prop_abstract.name='abstract'
-      AND prop_slides.id.id=obj_pres.id AND prop_slides.name='slides'
-      AND prop_proceedings.id.id=obj_pres.id AND prop_proceedings.name='proceedings'
-      AND prop_has_proceedings.id.id=obj_pres.id AND prop_has_proceedings.name='hasProceedings'
-      AND prop_approval_by.id.id=obj_pres.id AND prop_approval_by.name='approvalBy'
-      AND prop_abs_approval_swg.id.id=obj_pres.id AND prop_abs_approval_swg.name='absApprovalSWG'
-      AND prop_abs_approval_sapo.id.id=obj_pres.id AND prop_abs_approval_sapo.name='absApprovalSAPO'
-      AND prop_talk_approval_swg.id.id=obj_pres.id AND prop_talk_approval_swg.name='talkApprovalSWG'
-      AND prop_talk_approval_sapo.id.id=obj_pres.id AND prop_talk_approval_sapo.name='talkApprovalSAPO'
-      AND prop_proc_approval_swg.id.id=obj_pres.id AND prop_proc_approval_swg.name='procApprovalSWG'
-      AND prop_proc_approval_sapo.id.id=obj_pres.id AND prop_proc_approval_sapo.name='procApprovalSAPO'
-      AND obj_event.name=prop_event.value
-      AND doc_event.fullName=obj_event.name
-      AND prop_start_date.id.id=obj_event.id AND prop_start_date.name='startDate'
-      AND prop_end_date.id.id=obj_event.id AND prop_end_date.name='endDate'" )
-    #set( $hqlOrder = "ORDER BY prop_start_date.value DESC, doc_event.title, doc_pres.title")
+        AND obj_pres.name != 'Presentation.Code.PresentationTemplate'
+        AND doc_pres.fullName=obj_pres.name
+        AND prop_event.id.id=obj_pres.id AND prop_event.name='event'
+        AND prop_status.id.id=obj_pres.id AND prop_status.name='status'
+        AND prop_type.id.id=obj_pres.id AND prop_type.name='type'
+        AND prop_presenters.id.id=obj_pres.id AND prop_presenters.name='presenters'
+        AND prop_reviewers.id.id=obj_pres.id AND prop_reviewers.name='reviewers'
+        AND prop_working_group.id.id=obj_pres.id AND prop_working_group.name='workingGroup'
+        AND prop_abstract.id.id=obj_pres.id AND prop_abstract.name='abstract'
+        AND prop_slides.id.id=obj_pres.id AND prop_slides.name='slides'
+        AND prop_proceedings.id.id=obj_pres.id AND prop_proceedings.name='proceedings'
+        AND prop_has_proceedings.id.id=obj_pres.id AND prop_has_proceedings.name='hasProceedings'
+        AND prop_approval_by.id.id=obj_pres.id AND prop_approval_by.name='approvalBy'
+        AND prop_abs_approval_swg.id.id=obj_pres.id AND prop_abs_approval_swg.name='absApprovalSWG'
+        AND prop_abs_approval_sapo.id.id=obj_pres.id AND prop_abs_approval_sapo.name='absApprovalSAPO'
+        AND prop_talk_approval_swg.id.id=obj_pres.id AND prop_talk_approval_swg.name='talkApprovalSWG'
+        AND prop_talk_approval_sapo.id.id=obj_pres.id AND prop_talk_approval_sapo.name='talkApprovalSAPO'
+        AND prop_proc_approval_swg.id.id=obj_pres.id AND prop_proc_approval_swg.name='procApprovalSWG'
+        AND prop_proc_approval_sapo.id.id=obj_pres.id AND prop_proc_approval_sapo.name='procApprovalSAPO'
+        AND obj_event.name=prop_event.value
+        AND doc_event.fullName=obj_event.name
+        AND prop_start_date.id.id=obj_event.id AND prop_start_date.name='startDate'
+        AND prop_end_date.id.id=obj_event.id AND prop_end_date.name='endDate'"""
+    def hqlOrder = """ORDER BY prop_start_date.value DESC, doc_event.title, doc_pres.title"""
 
-    #set( $hqlBindVals = {} )
-    #set( $hqlSelect = "" )
-    #if( "$!selectedEvent" != "" )
-      #set( $hqlSelect = "AND prop_event.value=:event" )
-      #set( $discard = $hqlBindVals.put('event', $selectedEvent) )
-    #elseif( "$!selectedYear" != "" )
-      #set( $hqlSelect = "AND prop_start_date.value&gt;=:sdate AND prop_start_date.value&lt;=:edate" )
-      #set( $sdate = $datetool.toDate('yyyy-MM-dd',"${selectedYear}-01-01") )
-      #set( $eyear = $numbertool.toNumber($selectedYear) + 1 )
-      #set( $edate = $datetool.toDate('yyyy-MM-dd',"${eyear}-01-01") )
-      #set( $discard = $hqlBindVals.put('sdate', $sdate) )
-      #set( $discard = $hqlBindVals.put('edate', $edate) )
-    #else
-      #set( $hqlSelect = "AND ( prop_start_date.value&gt;=:sdate OR prop_end_date.value&gt;=:edate )" )
-      #set( $sdate = $datetool.date )
-      #set( $discard = $hqlBindVals.put('sdate', $sdate) )
-      #set( $discard = $hqlBindVals.put('edate', $sdate) )
-    #end
+    def hqlBindVals = [:]
+    def hqlSelect = ""
+    if( selectedEvent!=null &amp;&amp; selectedEvent!="" ) {
+      hqlSelect = "AND prop_event.value=:event"
+      hqlBindVals['event'] = selectedEvent
+    } else if ( selectedYear!=null &amp;&amp; selectedYear!="" ) {
+      hqlSelect = "AND prop_start_date.value&gt;=:sdate AND prop_start_date.value&lt;=:edate"
+      sdate = datetool.toDate('yyyy-MM-dd',"${selectedYear}-01-01")
+      eyear = numbertool.toNumber(selectedYear) + 1
+      edate = datetool.toDate('yyyy-MM-dd',"${eyear}-01-01")
+      hqlBindVals['sdate'] = sdate
+      hqlBindVals['edate'] = edate
+    } else {
+      hqlSelect = "AND ( prop_start_date.value&gt;=:sdate OR prop_end_date.value&gt;=:edate )"
+      sdate = datetool.date
+      hqlBindVals['sdate'] = sdate
+      hqlBindVals['edate'] = sdate
+    }
 
-    #if( "$!selectedWG" != "" )
-      #set( $hqlSelect = $hqlSelect + " AND prop_working_group.value=:wg" )
-      #set( $wg = $selectedWG )
-      #if($selectedWG == "none")
-        #set( $wg = "" )
-      #end
-      #set( $discard = $hqlBindVals.put('wg', $wg) )
-    #end
+    if( selectedWG!=null &amp;&amp; selectedWG!="" ) {
+      hqlSelect = hqlSelect + " AND prop_working_group.value=:wg"
+      hqlBindVals['wg'] = (selectedWG == "none")?"":selectedWG
+    }
 
-    #set( $query = $services.query.hql($hql+" "+$hqlSelect+" "+$hqlOrder) )
-    #foreach ( $key in $hqlBindVals.keySet() )
-      #set( $discard = $query.bindValue($key, $hqlBindVals[$key]))
-    #end
+    def query = services.query.hql(hql+" "+hqlSelect+" "+hqlOrder)
+    for ( key in hqlBindVals.keySet() ) {
+      query.bindValue(key, hqlBindVals[key])
+    }
 
-    #set( $queryResults = $query.execute() )
+    def presentations = []
+    for ( row in  query.execute() ) {
+      def presentation = [:]
+      for ( int i in 0..(row.size()-1) ) {
+        presentation[hqlElements[i]] = row[i]
+      }
+      presentations.add(presentation);
+    }
+    return presentations
+  }
 
-    #if( $queryResults.isEmpty() )
-      &lt;p&gt;No presentations found.&lt;/p&gt;
-    #else
-      #set( $abstractModals = {} )
+  def presentationTypeIcon(String type) {
+    renderIconName = [ invited: "comment", talk: "comment", poster: "file-white" ]
+    return renderIcon(renderIconName.getOrDefault(type,"question"))
+  }
+
+  def presentationStatusIcon(String status) {
+    renderIconName = [ draft: "pencil", review: "zoom", submitted: "move",
+      accepted: "check", refused: "cross", withdrawn: "cut" ]
+    return renderIcon(renderIconName.getOrDefault(status,"question"))
+  }
+
+  def renderApprovalsBy(String whom) {
+    renderApprovals = [ swg: "WG", sapo: "SAPO", both: "Both" ]
+    return renderApprovals.getOrDefault(whom, renderIcon("question"))
+  }
+
+  def mailtoAnchor(String userListString, String title, String docURL, def userDict) {
+    if(userListString==null || userListString=="") {
+      return ""
+    }
+    def userList = userListString.split(",")
+    def emailAddresses = [:]
+    def emailNames = [:]
+    def missingEmails = [:]
+    for(user in userList) {
+      user = user.trim()
+      if(user=="") {
+        continue
+      }
+      if(userDict.containsKey(user)) {
+        def userInfo = userDict[user]
+        def firstName = userInfo['firstName']
+        def name = userInfo['name']
+        def email = userInfo['email']
+        if(email!=null &amp;&amp; email!="") {
+          emailAddresses[email] = true
+          if(firstName!=null &amp;&amp; firstName!="") {
+            emailNames[firstName] = true
+          }
+        } else if(name!=null &amp;&amp; name!="") {
+          missingEmails["${name} (${user})"] = true
+        } else {
+          missingEmails[user] = true
+        }
+      } else {
+        missingEmails[user] = true
+      }
+    }
+    if(emailAddresses.isEmpty()) {
+      return ""
+    }
+    def mailtoBody = ""
+    if(emailNames.size() &gt; 5) {
+      mailtoBody = "Dear all,\n\n"
+    } else if(emailNames.size() &gt; 2) {
+      def lastName = emailNames.size() - 1
+      def emailNamesKeyset = []
+      emailNamesKeyset.addAll(emailNames.keySet())
+      mailtoBody = "Dear ${stringtool.join(emailNamesKeyset,', ',0,lastName)} and ${emailNamesKeyset[lastName]},\n\n"
+    } else {
+      mailtoBody = "Dear ${stringtool.join(emailNames.keySet(),' and ')},\n\n"
+    }
+    if(docURL!=null &amp;&amp; docURL!="") {
+      mailtoBody = mailtoBody + "URL: ${docURL}"
+    }
+    if(!missingEmails.isEmpty()) {
+      missingEmailsString = stringtool.join(missingEmails.keySet(), ', ')
+      $mailtoBody = mailtoBody + "\nMissing emails: ${missingEmailsString}"
+    }
+    def mailtoURL = "mailto:${escapetool.url(stringtool.join(emailAddresses.keySet(),','))}"
+    def subject = "Presentation - ${title}"
+    mailtoURL = mailtoURL + "?subject=${escapetool.url(subject)}&amp;body=${escapetool.url(mailtoBody)}"
+    return """&lt;a href="${mailtoURL}" target="_blank"class="btn btn-primary" style="width:36px; line-height:17px; height:20px; padding:0; margin:0; margin-top:-4px; color=white;"&gt;${renderIcon('envelope')}&lt;/a&gt;"""
+  }
+
+  def renderNames(String userListString, int maxUser, String baseURL, def userDict) {
+    def userList = userListString.split(',')
+    def userHTML = ""
+    for(int iuser=0; iuser&lt;userList.size(); iuser++) {
+      if(iuser&gt;0) {
+        userHTML += " "
+      }
+      if(maxUser&gt;0 &amp;&amp; iuser&gt;=maxUser) {
+        userHTML += "et al."
+        break
+      }
+      def user = userList[iuser]
+      def name = userDict.getOrDefault(user,[name:user])["name"]
+      if( !baseURL.isEmpty() ) {
+        userHTML += """&lt;a href="${escapetool.xml(baseURL+user)}" style="white-space: nowrap;"&gt;${escapetool.xml(name)}&lt;/a&gt;"""
+      } else {
+        userHTML += """&lt;span style="white-space: nowrap;&gt;escapetool.xml(name)&lt;/span&gt;"""
+      }
+    }
+    return userHTML;
+  }
+
+  def renderAbstractLinkedIcon(String abstractTextOrURL, String title, def abstractModalsList) {
+    if(abstractTextOrURL!=null &amp;&amp; abstractTextOrURL!="") {
+      def icon = renderIcon('align-justify')
+      if(urltool.toURL(abstractTextOrURL)) {
+        return """&lt;a href="${escapetool.xml(abstractTextOrURL)}"&gt;${icon}&lt;/a&gt;"""
+      } else {
+        def trimmedAbstractText = abstractTextOrURL.trim()
+        abstractKey = "absModal${abstractModalsList.size()}"
+        abstractDOM = services.rendering.parse(trimmedAbstractText, "xwiki/2.1")
+        abstractHTML = services.rendering.render(abstractDOM, "xhtml/1.0")
+        abstractModalsList.add([ key: abstractKey, title: title, abstractHTML: abstractHTML ])
+        return """&lt;a href="#" data-toggle="modal" data-target="#${abstractKey}"&gt;${icon}&lt;/a&gt;"""
+      }
+    }
+    return ""
+  }
+
+  def renderSlidesOrProceedingsLinkedIcon(String attachmentOrURL, def presentationDoc, String type) {
+    if(attachmentOrURL!=null &amp;&amp; attachmentOrURL!="") {
+      def iconName = (type=="slides")?'image':'book'
+      def icon = renderIcon(iconName)
+
+      if(urltool.toURL(attachmentOrURL)) {
+        return """&lt;a href="${escapetool.xml(attachmentOrURL)}"&gt;${icon}&lt;/a&gt;"""
+      } else if(presentationDoc.getAttachment(attachmentOrURL)) {
+        return """&lt;a href="${escapetool.xml(presentationDoc.getAttachmentURL(attachmentOrURL))}"&gt;${icon}&lt;/a&gt;"""
+      } else {
+        return icon
+      }
+    }
+    return ""
+  }
+
+  def approvalsDivStyle(approval) {
+    def colorstyle = ""
+    if( approval == "approved" ) {
+      colorstyle = 'border-radius: 12px; background: palegreen; color: #333333;'
+    } else if ( approval == "rejected" ) {
+      colorstyle = 'border-radius: 4px; background: lightcoral; color: #222222;'
+    }
+   def basestyle = 'width:24px; height:24px; padding:2px; margin:0; margin-left:-2px; margin-top:-2px; text-align: center;'
+   return "$basestyle $colorstyle"
+  }
+
+  def presentationApprovalIcon(status) {
+    renderIconName = [pending : "shape_square", approved: "thumb_up", rejected: "thumb_down" ]
+    return renderIcon(renderIconName.getOrDefault(status,"question"))
+  }
+
+  def renderTwoColumnApprovals(String approvalBy, String wgApproval, String sapoApproval) {
+    def approvalIconName = [ pending: "shape_square", approved: "thumb_up", rejected: "thumb_down" ]
+    def swg_html = ""
+    def approval
+    if(approvalBy != "sapo") {
+      def approved_value = (wgApproval!=null &amp;&amp; wgApproval!="") ? wgApproval : "pending"
+      approval = approved_value
+      swg_html = presentationApprovalIcon(approved_value)
+    } else {
+      approval = "approved"
+    }
+    def sapo_html = ""
+    if(approvalBy != "swg") {
+      def approved_value = (sapoApproval!=null &amp;&amp; sapoApproval!="") ? sapoApproval : "pending"
+      if(approval == "approved" || ( approval == "pending" &amp;&amp; approved_value == "rejected")) {
+        approval = approved_value
+      }
+      sapo_html = presentationApprovalIcon(approved_value)
+    }
+    style = approvalsDivStyle(approval)
+    return """&lt;div style="$style"&gt;$swg_html&lt;/div&gt;&lt;/td&gt;&lt;td&gt;&lt;div style="$style"&gt;$sapo_html&lt;/div&gt;"""
+  }
+
+  println "{{html}}"
+
+  def myPresentationsURL = xwiki.getURL('Event.Reports.My presentations')+"?user="
+  def myReviewsURL = xwiki.getURL('Event.Reports.My presentations')+"?role=reviewer&amp;user="
+  def emailAuthorsURL = xwiki.getURL('Presentation.Code.Email parties')+"?whom=authors&amp;presentation="
+  def emailReviewersURL = xwiki.getURL('Presentation.Code.Email parties')+"?whom=reviewers&amp;presentation="
+
+  def userDict = retrieveUserDict()
+  def renderWGLinkDict = retrieveWGLinkDict(selectURL)
+  def presentationsList = retrievePresentations()
+
+  if( presentationsList.isEmpty() ) {
+    println """&lt;p&gt;No presentations found.&lt;/p&gt;"""
+  } else {
+    println """
       &lt;table class="table table-striped"&gt;
         &lt;thead&gt;
           &lt;tr style="border: none;"&gt;
-            &lt;th rowspan=2 colspan=3&gt;Presentation (total: $numbertool.number($queryResults.size()))&lt;/th&gt;
+            &lt;th rowspan=2 colspan=3&gt;Presentation (total: ${numbertool.number(presentationsList.size())})&lt;/th&gt;
             &lt;th colspan=2 rowspan=2&gt;Authors&lt;/th&gt;
             &lt;th colspan=2 rowspan=2&gt;Reviewers&lt;/th&gt;
             &lt;th colspan=1 rowspan=2&gt;WG&lt;/th&gt;
@@ -254,78 +469,96 @@
             &lt;th colspan=7 style="border: none"&gt;Approvals&lt;/th&gt;
           &lt;/tr&gt;
           &lt;tr style="border: none"&gt;
-            &lt;th style="border-top: none"&gt;$services.icon.renderHTML('align-justify')&lt;/th&gt;
-            &lt;th style="border-top: none"&gt;$services.icon.renderHTML('image')&lt;/th&gt;
-            &lt;th style="border-top: none"&gt;$services.icon.renderHTML('book')&lt;/th&gt;
+            &lt;th style="border-top: none"&gt;${renderIcon('align-justify')}&lt;/th&gt;
+            &lt;th style="border-top: none"&gt;${renderIcon('image')}&lt;/th&gt;
+            &lt;th style="border-top: none"&gt;${renderIcon('book')}&lt;/th&gt;
             &lt;th style="border-top: none"&gt;By&lt;/th&gt;
-            &lt;th colspan=2 style="border-top: none"&gt;$services.icon.renderHTML('align-justify')&lt;/th&gt;
-            &lt;th colspan=2 style="border-top: none"&gt;$services.icon.renderHTML('image')&lt;/th&gt;
-            &lt;th colspan=2 style="border-top: none"&gt;$services.icon.renderHTML('book')&lt;/th&gt;
+            &lt;th colspan=2 style="border-top: none"&gt;${renderIcon('align-justify')}&lt;/th&gt;
+            &lt;th colspan=2 style="border-top: none"&gt;${renderIcon('image')}&lt;/th&gt;
+            &lt;th colspan=2 style="border-top: none"&gt;${renderIcon('book')}&lt;/th&gt;
           &lt;/tr&gt;
         &lt;/thead&gt;
+        &lt;tbody&gt;"""
+
+    def abstractModalsList = []
+    for ( presentation in presentationsList ) {
+      def presentationDoc = xwiki.getDocument(presentation['docName'])
+      def presentationURL = presentationDoc.getURL()
+      def presentationExternalURL = presentationDoc.getExternalURL()
+
+      println """
+          &lt;tr&gt;"""
+      def s_on = ""
+      def s_off = ""
+      if( presentation['status']=="withdrawn" || presentation['status']=="refused") {
+        s_on = "&lt;s&gt;"
+        s_off = "&lt;/s&gt;"
+      }
+      def approvalBy = presentation['approvalBy']
+      def procApproval = "&lt;td/&gt;&lt;td&gt;"
+      if(presentation['hasProceedings']==1 || ( presentation['proceedings']!=null &amp;&amp; presentation['proceedings']!="")) {
+        procApproval = renderTwoColumnApprovals(approvalBy, presentation['procApprovalSWG'], presentation['procApprovalSAPO'])
+      }
+
+      println """
+            &lt;td&gt;&lt;a href="${escapetool.xml(presentationURL)}"&gt;${s_on}${escapetool.xml(presentation['title'])}${s_off}&lt;/a&gt;&lt;/td&gt;
+            &lt;td&gt;&lt;a href="#" data-toggle="tooltip" data-delay=50 title="${escapetool.xml(presentation['eventTitle'])}" data-placement="top"&gt;
+              ${presentationTypeIcon(presentation['type'])}&lt;/a&gt;&lt;/td&gt;
+            &lt;td&gt;${presentationStatusIcon(presentation['status'])}&lt;/td&gt;
+            &lt;td&gt;${mailtoAnchor(presentation['presenters'],presentation['title'],presentationExternalURL,userDict)}&lt;/td&gt;
+            &lt;td&gt;${renderNames(presentation['presenters'], 1, myPresentationsURL, userDict)}&lt;/td&gt;
+            &lt;td&gt;${mailtoAnchor(presentation['reviewers'],presentation['title'],presentationExternalURL,userDict)}&lt;/td&gt;
+            &lt;td&gt;${renderNames(presentation['reviewers'], 0, myReviewsURL, userDict)}&lt;/td&gt;
+            &lt;td&gt;${renderWGLinkDict[presentation['workingGroup']]}&lt;/td&gt;
+            &lt;td&gt;${renderAbstractLinkedIcon(presentation['abstract'],presentation['title'],abstractModalsList)}&lt;/td&gt;
+            &lt;td&gt;${renderSlidesOrProceedingsLinkedIcon(presentation['slides'], presentationDoc, "slides")}&lt;/td&gt;
+            &lt;td&gt;${renderSlidesOrProceedingsLinkedIcon(presentation['proceedings'], presentationDoc, "proceedings")}&lt;/td&gt;
+            &lt;td&gt;${renderApprovalsBy(approvalBy)}&lt;/td&gt;
+            &lt;td&gt;${renderTwoColumnApprovals(approvalBy, presentation['absApprovalSWG'], presentation['absApprovalSAPO'])}&lt;/td&gt;
+            &lt;td&gt;${renderTwoColumnApprovals(approvalBy, presentation['talkApprovalSWG'], presentation['talkApprovalSAPO'])}&lt;/td&gt;
+            &lt;td&gt;${procApproval}&lt;/td&gt;"""
+      println """
+          &lt;/tr&gt;"""
+    }
+    println """
         &lt;tbody&gt;
-          #set($userHTMLCache = {})
-          #foreach( $row in $queryResults )
-            #set($presentation = {})
-            #foreach( $elementValue in $row )
-              #set($presentation[$hqlElements[$foreach.index]] = $elementValue)
-            #end
-            #set( $presentationDoc = $xwiki.getDocument($presentation['docName']) )
-            #set( $presentationURL = $presentationDoc.getURL() )
-            #set( $presentationExternalURL = $presentationDoc.getExternalURL() )
-            &lt;tr&gt;
-              #if($presentation['status'] == "withdrawn" or $presentation['status'] == "refused")
-                &lt;td&gt;&lt;a href="$presentationURL"&gt;&lt;s&gt;$services.xml.escape($presentation['title'])&lt;/s&gt;&lt;/a&gt;&lt;/td&gt;
-              #else
-                &lt;td&gt;&lt;a href="$presentationURL"&gt;$services.xml.escape($presentation['title'])&lt;/a&gt;&lt;/td&gt;
-              #end
-              #if( "$!selectedEvent" == "" )
-                &lt;td&gt;&lt;a href="#" data-toggle="tooltip" data-delay=50 title="$escapetool.xml($presentation['eventTitle'])" data-placement="top"&gt;
-                  #presentationTypeIcon($presentation['type'])
-                &lt;/a&gt;&lt;/td&gt;
-              #else
-                &lt;td&gt;#presentationTypeIcon($presentation['type'])&lt;/td&gt;
-              #end
-              &lt;td&gt;#presentationStatusIcon($presentation['status'])&lt;/td&gt;
-              #set( $mailSubject = "Presentation - $presentation['title']" )
-              #set( $mailURL = "#mailtoURLCache($presentation['presenters'], $mailSubject, $presentationExternalURL, $userDict)" )
-              &lt;td&gt;#mailtoAnchor($mailURL)&lt;/td&gt;
-              &lt;td&gt;#renderName($presentation['presenters'] 1 $myPresentationsURL $userDict)&lt;/td&gt;
-              #set( $mailURL = "#mailtoURLCache($presentation['reviewers'], $mailSubject, $presentationExternalURL, $userDict)" )
-              &lt;td&gt;#mailtoAnchor($mailURL)&lt;/td&gt;
-              &lt;td&gt;#renderName($presentation['reviewers'] 0 $myReviewsURL $userDict)&lt;/td&gt;
-              #set( $wg = $!presentation['workingGroup'] )
-              &lt;td&gt;${renderWGLink[$wg]|$escapetool.xml($wg)}&lt;/td&gt;
-              &lt;td&gt;#renderAbstractLinkedIconHQL($presentation['abstract'], $presentation['title'], $abstractModals)&lt;/td&gt;
-              &lt;td&gt;#renderSlidesOrProceedingsLinkedIconHQL($presentation['slides'], $presentationDoc, 'slides')&lt;/td&gt;
-              &lt;td&gt;#renderSlidesOrProceedingsLinkedIconHQL($presentation['proceedings'], $presentationDoc, 'proceedings')&lt;/td&gt;
-              &lt;td&gt;#renderApprovalsBy($presentation['approvalBy'])&lt;/td&gt;
-              #renderTwoColumnApprovalsHQL($presentation "abs")
-              #renderTwoColumnApprovalsHQL($presentation "talk")
-              #if( $!value['hasProceedings']==1 or "$value['proceedings']" != "")
-                #renderTwoColumnApprovalsHQL($presentation "proc")
-              #else
-                &lt;td/&gt;
-                &lt;td/&gt;
-              #end
-            &lt;/tr&gt;
-          #end
-        &lt;/tbody&gt;
-      &lt;/table&gt;
+      &lt;/table&gt;"""
 
-    #renderAbstractModals($abstractModals)
+    for ( modal in abstractModalsList ) {
+      println """
+        &lt;div class="modal fade" id="${modal['key']}" tabindex="-1" role="dialog" aria-labelledby="${modal['key']}Label"&gt;
+          &lt;div class="modal-dialog" role="document"&gt;
+            &lt;div class="modal-content"&gt;
+              &lt;div class="modal-header"&gt;
+                &lt;button type="button" class="close" data-dismiss="modal" aria-label="Close"&gt;&lt;span aria-hidden="true"&gt;&amp;times;&lt;/span&gt;&lt;/button&gt;
+                &lt;h5&gt;${services.xml.escape(modal['title'])}&lt;/h5&gt;
+              &lt;/div&gt;
+              &lt;div class="modal-body"&gt;
+                ${modal['abstractHTML']}
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        """
+    }
+  }
 
-    #renderPresentationKey
+  println "{{/html}}"
+  println ""
+{{/groovy}}
 
-    #end
-  {{/html}}
-{{/velocity}}
-</content>
+{{include reference="Presentation.Code.Macros"/}}
+
+{{velocity}}
+{{html}}
+#renderPresentationKey
+{{/html}}
+{{/velocity}}</content>
   <object>
     <name>Event.Reports.List of presentations</name>
     <number>0</number>
     <className>XWiki.JavaScriptExtension</className>
-    <guid>a7feefcf-8e87-4f34-a6ea-cf1fea604360</guid>
+    <guid>c1dfcd59-ac20-47d2-8dd1-01bc896ed94e</guid>
     <class>
       <name>XWiki.JavaScriptExtension</name>
       <customClass/>
@@ -422,7 +655,7 @@
       <parse>0</parse>
     </property>
     <property>
-      <use>onDemand</use>
+      <use>currentPage</use>
     </property>
   </object>
 </xwikidoc>
