@@ -145,7 +145,7 @@
       return services.icon.renderHTML(icon)
     }
   }
-  
+
   def retrieveUserDict() {
     def hql = """SELECT obj.name, firstNameProp.value, lastNameProp.value, eMailProp.value
               FROM BaseObject obj, XWikiDocument doc, StringProperty firstNameProp,
@@ -357,7 +357,7 @@
         userHTML += " "
       }
       if(maxUser&gt;0 &amp;&amp; iuser&gt;=maxUser) {
-        userHTML += "et al."
+        userHTML += """&lt;span style="white-space: nowrap;&gt;et al.&lt;/span&gt;"""
         break
       }
       def user = userList[iuser]
@@ -457,6 +457,8 @@
   if( presentationsList.isEmpty() ) {
     println """&lt;p&gt;No presentations found.&lt;/p&gt;"""
   } else {
+    xcontext.put("showKey",true)
+
     println """
       &lt;table class="table table-striped"&gt;
         &lt;thead&gt;
@@ -551,7 +553,9 @@
 
 {{velocity}}
 {{html}}
-#renderPresentationKey
+  #if($xcontext.get("showKey"))
+    #renderPresentationKey
+  #end
 {{/html}}
 {{/velocity}}</content>
   <object>
